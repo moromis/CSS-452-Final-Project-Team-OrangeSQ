@@ -26,7 +26,7 @@ Manager.prototype.update = function (){
         //if the timer has hit 0
         if(this.timer <= 0){
 
-            //create a patrol
+            //create an object
             this._createObject();
             
             //calculate a new timer between 120 - 180, 2-3 seconds
@@ -34,7 +34,7 @@ Manager.prototype.update = function (){
         }
     }
     
-    //check the lifetimes of the dye packs
+    //check the lifetimes of the objects
     for(var i = 0; i < this.size(); i++){
         if(this.getObjectAt(i).shouldDie()){
             this.removeObject(i);
