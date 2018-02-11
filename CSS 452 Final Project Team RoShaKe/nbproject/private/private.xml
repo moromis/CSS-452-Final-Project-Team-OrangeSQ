@@ -11,12 +11,6 @@
         <group name="AllBookProjects">
             <file>file:/C:/Users/Kelvin/Documents/html5engine/BookChapters/Chapter10/10.3.LayerManager/public_html/src/MyGame/MyGame.js</file>
         </group>
-        <group>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/FinalProject/public_html/src/MyGame/Objects/Hero.js</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/FinalProject/public_html/index.html</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/FinalProject/public_html/src/MyGame/MyGame.js</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/FinalProject/public_html/src/MyGame/Manager.js</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/FinalProject/public_html/src/Engine/Renderables/LightRenderable.js</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
