@@ -29,7 +29,7 @@ Manager.prototype.update = function (){
             //create an object
             this._createObject();
             
-            //calculate a new timer between 120 - 180, 2-3 seconds
+            //calculate a new timer between this.low and this.high seconds long
             this.timer = HelperFunctions.Core.generateRandomFloat(this.low, this.high);
         }
     }
@@ -46,9 +46,11 @@ Manager.prototype.update = function (){
 
 Manager.prototype.checkCollisions = function (objSet) {
     
+    //check collisions with all objects in this object set
+    //with all the objects in the other set
     for(var i = 0; i < this.size(); i++){
-        if(objSet.isHit(this.getObjectAt(i))){
-            this.getObjectAt(i).collide();
+        if(objSet.isCollidingWith(this.getObjectAt(i))){
+            this.getObjectAt(i).handleCollision();
         }
     }
 };
@@ -56,7 +58,7 @@ Manager.prototype.checkCollisions = function (objSet) {
 Manager.prototype.isHit = function (obj) {
     
     for(var i = 0; i < this.size(); i++){
-        if(this.getObjectAt(i).isHit(obj)){
+        if(this.getObjectAt(i).isCollidingWith(obj)){
             return true;
         }
     }

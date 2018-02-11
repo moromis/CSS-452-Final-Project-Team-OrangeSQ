@@ -17,6 +17,11 @@ function MyGame() {
     this.kBG = "assets/PyoroBG.png";
     this.kFG = "assets/PyoroFG.png";
     
+    this.BGWidth = 144;
+    this.CanvasWidth = 256;
+    this.CameraCenter = 128;
+    this.HeroWidth = 16;
+    
     this.mHero = null;
     this.mCamera = null;
     
@@ -40,24 +45,24 @@ MyGame.prototype.unloadScene = function () {
 MyGame.prototype.initialize = function () {
     
     this.mCamera = new Camera(
-        vec2.fromValues(128, 128), // position of the camera
+        vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
         256,                       // width of camera
         [0, 0, 960, 960]           // viewport (orgX, orgY, width, height)
     );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     
-    this.mHero = new Hero(this.kSpriteSheet, 64, 128, (128 - 72 + 16));
+    this.mHero = new Hero(this.kSpriteSheet, this.HeroWidth * 4, this.CameraCenter, (this.CameraCenter - (this.BGWidth / 2) + this.HeroWidth));
     
     var bgR = new LightRenderable(this.kBG);
-    bgR.setElementPixelPositions(0, 128 * 4, 0, 128 * 4);
-    bgR.getXform().setSize(145, 145);
-    bgR.getXform().setPosition(128, 128);
+    bgR.setElementPixelPositions(0, this.CanvasWidth * 2, 0, this.CanvasWidth * 2);
+    bgR.getXform().setSize(this.BGWidth, this.BGWidth);
+    bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
     
     var fgR = new SpriteRenderable(this.kFG);
-    fgR.setElementPixelPositions(0, 256 * 4, 0, 256 * 4);
-    fgR.getXform().setSize(256, 256);
-    fgR.getXform().setPosition(128, 128);
+    fgR.setElementPixelPositions(0, this.CanvasWidth * 4, 0, this.CanvasWidth * 4);
+    fgR.getXform().setSize(this.CanvasWidth, this.CanvasWidth);
+    fgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mFG = new GameObject(fgR);
     
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
@@ -86,7 +91,7 @@ MyGame.prototype.update = function () {
     this.mCamera.update();
     
     gEngine.LayerManager.updateAllLayers();
-    this.mCamera.clampAtBoundary(this.mHero.getXform(), 145/256);
+    this.mCamera.clampAtBoundary(this.mHero.getXform(), this.BGWidth / this.CanvasWidth);
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(4);
 
