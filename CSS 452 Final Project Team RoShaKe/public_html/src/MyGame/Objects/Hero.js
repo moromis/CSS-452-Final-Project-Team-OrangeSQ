@@ -1,8 +1,5 @@
 /* File: Hero.js 
  *
- * Creates and initializes the Hero (Dye)
- * overrides the update function of GameObject to define
- * simple Dye behavior
  */
 
 /*jslint node: true, vars: true */
@@ -31,7 +28,7 @@ function Hero(spriteTexture, size, x, y) {
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
-    this.mSprite.getXform().setSize(16, 16);
+    this.mSprite.getXform().setSize(size / 4, size / 4);
     this.mSprite.setElementPixelPositions(0, size, 0, size);
     GameObject.call(this, this.mSprite);
     
@@ -44,6 +41,10 @@ gEngine.Core.inheritPrototype(Hero, GameObject);
 Hero.prototype.update = function () {
     
     var xform = this.getXform();
+
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
+        this.walking = false;
+    }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         

@@ -18,6 +18,7 @@ HelperFunctions.Core = (function () {
         return Math.random() * (high - low) + low;
     };
     
+    //public methods
     var mPublic = {
         generateRandomInt: generateRandomInt,
         generateRandomFloat: generateRandomFloat

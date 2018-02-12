@@ -17,6 +17,8 @@ gEngine.Core.inheritPrototype(Manager, GameObjectSet);
 
 Manager.prototype.update = function (){
     
+    GameObjectSet.prototype.update.call(this);
+    
     //if the auto spawn counter has
     if(this.autoSpawn){
         
@@ -70,6 +72,14 @@ Manager.prototype._createObject = function () {
     
     //add a new patrol to the set
     var mObject = new this.object(this.sprite);
+    this.addToSet(mObject);
+    
+};
+
+Manager.prototype._placeObject = function (size, x, y) {
+    
+    //add a new patrol to the set
+    var mObject = new this.object(this.sprite, size, x, y);
     this.addToSet(mObject);
     
 };
