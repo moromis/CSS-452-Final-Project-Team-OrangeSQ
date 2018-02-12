@@ -31,6 +31,13 @@ function MyGame() {
     this.SpawnTime = 120;
     this.BottomOfFrame = this.CameraCenter - (this.BGWidth / 2);
     
+    this.IntroLight = true;
+    this.initialLightLevel = 1024;
+    this.lightLevel = 4;
+    
+    this.Timer = 0;
+    this.TimingAmount = 4;
+    
     this.mHero = null;
     this.mBlockManager = null;
     this.mSeedManager = null;
@@ -100,6 +107,9 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mFG);
+    
+    gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
+
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -125,6 +135,15 @@ MyGame.prototype.update = function () {
     
     this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
     
-    gEngine.DefaultResources.setGlobalAmbientIntensity(4);
+    
+    //Booting up light sequence
+    var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
+    if(intensity > this.lightLevel)
+        if(this.Timer >= this.TimingAmount){
+            gEngine.DefaultResources.setGlobalAmbientIntensity(intensity / 2);
+            this.Timer = 0;
+        }else
+            this.Timer++;
+    
 
 };
