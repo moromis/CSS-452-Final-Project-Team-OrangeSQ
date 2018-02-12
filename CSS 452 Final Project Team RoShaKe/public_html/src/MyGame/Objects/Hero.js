@@ -10,7 +10,8 @@
 
 var state = {
   WALKING: 1,
-  STANDING: 2
+  STANDING: 2,
+  EXTENDING: 3
 };
 
 var direction = {
@@ -21,6 +22,7 @@ var direction = {
 function Hero(spriteTexture, size, x, y) {
     
     this.kDelta = 1;
+    this.kTongueSpeed = 2;
     this.size = size;
     
     this.mSprite = new LightRenderable(spriteTexture);
@@ -35,12 +37,15 @@ function Hero(spriteTexture, size, x, y) {
     this.mState = state.STANDING;
     this.mDirection = direction.RIGHT;
     this.walking = false;
+    
+    this.mTongue = null;
+    this.mTonguePos = [0, 0];
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
     
-    var xform = this.getXform();
+    var pos = this.mSprite.getXform().getPosition();
 
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
         this.walking = false;
@@ -48,28 +53,105 @@ Hero.prototype.update = function () {
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         
-        xform.incXPosBy(-this.kDelta);
-        this.mDirection = direction.LEFT;
-        this.mState = state.WALKING;
+        if(this.mState !== state.EXTENDING){
+            this.setCurrentFrontDir([-1, 0]);
+            this.setSpeed(this.kDelta);
+            this.mDirection = direction.LEFT;
+            this.mState = state.WALKING;
+        }
         
     }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         
-        xform.incXPosBy(this.kDelta);
-        this.mDirection = direction.RIGHT;
-        this.mState = state.WALKING;
+        if(this.mState !== state.EXTENDING){
+            this.setCurrentFrontDir([1, 0]);
+            this.setSpeed(this.kDelta);
+            this.mDirection = direction.RIGHT;
+            this.mState = state.WALKING;
+        }
             
     }else{
         
+        this.setCurrentFrontDir([0, 0]);
+        this.setSpeed(0);
         this.mState = state.STANDING;
         
     }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
         
+        this.setSpeed(0);
+        this.walking = false;
+        this.mState = state.EXTENDING;
+        
+        if(this.mTongue === null)
+            this.mTongue = new LineRenderable(pos[0], pos[1], pos[0], pos[1]);
+            
+        this.mTonguePos[1] += this.kTongueSpeed;
+
+        if(this.mDirection === direction.LEFT){
+            
+            this.mTonguePos[0] -= this.kTongueSpeed;
+            this.mTongue.setSecondVertex(this.mTonguePos[0], this.mTonguePos[1]);
+        }else{
+            
+            this.mTonguePos[0] += this.kTongueSpeed;
+            this.mTongue.setSecondVertex(this.mTonguePos[0], this.mTonguePos[1]);
+        }
+        
+    }else{
+        
+        this.mTonguePos = [pos[0], pos[1]];
+        this.mTongue = null;
+        
     }
+    
+    this._providePrintout();
     
     this._updateAnimation();
     this.mSprite.updateAnimation();
+    
+    GameObject.prototype.update.call(this);
+};
+
+Hero.prototype.draw = function (camera) {
+    
+    GameObject.prototype.draw.call(this, camera);
+    
+    if(this.mTongue !== null){
+        this.mTongue.draw(camera);
+    }
+    
+};
+
+Hero.prototype._providePrintout = function () {
+  
+    var statePrintout;
+    switch(this.mState){
+        case state.WALKING:
+            statePrintout = "WALKING";
+            break;
+        case state.STANDING:
+            statePrintout = "STANDING";
+            break;
+        case state.EXTENDING:
+            statePrintout = "EXTENDING";
+            break;
+    }
+    
+    var directionPrintout;
+    switch(this.mDirection){
+        case direction.LEFT:
+            directionPrintout = "LEFT";
+            break
+        case direction.RIGHT:
+            directionPrintout = "RIGHT";
+            break   
+    }
+    
+    
+    console.log("state: ", statePrintout, " direction: ", directionPrintout);
+    
+    
 };
 
 Hero.prototype._updateAnimation = function () {
