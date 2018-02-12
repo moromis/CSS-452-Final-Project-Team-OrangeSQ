@@ -56,11 +56,6 @@ TongueManager.prototype.updatePosition = function (pos, direction) {
     
     for(var i = 0; i < this.size(); i++){
         obj = this.getObjectAt(this.size() - 1 - i);
-//        console.log(obj);
-        console.log("my position: ", pos[0], pos[1]);
-        console.log("direction: ", direction);
-//        console.log("position: ", pos[0] + (i * this.spriteSize / 4), pos[1] + (i * this.spriteSize / 4))
-//        obj.getXform().setPosition(128, 128);
         
         var divisor = 8;
         var offset = 8;
