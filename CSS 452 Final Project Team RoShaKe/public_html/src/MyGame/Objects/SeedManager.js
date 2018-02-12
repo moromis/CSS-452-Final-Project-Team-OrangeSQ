@@ -5,12 +5,11 @@
 
 function SeedManager (spriteTexture) {
     
-    var timer = 0;
     var low = 60;
     var high = 180;
     var autospawn = true;
     
-    Manager.call(this, spriteTexture, Seed, timer, high, low, autospawn);
+    Manager.call(this, spriteTexture, Seed, high, low, autospawn);
 }
 gEngine.Core.inheritPrototype(SeedManager, Manager);
 

@@ -20,6 +20,11 @@ GameObjectSet.prototype.getObjectAt = function (index) {
     return this.mSet[index];
 };
 
+GameObjectSet.prototype.removeObjectAt = function (index) {
+    if (index > -1)
+        this.mSet.splice(index, 1);
+};
+
 GameObjectSet.prototype.addToSet = function (obj) {
     this.mSet.push(obj);
 };

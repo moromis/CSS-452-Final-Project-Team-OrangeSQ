@@ -2,11 +2,11 @@
 /*global gEngine: false, GameObjectSet: false, SpriteRenderable: false, HelperFunctions: false */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function Manager(spriteTexture, object, timer, high, low, autospawn) {
+function Manager(spriteTexture, object, high, low, autospawn) {
     
     this.sprite = spriteTexture;
     this.object = object;
-    this.timer = timer;
+    this.timer = high;
     this.high = high;
     this.low = low;
     this.autoSpawn = autospawn;

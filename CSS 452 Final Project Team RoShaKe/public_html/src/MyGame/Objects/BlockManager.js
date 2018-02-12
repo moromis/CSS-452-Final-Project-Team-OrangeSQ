@@ -5,12 +5,11 @@
 
 function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
     
-    var timer = 0;
     var low = 0;
     var high = 0;
     var autospawn = false;
     
-    Manager.call(this, spriteTexture, Block, timer, high, low, autospawn);
+    Manager.call(this, spriteTexture, Block, high, low, autospawn);
     
     this.Blocks = new Array(blocksToCreate);
     this.Blocks.fill(true);

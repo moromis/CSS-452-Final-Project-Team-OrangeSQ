@@ -16,6 +16,7 @@ function MyGame() {
     this.kPyoro = "assets/PyoroWalk.png";
     this.kBlock = "assets/Block.png";
     this.kSeed = "assets/Seed.png";
+    this.kTongue = "assets/Tongue.png";
     this.kBG = "assets/PyoroBG.png";
     this.kFG = "assets/PyoroFG.png";
     
@@ -31,6 +32,7 @@ function MyGame() {
     this.mHero = null;
     this.mBlockManager = null;
     this.mSeedManager = null;
+    this.mTongueManager = null;
     this.mCamera = null;
     
 }
@@ -40,6 +42,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kPyoro);
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kSeed);
+    gEngine.Textures.loadTexture(this.kTongue);
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kFG);
 };
@@ -50,6 +53,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kPyoro);
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kSeed);
+    gEngine.Textures.unloadTexture(this.kTongue);
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kFG);
 };
@@ -85,9 +89,12 @@ MyGame.prototype.initialize = function () {
     
     this.mSeedManager = new SeedManager(this.kSeed);
     
+    this.mTongueManager = new TongueManager(this.kTongue);
+    
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mSeedManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mTongueManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mFG);
@@ -113,6 +120,9 @@ MyGame.prototype.update = function () {
     
     gEngine.LayerManager.updateAllLayers();
     this.mCamera.clampAtBoundary(this.mHero.getXform(), this.BGWidth / this.CameraCanvasWidth);
+    
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up))
+        this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(4);
 

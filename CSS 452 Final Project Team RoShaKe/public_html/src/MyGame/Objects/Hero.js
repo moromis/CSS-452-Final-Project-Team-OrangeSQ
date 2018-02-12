@@ -9,14 +9,14 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 var state = {
-  WALKING: 1,
-  STANDING: 2,
-  EXTENDING: 3
+  WALKING: 0,
+  STANDING: 1,
+  EXTENDING: 2
 };
 
 var direction = {
-  LEFT: 1,
-  RIGHT: 2
+  LEFT: 0,
+  RIGHT: 1
 };
 
 function Hero(spriteTexture, size, x, y) {
@@ -44,8 +44,6 @@ function Hero(spriteTexture, size, x, y) {
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
-    
-    var pos = this.mSprite.getXform().getPosition();
 
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
         this.walking = false;
@@ -83,29 +81,9 @@ Hero.prototype.update = function () {
         this.walking = false;
         this.mState = state.EXTENDING;
         
-        if(this.mTongue === null)
-            this.mTongue = new LineRenderable(pos[0], pos[1], pos[0], pos[1]);
-            
-        this.mTonguePos[1] += this.kTongueSpeed;
-
-        if(this.mDirection === direction.LEFT){
-            
-            this.mTonguePos[0] -= this.kTongueSpeed;
-            this.mTongue.setSecondVertex(this.mTonguePos[0], this.mTonguePos[1]);
-        }else{
-            
-            this.mTonguePos[0] += this.kTongueSpeed;
-            this.mTongue.setSecondVertex(this.mTonguePos[0], this.mTonguePos[1]);
-        }
-        
-    }else{
-        
-        this.mTonguePos = [pos[0], pos[1]];
-        this.mTongue = null;
-        
     }
     
-    this._providePrintout();
+//    this._providePrintout();
     
     this._updateAnimation();
     this.mSprite.updateAnimation();
@@ -120,6 +98,12 @@ Hero.prototype.draw = function (camera) {
     if(this.mTongue !== null){
         this.mTongue.draw(camera);
     }
+    
+};
+
+Hero.prototype.getDirection = function () {
+    
+    return this.mDirection;
     
 };
 
