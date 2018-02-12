@@ -5,18 +5,14 @@
 
 function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
     
-    var low = 0;
-    var high = 0;
-    var autospawn = false;
-    
-    Manager.call(this, spriteTexture, Block, high, low, autospawn);
+    Manager.call(this, spriteTexture, Block, 0, 0, false);
     
     this.Blocks = new Array(blocksToCreate);
     this.Blocks.fill(true);
     
     for(var i = 0; i < blocksToCreate; i++){
         
-        this._placeObject(size, x - (size / 8) + (i * size / 4), y);
+        this._placeObject(size, x - (size / 2) + (i * size), y);
         
     }
     

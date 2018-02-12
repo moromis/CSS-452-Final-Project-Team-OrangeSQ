@@ -3,13 +3,10 @@
  * HelperFunctions: false, Manager: false, Seed: false */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function SeedManager (spriteTexture) {
+function SeedManager (spriteTexture, low, high) {
     
-    var low = 60;
-    var high = 180;
-    var autospawn = true;
+    Manager.call(this, spriteTexture, Seed, low, high, true);
     
-    Manager.call(this, spriteTexture, Seed, high, low, autospawn);
 }
 gEngine.Core.inheritPrototype(SeedManager, Manager);
 

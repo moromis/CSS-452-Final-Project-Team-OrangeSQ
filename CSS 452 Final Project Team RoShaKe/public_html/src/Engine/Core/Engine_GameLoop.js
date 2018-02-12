@@ -85,10 +85,16 @@ gEngine.GameLoop = (function () {
         return kFrameTime;
     };
     
+    var increaseFPS = function (delta) {
+        console.log(kFPS);
+        kFPS += delta;
+    };
+    
     var mPublic = {
         start: start,
         stop: stop,
-        getUpdateIntervalInSeconds: getUpdateIntervalInSeconds
+        getUpdateIntervalInSeconds: getUpdateIntervalInSeconds,
+        increaseFPS: increaseFPS
     };
     return mPublic;
 }());

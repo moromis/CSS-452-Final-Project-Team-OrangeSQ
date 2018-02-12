@@ -12,7 +12,7 @@ function TonguePiece(spriteTexture, size, x, y) {
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
     this.mSprite.getXform().setPosition(x, y);
-    this.mSprite.getXform().setSize(size / 4, size / 4);
+    this.mSprite.getXform().setSize(size, size);
     GameObject.call(this, this.mSprite);
     
 }

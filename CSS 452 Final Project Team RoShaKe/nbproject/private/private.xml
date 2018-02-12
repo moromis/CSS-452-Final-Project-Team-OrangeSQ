@@ -11,6 +11,17 @@
         <group name="AllBookProjects">
             <file>file:/C:/Users/Kelvin/Documents/html5engine/BookChapters/Chapter10/10.3.LayerManager/public_html/src/MyGame/MyGame.js</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/SeedManager.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/Engine/GameObjects/GameObjectSet.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/Seed.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/MyGame.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/Block.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/Hero.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/TongueManager.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/Engine/Renderables/SpriteRenderable.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/TonguePiece.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/CSS%20452%20Final%20Project%20Team%20RoShaKe/public_html/src/MyGame/Objects/Manager.js</file>
+        </group>
     </open-files>
 </project-private>

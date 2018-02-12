@@ -13,20 +13,22 @@
 
 function MyGame() {
     
-    this.kPyoro = "assets/PyoroWalk.png";
+    this.kPyoro = "assets/Pyoro.png";
     this.kBlock = "assets/Block.png";
     this.kSeed = "assets/Seed.png";
     this.kTongue = "assets/Tongue.png";
     this.kBG = "assets/PyoroBG.png";
     this.kFG = "assets/PyoroFG.png";
     
-    this.BGWidth = 144;
-    this.CameraCanvasWidth = 256;
+    this.BGWidth = 576;
+    this.CameraCanvasWidth = 1024;
     this.CanvasWidth = 960;
-    this.CameraCenter = 128;
+    this.CameraCenter = 1024 / 2;
     this.HeroSize = 64;
+    this.HeroSpeed = 5;
     this.BlockSize = 32;
-    this.ScalingFactor = 4;
+    this.ScalingFactor = 1;
+    this.SpawnTime = 120;
     this.BottomOfFrame = this.CameraCenter - (this.BGWidth / 2);
     
     this.mHero = null;
@@ -68,7 +70,7 @@ MyGame.prototype.initialize = function () {
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     
     //initialize hero object
-    this.mHero = new Hero(this.kPyoro, this.HeroSize, this.CameraCenter, this.BottomOfFrame + this.HeroSize / this.ScalingFactor);
+    this.mHero = new Hero(this.kPyoro, this.HeroSize, this.CameraCenter, this.BottomOfFrame + this.HeroSize / this.ScalingFactor, this.HeroSpeed);
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
@@ -87,7 +89,7 @@ MyGame.prototype.initialize = function () {
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, 18, this.BlockSize, this.CameraCenter / 2, this.BottomOfFrame + this.BlockSize / (this.ScalingFactor * 2));
     
-    this.mSeedManager = new SeedManager(this.kSeed);
+    this.mSeedManager = new SeedManager(this.kSeed, this.SpawnTime, this.SpawnTime * 3);
     
     this.mTongueManager = new TongueManager(this.kTongue);
     
@@ -121,8 +123,7 @@ MyGame.prototype.update = function () {
     gEngine.LayerManager.updateAllLayers();
     this.mCamera.clampAtBoundary(this.mHero.getXform(), this.BGWidth / this.CameraCanvasWidth);
     
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up))
-        this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
+    this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(4);
 

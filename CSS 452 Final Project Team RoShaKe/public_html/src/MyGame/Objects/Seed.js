@@ -11,11 +11,11 @@ function Seed(spriteTexture) {
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(56, 144 + 56), 128 + 72 + 16);
+    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(192 + 64, 192 + 576), 192 + 576 + 64);
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
-    this.mSprite.getXform().setSize(this.size / 4, this.size / 4);
+    this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
     GameObject.call(this, this.mSprite);
     

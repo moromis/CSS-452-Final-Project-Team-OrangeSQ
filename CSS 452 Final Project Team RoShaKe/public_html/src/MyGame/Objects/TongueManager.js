@@ -9,6 +9,8 @@ function TongueManager(spriteTexture) {
     this.spriteSize = 64;
     this.numberOfSegments = 0;
     this.maxNumOfSegments = 8;
+    this.timer = 0;
+    this.timingAmount = 2;
     
     Manager.call(this, spriteTexture, TonguePiece, 0, 0, 0, false);
     
@@ -23,8 +25,13 @@ TongueManager.prototype.extend = function () {
         
     if(this.numberOfSegments < this.maxNumOfSegments){
         
-        this.numberOfSegments++;
-        this._placeObject(this.spriteSize, 50, 50);
+        if(this.timer >= this.timingAmount){
+            this.numberOfSegments++;
+            this._placeObject(this.spriteSize, 50, 50);
+            this.timer = 0;
+        }else{
+            this.timer++;
+        }
     }
     
 };
@@ -33,8 +40,9 @@ TongueManager.prototype.retract = function () {
     
     if(this.numberOfSegments > 0){
         
-        this.removeObjectAt(this.numberOfSegments);
+        this.removeObjectAt(1);
         this.numberOfSegments--;
+        
     }
     
 };
@@ -57,14 +65,14 @@ TongueManager.prototype.updatePosition = function (pos, direction) {
     for(var i = 0; i < this.size(); i++){
         obj = this.getObjectAt(this.size() - 1 - i);
         
-        var divisor = 8;
-        var offset = 8;
+        var divisor = 2;
+        var offset = this.spriteSize / 2;
 
         if(direction === 0)
-            obj.getXform().setPosition(pos[0] - (i * this.spriteSize / divisor) - offset, pos[1] + (i * this.spriteSize / divisor) + offset);
+            obj.getXform().setPosition(pos[0] - (i * this.spriteSize / divisor) - offset + 2, pos[1] + (i * this.spriteSize / divisor) + offset - 12);
         
         if(direction === 1)
-            obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset, pos[1] + (i * this.spriteSize / divisor) + offset);
+            obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset + 10, pos[1] + (i * this.spriteSize / divisor) + offset - 12);
         
         obj.setDirection(direction);
     }

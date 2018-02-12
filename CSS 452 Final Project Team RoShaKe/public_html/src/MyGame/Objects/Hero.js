@@ -19,10 +19,9 @@ var direction = {
   RIGHT: 1
 };
 
-function Hero(spriteTexture, size, x, y) {
+function Hero(spriteTexture, size, x, y, speed) {
     
-    this.kDelta = 1;
-    this.kTongueSpeed = 2;
+    this.kDelta = speed;
     this.size = size;
     
     this.mSprite = new LightRenderable(spriteTexture);
@@ -30,7 +29,7 @@ function Hero(spriteTexture, size, x, y) {
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
-    this.mSprite.getXform().setSize(size / 4, size / 4);
+    this.mSprite.getXform().setSize(size, size);
     this.mSprite.setElementPixelPositions(0, size, 0, size);
     GameObject.call(this, this.mSprite);
     
@@ -152,18 +151,24 @@ Hero.prototype._updateAnimation = function () {
                         this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 2, 0);
                     this.walking = true;
                     break;
+            case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 4, this.size, this.size, 0, 0);
+                    break;
             }
         break;
         case direction.RIGHT:
             switch(this.mState){
                 case state.STANDING:
-                    this.mSprite.setSpriteSequence(this.size, this.size + 2 * this.size, this.size, this.size, 0, 0);
+                    this.mSprite.setSpriteSequence(this.size, this.size * 3, this.size, this.size, 0, 0);
                     this.walking = false;
                     break;
                 case state.WALKING:
                     if(this.walking === false)
-                        this.mSprite.setSpriteSequence(this.size, 2 * this.size, this.size, this.size, 2, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 2, this.size, this.size, 2, 0);
                     this.walking = true;
+                    break;
+            case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
                     break;
             }
     }
