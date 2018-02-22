@@ -13,9 +13,22 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+/**
+ * Static refrence to gEngine
+ * @type gEngine
+ */
 var gEngine = gEngine || { };
 
 // The VertexBuffer object
+/**
+ * Default Constructor<p>
+ * defines the object that supports the loading and using of the buffer that<p>
+ * contains vertex positions of a square onto the gGL context<p>
+ * <p>
+ * Notice, this is a singleton object.
+ * @class gEngine.VertexBuffer
+ * @type gEngine.VertexBuffer
+ */
 gEngine.VertexBuffer = (function () {
     // reference to the vertex positions for the square in the gl context
     var mSquareVertexBuffer = null;
@@ -31,7 +44,7 @@ gEngine.VertexBuffer = (function () {
         -0.5, -0.5, 0.0
     ];
 
-    // Second: define the corresponding texture cooridnates
+    // Second: define the corresponding texture coordinates
     var textureCoordinates = [
         1.0, 1.0,
         0.0, 1.0,
@@ -46,6 +59,11 @@ gEngine.VertexBuffer = (function () {
     // reference to the texture positions for the square vertices in the gl context
     var mLineVertexBuffer = null;
 
+    /**
+     * Initilize the Vertex Buffer
+     * @memberOf gEngine.VertexBuffer
+     * @returns {undefined}
+     */
     var initialize = function () {
         var gl = gEngine.Core.getGL();
 
@@ -83,10 +101,32 @@ gEngine.VertexBuffer = (function () {
         //<editor-fold>
     };
 
+    /**
+     * Return reference to the vertex positions for the square in the gl context
+     * @memberOf gEngine.VertexBuffer
+     * @returns {VertexBuffer}
+     */
     var getGLVertexRef = function () { return mSquareVertexBuffer; };
+    
+    /**
+     * Return reference to the texture positions for the square vertices in the gl context
+     * @memberOf gEngine.VertexBuffer
+     * @returns {CoordinateBuffer}
+     */
     var getGLTexCoordRef = function () { return mTextureCoordBuffer; };
+    
+    /**
+     * Return reference to the texture positions for the square vertices in the gl context
+     * @memberOf gEngine.VertexBuffer
+     * @returns {VertexBuffer}
+     */
     var getGLLineVertexRef = function () { return mLineVertexBuffer; };
 
+    /**
+     * Detaches and removes the resources from the DefaultResources Program.
+     * @memberOf gEngine.VertexBuffer
+     * @returns {void}
+     */
     var cleanUp = function () {
         var gl = gEngine.Core.getGL();
         gl.deleteBuffer(mSquareVertexBuffer);

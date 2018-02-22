@@ -8,11 +8,23 @@
 /* find out more about jslint: http://www.jslint.com/help.html */
 "use strict";
 
+/**
+ * Returns Fake z position in Pixel Space
+ * @memberOf Camera
+ * @param {Number} z value to scale with pixel ratio
+ * @returns {Number} fake z position in Pixel space
+ */
 Camera.prototype.fakeZInPixelSpace = function (z) {
     return z * this.mRenderCache.mWCToPixelRatio;
 };
 
-Camera.prototype.wcPosToPixel = function (p) {  // p is a vec3, fake Z
+/**
+ * Returns World Coordinate position as a pixel position
+ * @memberOf Camera
+ * @param {vec3} p vec3 position, fake Z
+ * @returns {vec3} Pixel space position
+ */
+Camera.prototype.wcPosToPixel = function (p) {
     // Convert the position to pixel space
     var x = this.mViewport[Camera.eViewport.eOrgX] + ((p[0] - this.mRenderCache.mCameraOrgX) * this.mRenderCache.mWCToPixelRatio) + 0.5;
     var y = this.mViewport[Camera.eViewport.eOrgY] + ((p[1] - this.mRenderCache.mCameraOrgY) * this.mRenderCache.mWCToPixelRatio) + 0.5;
@@ -20,7 +32,13 @@ Camera.prototype.wcPosToPixel = function (p) {  // p is a vec3, fake Z
     return vec3.fromValues(x, y, z);
 };
 
-Camera.prototype.wcDirToPixel = function (d) {  // d is a vec3 direction in WC
+/**
+ * transform direction in wc space to pixel space
+ * @memberOf Camera
+ * @param {vec3} d vec3 direction in WC
+ * @returns {vec3}
+ */
+Camera.prototype.wcDirToPixel = function (d) {
     // Convert the position to pixel space
     var x = d[0] * this.mRenderCache.mWCToPixelRatio;
     var y = d[1] * this.mRenderCache.mWCToPixelRatio;
@@ -28,6 +46,12 @@ Camera.prototype.wcDirToPixel = function (d) {  // d is a vec3 direction in WC
     return vec3.fromValues(x, y, z);
 };
 
-Camera.prototype.wcSizeToPixel = function (s) {  // 
+/**
+ * Returns Pixel size of World Coordinate size
+ * @memberOf Camera
+ * @param {vec2} s world coordinate size to convert to pixel size
+ * @returns {vec2} Pixel size of World Coordinate size
+ */
+Camera.prototype.wcSizeToPixel = function (s) {
     return (s * this.mRenderCache.mWCToPixelRatio) + 0.5;
 };

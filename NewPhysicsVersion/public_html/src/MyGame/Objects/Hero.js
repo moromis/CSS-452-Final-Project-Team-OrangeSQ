@@ -80,14 +80,12 @@ Hero.prototype.update = function () {
     }else{
         
         this.setCurrentFrontDir([0, 0]);
-        this.setSpeed(0);
         this.mState = state.STANDING;
         
     }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
         
-        this.setSpeed(0);
         this.walking = false;
         this.mState = state.EXTENDING;
         
@@ -117,8 +115,8 @@ Hero.prototype.getX = function () {
 Hero.prototype._clamp = function () {
   
     var x = this.getX();
-    var minCameraX = HelperFunctions.Core.getCameraMinX();
-    var maxCameraX = HelperFunctions.Core.getCameraMaxX();
+    var minCameraX = 0;
+    var maxCameraX = HelperFunctions.Core.getCameraWidth();
     
     if(x === minCameraX)
         this.atLeftEdge = true;

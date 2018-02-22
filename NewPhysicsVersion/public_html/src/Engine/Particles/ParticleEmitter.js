@@ -9,6 +9,15 @@
 
 "use strict";
 
+/**
+ * Default Constructor<p>
+ * 
+ * @param {vec2} pos Position of Emitter
+ * @param {Number} num Number of particles to be emitted
+ * @param {function} createrFunc Creater Function
+ * @returns {ParticleEmitter} New instance of ParticleEmitter
+ * @class ParticleEmitter
+ */
 function ParticleEmitter(pos, num, createrFunc) {
     // Smallest number of particle emitted per cycle
     this.kMinToEmit = 5;
@@ -19,7 +28,7 @@ function ParticleEmitter(pos, num, createrFunc) {
     // Number of particles left to be emitted
     this.mNumRemains = num;
     
-    this.mParticleCreater = createrFunc;
+    this.mParticleCreator = createrFunc;
 }
 ParticleEmitter.prototype.expired = function () { return (this.mNumRemains <= 0); };
 
@@ -29,14 +38,14 @@ ParticleEmitter.prototype.emitParticles = function (pSet) {
         // If only a few are left, emits all of them
         numToEmit = this.mNumRemains;
     } else  {
-        // Other wise, emits about 20% of what's left
+        // Otherwise, emits about 20% of what's left
         numToEmit = Math.random() * 0.2 * this.mNumRemains;
     }
     // Left for future emitting.                            
     this.mNumRemains -= numToEmit;
     var i, p;
     for (i = 0; i < numToEmit; i++) {
-        p = this.mParticleCreater(this.mEmitPosition[0], this.mEmitPosition[1]);
+        p = this.mParticleCreator(this.mEmitPosition[0], this.mEmitPosition[1]);
         pSet.addToSet(p);
     }
 };

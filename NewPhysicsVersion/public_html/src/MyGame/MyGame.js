@@ -13,15 +13,14 @@
 
 function MyGame() {
     
-    this.kPyoro = "assets/Pyoro.png";
+    this.kSnowman = "assets/Snowman.png";
     this.kBlock = "assets/Block.png";
-    this.kSeed = "assets/Seed.png";
-    this.kTongue = "assets/Tongue.png";
+    this.kFire = "assets/Fire.png";
+    this.kWater = "assets/Water.png";
     this.kExplosion = "assets/Explosion.png";
-    this.kBG = "assets/PyoroBG.png";
-    this.kFG = "assets/PyoroFG.png";
+    this.kBG = "assets/BG.png";
     
-    this.BGWidth = 576;
+    this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
@@ -30,7 +29,6 @@ function MyGame() {
     this.BlockSize = 32;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
-    this.BottomOfFrame = this.CameraCenter - (this.BGWidth / 2);
     
     this.IntroLight = true;
     this.initialLightLevel = 1024;
@@ -41,8 +39,8 @@ function MyGame() {
     
     this.mHero = null;
     this.mBlockManager = null;
-    this.mSeedManager = null;
-    this.mTongueManager = null;
+    this.mFireManager = null;
+    this.mWaterManager = null;
     this.mCamera = null;
     
 }
@@ -50,25 +48,23 @@ gEngine.Core.inheritPrototype(MyGame, Scene);
 
 MyGame.prototype.loadScene = function () {
     
-    gEngine.Textures.loadTexture(this.kPyoro);
+    gEngine.Textures.loadTexture(this.kSnowman);
     gEngine.Textures.loadTexture(this.kBlock);
-    gEngine.Textures.loadTexture(this.kSeed);
-    gEngine.Textures.loadTexture(this.kTongue);
+    gEngine.Textures.loadTexture(this.kFire);
+    gEngine.Textures.loadTexture(this.kWater);
     gEngine.Textures.loadTexture(this.kExplosion);
     gEngine.Textures.loadTexture(this.kBG);
-    gEngine.Textures.loadTexture(this.kFG);
 };
 
 MyGame.prototype.unloadScene = function () {
     
     gEngine.LayerManager.cleanUp();
-    gEngine.Textures.unloadTexture(this.kPyoro);
+    gEngine.Textures.unloadTexture(this.kSnowman);
     gEngine.Textures.unloadTexture(this.kBlock);
-    gEngine.Textures.unloadTexture(this.kSeed);
-    gEngine.Textures.unloadTexture(this.kTongue);
+    gEngine.Textures.unloadTexture(this.kFire);
+    gEngine.Textures.unloadTexture(this.kWater);
     gEngine.Textures.unloadTexture(this.kExplosion);
     gEngine.Textures.unloadTexture(this.kBG);
-    gEngine.Textures.unloadTexture(this.kFG);
 };
 
 MyGame.prototype.initialize = function () {
@@ -81,39 +77,31 @@ MyGame.prototype.initialize = function () {
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     
     //initialize hero object
-    this.mHero = new Hero(this.kPyoro, this.HeroSize, this.CameraCenter, this.BottomOfFrame + this.HeroSize / this.ScalingFactor, this.HeroSpeed);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize / this.ScalingFactor, this.HeroSpeed);
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
-    bgR.setElementPixelPositions(0, this.CameraCanvasWidth * (this.ScalingFactor / 2), 0, this.CameraCanvasWidth * (this.ScalingFactor / 2));
+    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
     
-    //initialize foreground
-    var fgR = new SpriteRenderable(this.kFG);
-    fgR.setElementPixelPositions(0, this.CameraCanvasWidth * this.ScalingFactor, 0, this.CameraCanvasWidth * this.ScalingFactor);
-    fgR.getXform().setSize(this.CameraCanvasWidth, this.CameraCanvasWidth);
-    fgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
-    this.mFG = new GameObject(fgR);
-    
     //initialize the block manager
-    this.mBlockManager = new BlockManager(this.kBlock, 18, this.BlockSize, this.CameraCenter / 2, this.BottomOfFrame + this.BlockSize / (this.ScalingFactor * 2));
+    this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
     
     this.mExplosionManager = new ExplosionManager(this.kExplosion);
     
-    this.mSeedManager = new SeedManager(this.kSeed, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kFire, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
     
-    this.mTongueManager = new TongueManager(this.kTongue);
+    this.mWaterManager = new WaterManager(this.kWater);
     
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mSeedManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mExplosionManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mTongueManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mFG);
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 
@@ -139,7 +127,7 @@ MyGame.prototype.update = function () {
     
     gEngine.LayerManager.updateAllLayers();
     
-    this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
+    this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
     
     //Booting up light sequence
     var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
@@ -151,10 +139,10 @@ MyGame.prototype.update = function () {
             this.Timer++;
         
     if(gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)){
-        this.mSeedManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
+        this.mFireManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
     }
         
     //only need to call one way, handles collisions on both managers' objects    
-    this.mBlockManager.checkCollisions(this.mSeedManager);
+    this.mBlockManager.checkCollisions(this.mFireManager);
    
 };

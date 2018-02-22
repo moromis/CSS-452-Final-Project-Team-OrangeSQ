@@ -9,8 +9,21 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+/**
+ * Static refrence to gEngine
+ * @type gEngine
+ */
 var gEngine = gEngine || { };
 
+/**
+ * Texture meta data
+ * @class TextureInfo
+ * @param {String} name Name of Texture
+ * @param {Number} w Width of Texture
+ * @param {Number} h Height of Texture
+ * @param {Number} id ID of Texture
+ * @returns {TextureInfo} New instance of TextureInfo
+ */
 function TextureInfo(name, w, h, id) {
     this.mName = name;
     this.mWidth = w;
@@ -19,10 +32,20 @@ function TextureInfo(name, w, h, id) {
     this.mColorArray = null;
 }
 
+/**
+ * Provides support for loading and unloading of textures (images)
+ * @class gEngine.Textures
+ * @type gEngine.Textures
+ */
 gEngine.Textures = (function () {
-    /*
-     * This converts an image to the webGL texture format. 
+
+    /**
+     * This converts an image to the webGL texture format. <p>
      * This should only be called once the texture is loaded.
+     * @memberOf gEngine.Textures
+     * @param {String} textureName name of the texture to be stored
+     * @param {String} image Image file path
+     * @returns {void}
      */
     var _processLoadedImage = function (textureName, image) {
         var gl = gEngine.Core.getGL();
@@ -53,8 +76,13 @@ gEngine.Textures = (function () {
         gEngine.ResourceMap.asyncLoadCompleted(textureName, texInfo);
     };
 
-    // Loads an texture so that it can be drawn.
-    // If already in the map, will do nothing.
+    /**
+     * Loads an texture so that it can be drawn.<p>
+     * If already in the map, will do nothing.
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Texture to load from ResourceMap
+     * @returns {void}
+     */
     var loadTexture = function (textureName) {
         if (!(gEngine.ResourceMap.isAssetLoaded(textureName))) {
             // Create new Texture object.
@@ -74,8 +102,13 @@ gEngine.Textures = (function () {
         }
     };
 
-    // Remove the reference to allow associated memory 
-    // be available for subsequent garbage collection
+    /**
+     * Remove the reference to allow associated memory <p>
+     * be available for subsequent garbage collection
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Texture to unload from ResourceMap
+     * @returns {void}
+     */
     var unloadTexture = function (textureName) {
         var gl = gEngine.Core.getGL();
         var texInfo = gEngine.ResourceMap.retrieveAsset(textureName);
@@ -83,6 +116,12 @@ gEngine.Textures = (function () {
         gEngine.ResourceMap.unloadAsset(textureName);
     };
 
+    /**
+     * Activate gl.LINEAR_MIPMAP_LINEAR for texture <p>
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Name of Texture
+     * @returns {void}
+     */
     var activateTexture = function (textureName) {
         var gl = gEngine.Core.getGL();
         var texInfo = gEngine.ResourceMap.retrieveAsset(textureName);
@@ -104,7 +143,13 @@ gEngine.Textures = (function () {
         // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     };
 
-    // texture 1 is always normal map for this game engine
+    /**
+     * Activate gl.LINEAR_MIPMAP_LINEAR for texture <p>
+     * texture 1 is always normal map for this game engine
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Name of Texture
+     * @returns {void}
+     */
     var activateNormalMap = function (textureName) {
         var gl = gEngine.Core.getGL();
         var texInfo = gEngine.ResourceMap.retrieveAsset(textureName);
@@ -122,15 +167,32 @@ gEngine.Textures = (function () {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     };
 
+    /**
+     * Deactivate the Textures and remove them from the GPU
+     * @memberOf gEngine.Textures
+     * @returns {void}
+     */
     var deactivateTexture = function () {
         var gl = gEngine.Core.getGL();
         gl.bindTexture(gl.TEXTURE_2D, null);
     };
 
+    /**
+     * Return the TextureInfo of Texture
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Name of Texture
+     * @returns {TextureInfo} TextureInto of Texture to get TexttureInfo
+     */
     var getTextureInfo = function (textureName) {
         return gEngine.ResourceMap.retrieveAsset(textureName);
     };
 
+    /**
+     * Return the Color Array of a texture
+     * @memberOf gEngine.Textures
+     * @param {String} textureName Name of Texture to get Color Array
+     * @returns {Float[]}
+     */
     var getColorArray = function (textureName) {
         var texInfo = getTextureInfo(textureName);
         if (texInfo.mColorArray === null) {

@@ -4,14 +4,14 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Seed(spriteTexture, explosionManager) {
+function Fire(spriteTexture, explosionManager) {
     
     this.kDelta = 1;
     this.size = 64;
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(192 + 64, 192 + 576), 192 + 576 + 64);
+    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(0, 960), 640);
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
@@ -22,9 +22,9 @@ function Seed(spriteTexture, explosionManager) {
     this.explosion = null;
     this.explosionManager = explosionManager;
 }
-gEngine.Core.inheritPrototype(Seed, GameObject);
+gEngine.Core.inheritPrototype(Fire, GameObject);
 
-Seed.prototype.shouldDie = function () {
+Fire.prototype.shouldDie = function () {
     
     if(this.explosion !== null) {
         if(!this.explosion.isVisible()){
@@ -36,7 +36,7 @@ Seed.prototype.shouldDie = function () {
     
 };
 
-Seed.prototype.handleCollision = function (otherObjectType) {
+Fire.prototype.handleCollision = function (otherObjectType) {
   
     if(otherObjectType === "Block"){
         
@@ -46,22 +46,15 @@ Seed.prototype.handleCollision = function (otherObjectType) {
         this.setVisibility(false);
     }
     
-    if(otherObjectType === "TonguePiece"){
-        
-        //need to attach to tongue, and follow the tongue back
-        //to the hero object and then die
-        
-    }
-    
 };
 
-Seed.prototype.relocate = function (x, y) {
+Fire.prototype.relocate = function (x, y) {
   
     this.mSprite.getXform().setPosition(x, y);
     
 };
 
-Seed.prototype.update = function () {
+Fire.prototype.update = function () {
     
     //call parent update
     GameObject.prototype.update.call(this);

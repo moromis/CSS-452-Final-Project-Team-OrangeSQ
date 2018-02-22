@@ -10,7 +10,15 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 //<editor-fold desc="constructor">
-// constructor 
+/**
+ * Default Constructor<p>
+ * Subclass from SpriteShader<p>
+ *          Supports light illumination
+ * @param {String} vertexShaderPath Vertex Shader file path
+ * @param {String} fragmentShaderPath Fragment shader file path
+ * @returns {LightShader} New instance of LightShader
+ * @class LightShader
+ */
 function LightShader(vertexShaderPath, fragmentShaderPath) {
     // Call super class constructor
     SpriteShader.call(this, vertexShaderPath, fragmentShaderPath);  // call SimpleShader constructor
@@ -20,7 +28,7 @@ function LightShader(vertexShaderPath, fragmentShaderPath) {
     //*******WARNING***************
     // this number MUST correspond to the GLSL uLight[] array size (for LightFS.glsl and IllumFS.glsl)
     //*******WARNING********************
-    this.kGLSLuLightArraySize = 4;  // <-- make sure this is the same as LightFS.glsl and IllumFS.glsl
+    this.kGLSLuLightArraySize = 25;  // <-- make sure this is the same as LightFS.glsl and IllumFS.glsl
     this.mShaderLights = [];
     var i, ls;
     for (i = 0; i < this.kGLSLuLightArraySize; i++) {
@@ -34,6 +42,13 @@ gEngine.Core.inheritPrototype(LightShader, SpriteShader);
 // <editor-fold desc="Public Methods">
 
 // Overriding the Activation of the shader for rendering
+/**
+ * Activate the shader for rendering.
+ * @param {float[]} pixelColor [R, G, B, A] Sets the shader pixel color.
+ * @param {Camera} aCamera Camera to draw to
+ * @returns {void}
+ * @memberOf LightShader
+ */
 LightShader.prototype.activateShader = function (pixelColor, aCamera) {
     // first call the super class's activate
     SpriteShader.prototype.activateShader.call(this, pixelColor, aCamera);
@@ -53,6 +68,12 @@ LightShader.prototype.activateShader = function (pixelColor, aCamera) {
     }
 };
 
+/**
+ * Set the Shader lights
+ * @param {Light[]} l Shader lights
+ * @returns {void}
+ * @memberOf LightShader
+ */
 LightShader.prototype.setLights = function (l) {
     this.mLights = l;
 };

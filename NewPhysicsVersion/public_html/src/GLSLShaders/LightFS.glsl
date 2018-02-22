@@ -12,7 +12,7 @@ uniform vec4 uPixelColor;
 uniform vec4 uGlobalAmbientColor; // this is shared globally
 uniform float uGlobalAmbientIntensity;
 
-#define kGLSLuLightArraySize 4
+#define kGLSLuLightArraySize 25
     // GLSL Fragment shader requires loop control
     // variable to be a constant number. This number 4
     // says, this fragment shader will _ALWAYS_ process
@@ -48,7 +48,7 @@ struct Light  {
 };
 uniform Light uLights[kGLSLuLightArraySize];  // Maximum array of lights this shader supports
 
-// The "varying" keyword is for signifing that the texture coordinate will be
+// The "varying" keyword is for signifying that the texture coordinate will be
 // interpolated and thus varies. 
 varying vec2 vTexCoord;
 
@@ -90,7 +90,7 @@ vec4 LightEffect(Light lgt) {
     if (lgt.LightType != eDirectionalLight) {
         vec3 lgtDir = -normalize(lgt.Direction.xyz);
         vec3 L = lgt.Position.xyz - gl_FragCoord.xyz;
-        float dist = length(L); // distant to light
+        float dist = length(L); // distance to light
         L = L / dist;  // same as calling normalize(), only faster
     
         // find out what kind of light ...
