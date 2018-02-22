@@ -19,6 +19,7 @@ function MyGame() {
     this.kWater = "assets/Water.png";
     this.kExplosion = "assets/Explosion.png";
     this.kBG = "assets/BG.png";
+    this.kParticle = "assets/particle.png";
     
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
@@ -54,6 +55,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kWater);
     gEngine.Textures.loadTexture(this.kExplosion);
     gEngine.Textures.loadTexture(this.kBG);
+    gEngine.Textures.loadTexture(this.kParticle);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -65,6 +67,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kWater);
     gEngine.Textures.unloadTexture(this.kExplosion);
     gEngine.Textures.unloadTexture(this.kBG);
+    gEngine.Textures.unloadTexture(this.kParticle);
 };
 
 MyGame.prototype.initialize = function () {
