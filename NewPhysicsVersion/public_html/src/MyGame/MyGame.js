@@ -20,7 +20,7 @@ function MyGame() {
     this.kExplosion = "assets/Explosion.png";
     this.kBG = "assets/BG.png";
     
-    this.BGWidth = 960;
+    this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
@@ -81,7 +81,7 @@ MyGame.prototype.initialize = function () {
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
-    bgR.setElementPixelPositions(0, this.CameraCanvasWidth * (this.ScalingFactor / 2), 0, this.CameraCanvasWidth * (this.ScalingFactor / 2));
+    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
