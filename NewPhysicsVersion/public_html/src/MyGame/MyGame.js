@@ -41,8 +41,8 @@ function MyGame() {
     
     this.mHero = null;
     this.mBlockManager = null;
-    this.mSeedManager = null;
-    this.mTongueManager = null;
+    this.mFireManager = null;
+    this.mWaterManager = null;
     this.mCamera = null;
     
 }
@@ -102,15 +102,15 @@ MyGame.prototype.initialize = function () {
     
     this.mExplosionManager = new ExplosionManager(this.kExplosion);
     
-    this.mSeedManager = new SeedManager(this.kSeed, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kSeed, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
     
-    this.mTongueManager = new TongueManager(this.kTongue);
+    this.mWaterManager = new WaterManager(this.kTongue);
     
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mSeedManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mExplosionManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mTongueManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mFG);
@@ -139,7 +139,7 @@ MyGame.prototype.update = function () {
     
     gEngine.LayerManager.updateAllLayers();
     
-    this.mTongueManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
+    this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
     
     //Booting up light sequence
     var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
@@ -151,10 +151,10 @@ MyGame.prototype.update = function () {
             this.Timer++;
         
     if(gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)){
-        this.mSeedManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
+        this.mFireManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
     }
         
     //only need to call one way, handles collisions on both managers' objects    
-    this.mBlockManager.checkCollisions(this.mSeedManager);
+    this.mBlockManager.checkCollisions(this.mFireManager);
    
 };

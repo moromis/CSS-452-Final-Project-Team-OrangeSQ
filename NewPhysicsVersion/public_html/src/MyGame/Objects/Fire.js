@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Seed(spriteTexture, explosionManager) {
+function Fire(spriteTexture, explosionManager) {
     
     this.kDelta = 1;
     this.size = 64;
@@ -22,9 +22,9 @@ function Seed(spriteTexture, explosionManager) {
     this.explosion = null;
     this.explosionManager = explosionManager;
 }
-gEngine.Core.inheritPrototype(Seed, GameObject);
+gEngine.Core.inheritPrototype(Fire, GameObject);
 
-Seed.prototype.shouldDie = function () {
+Fire.prototype.shouldDie = function () {
     
     if(this.explosion !== null) {
         if(!this.explosion.isVisible()){
@@ -36,7 +36,7 @@ Seed.prototype.shouldDie = function () {
     
 };
 
-Seed.prototype.handleCollision = function (otherObjectType) {
+Fire.prototype.handleCollision = function (otherObjectType) {
   
     if(otherObjectType === "Block"){
         
@@ -55,13 +55,13 @@ Seed.prototype.handleCollision = function (otherObjectType) {
     
 };
 
-Seed.prototype.relocate = function (x, y) {
+Fire.prototype.relocate = function (x, y) {
   
     this.mSprite.getXform().setPosition(x, y);
     
 };
 
-Seed.prototype.update = function () {
+Fire.prototype.update = function () {
     
     //call parent update
     GameObject.prototype.update.call(this);

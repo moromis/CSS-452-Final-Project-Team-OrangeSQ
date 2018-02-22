@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function TonguePiece(spriteTexture, size, x, y) {
+function Water(spriteTexture, size, x, y) {
     
     this.size = 64;
     this.piece = 1;
@@ -16,15 +16,15 @@ function TonguePiece(spriteTexture, size, x, y) {
     GameObject.call(this, this.mSprite);
     
 }
-gEngine.Core.inheritPrototype(TonguePiece, GameObject);
+gEngine.Core.inheritPrototype(Water, GameObject);
 
-TonguePiece.prototype.setPiece = function (piece) {
+Water.prototype.setPiece = function (piece) {
     
     this.piece = piece;
     
 };
 
-TonguePiece.prototype.setDirection = function (dir) {
+Water.prototype.setDirection = function (dir) {
     
     var offset = this.size * this.piece + this.size * dir;
 
@@ -41,7 +41,7 @@ TonguePiece.prototype.setDirection = function (dir) {
     
 };
 
-TonguePiece.prototype.shouldDie = function () {
+Water.prototype.shouldDie = function () {
     
     return false;
     
