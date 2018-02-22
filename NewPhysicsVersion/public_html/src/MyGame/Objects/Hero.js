@@ -52,7 +52,7 @@ Hero.prototype.update = function () {
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         
-        else if(this.mState !== state.EXTENDING){
+        if(this.mState !== state.EXTENDING){
             
             //TODO implement leftward movement here
             
