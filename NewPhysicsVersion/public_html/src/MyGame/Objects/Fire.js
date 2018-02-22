@@ -96,16 +96,16 @@ Fire.prototype.createParticle = function(atX, atY) {
     
     var life = 30 + Math.random() * 200;
     var p = new ParticleGameObject("assets/particle.png", atX, atY, life);
-    p.getRenderable().setColor([1, 0, 0, 1]);
+    p.getRenderable().setColor([1, 0.2, 0, 1]);
     
     // size of the particle
     var r = 20 + Math.random() * 2.5;
     p.getXform().setSize(r, r);
     
     // final color
-    var fr = 1 + Math.random();
-    var fg = 0.5 + 0.1 * Math.random();
-    var fb = 80 * 1.0/255 + 0.1 * Math.random();
+    var fr = 0.5;
+    var fg = 0.5;
+    var fb = 0.5;
     p.setFinalColor([fr, fg, fb, 0.6]);
     
     // velocity on the particle

@@ -3,9 +3,8 @@
  * HelperFunctions: false, Manager: false, Fire: false */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (spriteTexture, explosionManager, low, high) {
+function FireManager (spriteTexture, low, high) {
     
-    this.explosionManager = explosionManager;
     Manager.call(this, spriteTexture, Fire, low, high, true);
     
 }
@@ -20,15 +19,15 @@ FireManager.prototype.relocate = function (x, y) {
     }
     
 };
-
-//overwrite parent method
-FireManager.prototype._createObject = function () {
-    
-    //add a new patrol to the set
-    var mObject = new this.object(this.sprite, this.explosionManager);
-    this.addToSet(mObject);
-    
-};
+//
+////overwrite parent method
+//FireManager.prototype._createObject = function () {
+//    
+//    //add a new patrol to the set
+//    var mObject = new this.object(this.sprite);
+//    this.addToSet(mObject);
+//    
+//};
 
 FireManager.prototype.update = function (){
   

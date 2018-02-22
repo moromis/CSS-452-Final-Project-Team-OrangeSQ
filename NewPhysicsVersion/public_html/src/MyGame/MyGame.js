@@ -17,7 +17,6 @@ function MyGame() {
     this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
-    this.kExplosion = "assets/Explosion.png";
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
     
@@ -53,7 +52,6 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kFire);
     gEngine.Textures.loadTexture(this.kWater);
-    gEngine.Textures.loadTexture(this.kExplosion);
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kParticle);
 };
@@ -65,7 +63,6 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kFire);
     gEngine.Textures.unloadTexture(this.kWater);
-    gEngine.Textures.unloadTexture(this.kExplosion);
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kParticle);
 };
@@ -92,16 +89,13 @@ MyGame.prototype.initialize = function () {
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
     
-    this.mExplosionManager = new ExplosionManager(this.kExplosion);
-    
-    this.mFireManager = new FireManager(this.kFire, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kFire, this.SpawnTime, this.SpawnTime * 3);
     
     this.mWaterManager = new WaterManager(this.kWater);
     
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mExplosionManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
