@@ -9,19 +9,43 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+/**
+ * Infinitely tiled, assume X/Y alignments
+ * @class TiledGameObject
+ * @param {Renderable} renderableObj Renderable object to tile on screen
+ * @returns {TiledGameObject} new instance of TiledGameObject
+ */
 function TiledGameObject(renderableObj) {
     this.mShouldTile = true;  // can switch this off if desired
     GameObject.call(this, renderableObj);
 }
 gEngine.Core.inheritPrototype(TiledGameObject, GameObject);
 
+/**
+ * Set the tiling state
+ * @memberOf TiledGameObject
+ * @param {Boolean} t tiling state of TiledGameObject
+ * @returns {undefined}
+ */
 TiledGameObject.prototype.setIsTiled = function (t) {
     this.mShouldTile = t;
 };
+
+/**
+ * Return the tiling state of the tiles
+ * @memberOf TiledGameObject
+ * @returns {Boolean} true if this should tile
+ */
 TiledGameObject.prototype.shouldTile = function () {
     return this.mShouldTile;
 };
 
+/**
+ * Layout and draw the tiles
+ * @memberOf TiledGameObject
+ * @param {Camera} aCamera Camera to draw to
+ * @returns {void}
+ */
 TiledGameObject.prototype._drawTile = function(aCamera) {
     // Step A: Compute the positions and dimensions of tiling object.
     var xf = this.getXform();
@@ -94,6 +118,12 @@ TiledGameObject.prototype._drawTile = function(aCamera) {
     pos[1] = sY;
 };
 
+/**
+ * Draw function called by GameLoop
+ * @memberOf TiledGameObject
+ * @param {Camera} aCamera Camera to draw to
+ * @returns {void}
+ */
 TiledGameObject.prototype.draw = function (aCamera) {
     if (this.isVisible()) {
         if (this.shouldTile()) {

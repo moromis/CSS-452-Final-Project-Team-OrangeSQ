@@ -80,14 +80,12 @@ Hero.prototype.update = function () {
     }else{
         
         this.setCurrentFrontDir([0, 0]);
-        this.setSpeed(0);
         this.mState = state.STANDING;
         
     }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
         
-        this.setSpeed(0);
         this.walking = false;
         this.mState = state.EXTENDING;
         

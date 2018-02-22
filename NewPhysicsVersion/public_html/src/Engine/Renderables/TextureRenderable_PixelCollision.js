@@ -9,6 +9,13 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+/**
+ * Implements the pixelTouches() and related supporting functions of TextureRenderable
+ * @class TextureRenderable
+ * @param {TextureRenderable} other to check for collision with
+ * @param {vec2} wcTouchPos world coordinate position of first collision
+ * @returns {Boolean} true if collision is detected
+ */
 TextureRenderable.prototype.pixelTouches = function(other, wcTouchPos) {
     var pixelTouch = false;
     var xIndex = 0, yIndex;
@@ -29,8 +36,8 @@ TextureRenderable.prototype.pixelTouches = function(other, wcTouchPos) {
             if (this._pixelAlphaValue(xIndex, yIndex) > 0) {
                 this._indexToWCPosition(wcTouchPos, xIndex, yIndex, xDir, yDir);
                 other._wcPositionToIndex(otherIndex, wcTouchPos, otherXDir, otherYDir);
-                if ((otherIndex[0] > 0) && (otherIndex[0] < other.mTexWidth) &&
-                    (otherIndex[1] > 0) && (otherIndex[1] < other.mTexHeight)) {
+                if ((otherIndex[0] >= 0) && (otherIndex[0] < other.mTexWidth) &&
+                    (otherIndex[1] >= 0) && (otherIndex[1] < other.mTexHeight)) {
                     pixelTouch = other._pixelAlphaValue(otherIndex[0], otherIndex[1]) > 0;
                 }
             }
@@ -41,6 +48,11 @@ TextureRenderable.prototype.pixelTouches = function(other, wcTouchPos) {
     return pixelTouch;
 };
 
+/**
+ * Get the color array from the GPU and set it to the renderables Color Array
+ * @memberOf TextureRenderable
+ * @returns {void}
+ */
 TextureRenderable.prototype.setColorArray = function () {
     if (this.mColorArray === null) {
         this.mColorArray = gEngine.Textures.getColorArray(this.mTexture);
@@ -74,8 +86,8 @@ TextureRenderable.prototype._wcPositionToIndex = function (returnIndex, wcPos, x
 };
 
 TextureRenderable.prototype._indexToWCPosition = function (returnWCPos, i, j, xDir, yDir) {
-    var x = i * this.mXform.getWidth() / (this.mTexWidth - 1);
-    var y = j * this.mXform.getHeight() / (this.mTexHeight - 1);
+    var x = i * this.mXform.getWidth() / this.mTexWidth;
+    var y = j * this.mXform.getHeight() / this.mTexHeight;
     var xDisp = x - (this.mXform.getWidth() * 0.5);
     var yDisp = y - (this.mXform.getHeight() * 0.5);
     var xDirDisp = [];

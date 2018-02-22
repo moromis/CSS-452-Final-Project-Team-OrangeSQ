@@ -39,7 +39,8 @@ Manager.prototype.update = function (){
     //check the lifetimes of the objects
     for(var i = 0; i < this.size(); i++){
         if(this.getObjectAt(i).shouldDie()){
-            this.removeObjectAt(i);
+            console.log("removing from set");
+            this.removeFromSet(i);
         }
     }
     

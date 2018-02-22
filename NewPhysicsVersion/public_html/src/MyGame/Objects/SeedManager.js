@@ -6,7 +6,7 @@
 function SeedManager (spriteTexture, explosionManager, low, high) {
     
     this.explosionManager = explosionManager;
-    Manager.call(this, spriteTexture, Seed, low, high, true);
+    Manager.call(this, spriteTexture, Seed, low, high, false);
     
 }
 gEngine.Core.inheritPrototype(SeedManager, Manager);
