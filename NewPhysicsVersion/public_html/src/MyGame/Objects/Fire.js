@@ -11,7 +11,7 @@ function Fire(spriteTexture, explosionManager) {
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(192 + 64, 192 + 576), 192 + 576 + 64);
+    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(0, 960), 640);
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);

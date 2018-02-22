@@ -40,7 +40,7 @@ WaterManager.prototype.retract = function () {
     
     if(this.numberOfSegments > 0){
         
-        this.removeObjectAt(1);
+        this.removeFromSet(1);
         this.numberOfSegments--;
         
     }

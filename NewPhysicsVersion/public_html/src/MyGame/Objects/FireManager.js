@@ -6,7 +6,7 @@
 function FireManager (spriteTexture, explosionManager, low, high) {
     
     this.explosionManager = explosionManager;
-    Manager.call(this, spriteTexture, Fire, low, high, false);
+    Manager.call(this, spriteTexture, Fire, low, high, true);
     
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);

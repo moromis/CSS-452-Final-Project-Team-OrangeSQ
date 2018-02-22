@@ -115,8 +115,8 @@ Hero.prototype.getX = function () {
 Hero.prototype._clamp = function () {
   
     var x = this.getX();
-    var minCameraX = HelperFunctions.Core.getCameraMinX();
-    var maxCameraX = HelperFunctions.Core.getCameraMaxX();
+    var minCameraX = 0;
+    var maxCameraX = HelperFunctions.Core.getCameraWidth();
     
     if(x === minCameraX)
         this.atLeftEdge = true;

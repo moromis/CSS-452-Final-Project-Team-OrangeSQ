@@ -8,7 +8,7 @@ var HelperFunctions = HelperFunctions || { };
 
 HelperFunctions.Core = (function () {
     
-    var _CameraWidth = 1024;
+    var _CameraWidth = 960;
     var _CameraCenter = _CameraWidth / 2;
     var _CanvasWidth = 960;
     
@@ -19,10 +19,6 @@ HelperFunctions.Core = (function () {
     // generates a random float in the range low to high
     var generateRandomFloat = function (low, high){ return Math.random() * (high - low) + low; };
     
-    var getCameraMinX = function () { return _CameraWidth * 1/4; };
-    
-    var getCameraMaxX = function () { return _CameraWidth * 3/4; };
-    
     var getCameraWidth = function () { return _CameraWidth; };
     
     var getCanvasWidth = function () { return _CanvasWidth; };
@@ -31,8 +27,6 @@ HelperFunctions.Core = (function () {
     
     //public methods
     var mPublic = {
-        getCameraMinX: getCameraMinX,
-        getCameraMaxX: getCameraMaxX,
         getCanvasWidth: getCanvasWidth,
         getCameraWidth: getCameraWidth,
         getCameraCenter: getCameraCenter,
