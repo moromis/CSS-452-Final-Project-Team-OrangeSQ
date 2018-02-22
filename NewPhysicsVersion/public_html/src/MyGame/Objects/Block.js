@@ -29,7 +29,7 @@ Block.prototype.shouldDie = function () {
 
 Block.prototype.handleCollision = function (otherObjectType) {
     
-    if(otherObjectType === "Seed"){
+    if(otherObjectType === "Fire"){
         this.setVisibility(false);
     }
     

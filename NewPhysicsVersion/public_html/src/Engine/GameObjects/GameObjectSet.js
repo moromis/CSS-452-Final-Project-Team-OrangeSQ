@@ -46,6 +46,11 @@ GameObjectSet.prototype.addToSet = function (obj) {
     this.mSet.push(obj);
 };
 
+GameObjectSet.prototype.removeObjectAt = function (index) {
+    if (index > -1)
+        this.mSet.splice(index, 1);
+};
+
 /**
  * Remove GameObject from GameObjectSet
  * @param {GameObject} obj to remove from GameObjectSet

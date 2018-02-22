@@ -30,11 +30,15 @@ FireManager.prototype._createObject = function () {
     
 };
 
-//SeedManager.prototype.update = function (){
-//  
-//    Manager.prototype.update.call(this);
-//    
-//};
+FireManager.prototype.update = function (){
+  
+    Manager.prototype.update.call(this);
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
+        this._toggleAutospawn();
+    }
+    
+};
 //
 //SeedManager.prototype.draw = function (camera) {
 //    

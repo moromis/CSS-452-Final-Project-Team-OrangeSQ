@@ -40,7 +40,7 @@ WaterManager.prototype.retract = function () {
     
     if(this.numberOfSegments > 0){
         
-        this.removeFromSet(1);
+        this.removeObjectAt(1);
         this.numberOfSegments--;
         
     }
@@ -65,14 +65,14 @@ WaterManager.prototype.updatePosition = function (pos, direction) {
     for(var i = 0; i < this.size(); i++){
         obj = this.getObjectAt(this.size() - 1 - i);
         
-        var divisor = 2;
+        var divisor = 2.2;
         var offset = this.spriteSize / 2;
 
         if(direction === 0)
-            obj.getXform().setPosition(pos[0] - (i * this.spriteSize / divisor) - offset + 2, pos[1] + (i * this.spriteSize / divisor) + offset - 12);
+            obj.getXform().setPosition(pos[0] - (i * this.spriteSize / divisor) - offset + 16, pos[1] + (i * this.spriteSize / divisor) + offset);
         
         if(direction === 1)
-            obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset + 10, pos[1] + (i * this.spriteSize / divisor) + offset - 12);
+            obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset, pos[1] + (i * this.spriteSize / divisor) + offset);
         
         obj.setDirection(direction);
     }

@@ -41,6 +41,16 @@ Water.prototype.setDirection = function (dir) {
     
 };
 
+Water.prototype.handleCollision = function (otherObjectType) {
+    
+    if(otherObjectType === "Fire"){
+        
+        //do whatever needs to be done upon contacting a fire object
+        
+    }
+    
+};
+
 Water.prototype.shouldDie = function () {
     
     return false;

@@ -99,7 +99,7 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mExplosionManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mWaterManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     

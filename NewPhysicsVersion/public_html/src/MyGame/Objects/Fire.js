@@ -46,13 +46,6 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         this.setVisibility(false);
     }
     
-    if(otherObjectType === "TonguePiece"){
-        
-        //need to attach to tongue, and follow the tongue back
-        //to the hero object and then die
-        
-    }
-    
 };
 
 Fire.prototype.relocate = function (x, y) {

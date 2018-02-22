@@ -40,7 +40,7 @@ Manager.prototype.update = function (){
     for(var i = 0; i < this.size(); i++){
         if(this.getObjectAt(i).shouldDie()){
             console.log("removing from set");
-            this.removeFromSet(i);
+            this.removeObjectAt(i);
         }
     }
     
@@ -76,6 +76,12 @@ Manager.prototype.checkCollisionsWith = function (obj) {
     }
     
     return false;
+};
+
+Manager.prototype._toggleAutospawn = function () {
+    
+    this.autoSpawn = !this.autoSpawn;
+    
 };
 
 Manager.prototype.getObjectType = function () {
