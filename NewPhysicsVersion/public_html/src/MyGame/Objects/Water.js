@@ -41,6 +41,12 @@ Water.prototype.setDirection = function (dir) {
     
 };
 
+Water.prototype.getScore = function () {
+    
+    return 0;
+    
+};
+
 Water.prototype.handleCollision = function (otherObjectType) {
     
     if(otherObjectType === "Fire"){

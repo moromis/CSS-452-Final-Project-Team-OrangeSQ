@@ -10,6 +10,7 @@ function Manager(spriteTexture, object, low, high, autospawn) {
     this.low = low;
     this.high = high;
     this.autoSpawn = autospawn;
+    this.score = 0;
     
     GameObjectSet.call(this);
 }
@@ -39,13 +40,18 @@ Manager.prototype.update = function (){
     //check the lifetimes of the objects
     for(var i = 0; i < this.size(); i++){
         if(this.getObjectAt(i).shouldDie()){
-            console.log("removing from set");
+            this.score += this.getObjectAt(i).getScore();
             this.removeObjectAt(i);
         }
     }
     
 };
 
+Manager.prototype.getScore = function () {
+  
+    return this.score;
+    
+};
 
 Manager.prototype.checkCollisions = function (otherManager) {
     

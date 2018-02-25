@@ -20,6 +20,9 @@ function Fire(spriteTexture, explosionManager) {
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
     GameObject.call(this, this.mSprite);
     
+    this.shouldScore = false;
+    this.scoreAmount = 0;
+    
     this.mParticles = null;
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
@@ -34,19 +37,38 @@ Fire.prototype.shouldDie = function () {
     
 };
 
+Fire.prototype.getScore = function () {
+    
+    console.log("getting score from fire, shouldScore? ", this.shouldScore, ", score: ", this.scoreAmount);
+    
+    if(this.shouldScore)
+        return this.scoreAmount;
+    else
+        return 0;
+    
+};
+
 Fire.prototype.handleCollision = function (otherObjectType) {
   
-    if(otherObjectType === "Block"){
+    var pos = this.getXform().getPosition();
+  
+    if(otherObjectType === "Block" || otherObjectType === "Water"){
         
-        var pos = this.getXform().getPosition();
-        
-        this.mParticles = new ParticleGameObjectSet();
-        this.mParticles.addEmitterAt(
-                [pos[0], pos[1] - this.size / this.downSize / 2], 200, 
-        this.createParticle);
-        this.mParticles.update(); // start emit immediately
-        
-        this.setVisibility(false);
+        if(this.isVisible()){
+
+            this.mParticles = new ParticleGameObjectSet();
+            this.mParticles.addEmitterAt(
+                    [pos[0], pos[1] - this.size / this.downSize / 2], 200, 
+            this.createParticle);
+            this.mParticles.update(); // start emit immediately
+
+            this.setVisibility(false);
+        }
+    }
+    
+    if(otherObjectType === "Water"){
+        this.shouldScore = true;
+        this.scoreAmount = pos[1];
     }
     
 };

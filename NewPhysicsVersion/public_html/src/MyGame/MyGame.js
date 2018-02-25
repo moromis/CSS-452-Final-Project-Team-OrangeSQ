@@ -24,6 +24,7 @@ function MyGame() {
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
+    this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 64;
     this.HeroSpeed = 5;
     this.BlockSize = 32;
@@ -42,6 +43,7 @@ function MyGame() {
     this.mFireManager = null;
     this.mWaterManager = null;
     this.mCamera = null;
+    this.mMsg = null;
     
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -76,6 +78,12 @@ MyGame.prototype.initialize = function () {
     );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     
+    //setup score message
+    this.mMsg = new FontRenderable("Status Message");
+    this.mMsg.setColor([1, 1, 1, 1]);
+    this.mMsg.getXform().setPosition(8, this.CanvasHeight - 8);
+    this.mMsg.setTextHeight(16);
+    
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize / this.ScalingFactor, this.HeroSpeed);
     
@@ -94,8 +102,9 @@ MyGame.prototype.initialize = function () {
     this.mWaterManager = new WaterManager(this.kWater);
     
     //add everything to the correct layer
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
@@ -142,5 +151,7 @@ MyGame.prototype.update = function () {
     //only need to call one way, handles collisions on both managers' objects    
     this.mBlockManager.checkCollisions(this.mFireManager);
     this.mFireManager.checkCollisions(this.mWaterManager);
+    this.mMsg.setText("Score: " + this.mFireManager.getScore());
+    
    
 };

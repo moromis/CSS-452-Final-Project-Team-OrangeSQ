@@ -18,6 +18,12 @@ function Block(spriteTexture, size, x, y) {
 }
 gEngine.Core.inheritPrototype(Block, GameObject);
 
+Block.prototype.getScore = function () {
+    
+    return 0;
+    
+};
+
 Block.prototype.shouldDie = function () {
     
     if(!this.isVisible())
