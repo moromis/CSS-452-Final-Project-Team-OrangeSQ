@@ -36,7 +36,7 @@ Fire.prototype.shouldDie = function () {
 
 Fire.prototype.handleCollision = function (otherObjectType) {
   
-    if(otherObjectType === "Block"){
+    if(otherObjectType === "Block" || otherObjectType === "Water"){
         
         var pos = this.getXform().getPosition();
         

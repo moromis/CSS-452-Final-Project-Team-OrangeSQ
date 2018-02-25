@@ -141,5 +141,6 @@ MyGame.prototype.update = function () {
         
     //only need to call one way, handles collisions on both managers' objects    
     this.mBlockManager.checkCollisions(this.mFireManager);
+    this.mFireManager.checkCollisions(this.mWaterManager);
    
 };
