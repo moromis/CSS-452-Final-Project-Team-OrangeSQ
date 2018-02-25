@@ -11,6 +11,7 @@ HelperFunctions.Core = (function () {
     var _CameraWidth = 960;
     var _CameraCenter = _CameraWidth / 2;
     var _CanvasWidth = 960;
+    var _CanvasHeight = 640;
     
     
     // generates a random int in the range low to high
@@ -23,10 +24,13 @@ HelperFunctions.Core = (function () {
     
     var getCanvasWidth = function () { return _CanvasWidth; };
     
+     var getCanvasHeight = function () { return _CanvasHeight; };
+    
     var getCameraCenter = function () { return _CameraCenter; };
     
     //public methods
     var mPublic = {
+        getCanvasHeight: getCanvasHeight,
         getCanvasWidth: getCanvasWidth,
         getCameraWidth: getCameraWidth,
         getCameraCenter: getCameraCenter,

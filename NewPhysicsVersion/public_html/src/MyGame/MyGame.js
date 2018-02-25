@@ -17,13 +17,14 @@ function MyGame() {
     this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
-    this.kExplosion = "assets/Explosion.png";
     this.kBG = "assets/BG.png";
+    this.kParticle = "assets/particle.png";
     
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
+    this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 64;
     this.HeroSpeed = 5;
     this.BlockSize = 32;
@@ -42,6 +43,7 @@ function MyGame() {
     this.mFireManager = null;
     this.mWaterManager = null;
     this.mCamera = null;
+    this.mMsg = null;
     
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -52,8 +54,8 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kFire);
     gEngine.Textures.loadTexture(this.kWater);
-    gEngine.Textures.loadTexture(this.kExplosion);
     gEngine.Textures.loadTexture(this.kBG);
+    gEngine.Textures.loadTexture(this.kParticle);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -63,8 +65,8 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kFire);
     gEngine.Textures.unloadTexture(this.kWater);
-    gEngine.Textures.unloadTexture(this.kExplosion);
     gEngine.Textures.unloadTexture(this.kBG);
+    gEngine.Textures.unloadTexture(this.kParticle);
 };
 
 MyGame.prototype.initialize = function () {
@@ -75,6 +77,12 @@ MyGame.prototype.initialize = function () {
         [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
     );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+    
+    //setup score message
+    this.mMsg = new FontRenderable("Status Message");
+    this.mMsg.setColor([1, 1, 1, 1]);
+    this.mMsg.getXform().setPosition(8, this.CanvasHeight - 8);
+    this.mMsg.setTextHeight(16);
     
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize / this.ScalingFactor, this.HeroSpeed);
@@ -89,16 +97,14 @@ MyGame.prototype.initialize = function () {
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
     
-    this.mExplosionManager = new ExplosionManager(this.kExplosion);
-    
-    this.mFireManager = new FireManager(this.kFire, this.mExplosionManager, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kFire, this.SpawnTime, this.SpawnTime * 3);
     
     this.mWaterManager = new WaterManager(this.kWater);
     
     //add everything to the correct layer
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mExplosionManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
@@ -144,5 +150,8 @@ MyGame.prototype.update = function () {
         
     //only need to call one way, handles collisions on both managers' objects    
     this.mBlockManager.checkCollisions(this.mFireManager);
+    this.mFireManager.checkCollisions(this.mWaterManager);
+    this.mMsg.setText("Score: " + this.mFireManager.getScore());
+    
    
 };

@@ -37,42 +37,35 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.mDirection = direction.RIGHT;
     this.justStartedWalking = false;
     
-    this.walkingTimerLimit = 8;
-    this.walkingTimer = this.walkingTimerLimit;
-    
-    this.atLeftEdge = false;
-    this.atRightEdge = false;
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
 
-    this._clamp();
-    
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
+        
+        //when left or right is called for the first time, we should change
+        //the sprite sequence to a walking sprite sequence. here we change
+        //a boolean to let the state manager know that the sequence should change.
         this.justStartedWalking = true;
     }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         
-        if(this.mState !== state.EXTENDING && this.atRightEdge && this.mDirection !== direction.LEFT){
-            this.mDirection = direction.LEFT;
-            this.mState = state.STANDING;
-            this.walkingTimer = 0;
-        }else if(this.mState !== state.EXTENDING && this._canWalk()){
-            this.getXform().incXPosBy(-64);
+        if(this.mState !== state.EXTENDING){
+            
+            //TODO implement leftward movement here
+            
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
         }
         
     }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         
-        if(this.mState !== state.EXTENDING && this.atLeftEdge && this.mDirection !== direction.RIGHT){
-            this.mDirection = direction.RIGHT;
-            this.mState = state.STANDING;
-            this.walkingTimer = 0;
-        }else if(this.mState !== state.EXTENDING && this._canWalk() && !this.atRightEdge){
-            this.getXform().incXPosBy(64);
+        if(this.mState !== state.EXTENDING){
+            
+            //TODO implement rightward movement here
+            
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
         }
@@ -110,33 +103,6 @@ Hero.prototype.getX = function () {
     
     return this.getXform().getPosition()[0];
     
-};
-
-Hero.prototype._clamp = function () {
-  
-    var x = this.getX();
-    var minCameraX = 0;
-    var maxCameraX = HelperFunctions.Core.getCameraWidth();
-    
-    if(x === minCameraX)
-        this.atLeftEdge = true;
-    else
-        this.atLeftEdge = false;
-    if(x === maxCameraX)
-        this.atRightEdge = true;
-    else
-        this.atRightEdge = false;
-};
-
-Hero.prototype._canWalk = function () {
-    
-    if(this.walkingTimer >= this.walkingTimerLimit){
-        this.walkingTimer = 0;
-        return true;
-    }else{
-        this.walkingTimer++;
-        return false;
-    }
 };
 
 Hero.prototype._providePrintout = function () {
@@ -187,7 +153,7 @@ Hero.prototype._updateAnimation = function () {
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;
-            case state.EXTENDING:
+                case state.EXTENDING:
                     this.mSprite.setSpriteSequence(this.size, this.size * 4, this.size, this.size, 0, 0);
                     break;
             }
@@ -203,7 +169,7 @@ Hero.prototype._updateAnimation = function () {
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;
-            case state.EXTENDING:
+                case state.EXTENDING:
                     this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
                     break;
             }
