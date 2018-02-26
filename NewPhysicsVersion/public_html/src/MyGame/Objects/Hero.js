@@ -37,6 +37,8 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.mDirection = direction.RIGHT;
     this.justStartedWalking = false;
     
+    this.health = 3;
+    
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
@@ -91,6 +93,26 @@ Hero.prototype.update = function () {
     this.mSprite.updateAnimation();
     
     GameObject.prototype.update.call(this);
+};
+
+Hero.prototype.handleCollision = function (otherObjectType) {
+  
+    if(otherObjectType === "Fire"){
+        this.health--;
+    }
+    
+};
+
+Hero.prototype.isAlive = function () {
+  
+    return (this.isVisible() && this.health > 0);
+    
+};
+
+Hero.prototype.getHealth = function () {
+  
+    return this.health;
+    
 };
 
 Hero.prototype.getDirection = function () {

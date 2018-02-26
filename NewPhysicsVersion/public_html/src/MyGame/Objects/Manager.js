@@ -61,13 +61,14 @@ Manager.prototype.checkCollisions = function (otherManager) {
         for(var j = 0; j < this.size(); j++){
             
             if(this.getObjectAt(j).isCollidingWith(otherManager.getObjectAt(i))){
+                if(this.getObjectAt(j).isVisible() && otherManager.getObjectAt(i).isVisible()){
                 
-                //this manager's object, handle the collision
-                this.getObjectAt(j).handleCollision(otherManager.getObjectType());
+                    //this manager's object, handle the collision
+                    this.getObjectAt(j).handleCollision(otherManager.getObjectType());
 
-                //other manager's object, handle the collision
-                otherManager.getObjectAt(i).handleCollision(this.getObjectType());
-                
+                    //other manager's object, handle the collision
+                    otherManager.getObjectAt(i).handleCollision(this.getObjectType());
+                }
             }
         }
     }
@@ -76,12 +77,15 @@ Manager.prototype.checkCollisions = function (otherManager) {
 Manager.prototype.checkCollisionsWith = function (obj) {
     
     for(var i = 0; i < this.size(); i++){
-        if(this.getObjectAt(i).isCollidingWith(obj)){
-            return true;
+        if(this.getObjectAt(i).isCollidingWith(obj) && this.getObjectAt(i).isVisible() && obj.isVisible()){
+            
+            //this manager's object, handle the collision
+            this.getObjectAt(i).handleCollision(obj.name);
+
+            //passed object, handle the collision
+            obj.handleCollision(this.getObjectType());
         }
     }
-    
-    return false;
 };
 
 Manager.prototype._toggleAutospawn = function () {
