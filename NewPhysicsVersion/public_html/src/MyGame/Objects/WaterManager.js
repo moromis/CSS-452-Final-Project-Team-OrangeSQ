@@ -11,6 +11,7 @@ function WaterManager(spriteTexture) {
     this.maxNumOfSegments = 8;
     this.timer = 0;
     this.timingAmount = 2;
+    this.reset = false;
     
     Manager.call(this, spriteTexture, Water, 0, 0, 0, false);
     
@@ -50,11 +51,19 @@ WaterManager.prototype.retract = function () {
 WaterManager.prototype.update = function () {
     
     Manager.prototype.update.call(this);
-    
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up))
+    if(this.numberOfSegments < this.maxNumOfSegments && gEngine.Input.isKeyPressed(gEngine.Input.keys.Up) && !this.reset){
         this.extend();
-    else
+    }else if(this.numberOfSegments === this.maxNumOfSegments){
+        this.reset = true;
+    }
+    
+    if(this.reset){
         this.retract();
+        if(this.numberOfSegments === 0)
+            this.reset = false;
+    }else if(!gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)){
+        this.retract();
+    }
     
 };
 
@@ -81,7 +90,10 @@ WaterManager.prototype.updatePosition = function (pos, direction) {
 WaterManager.prototype.draw = function (camera) {
     
     if(this.size() > 1){
+        this.getObjectAt(0).setVisibility(true);
         Manager.prototype.draw.call(this, camera);
+    }else{
+        this.getObjectAt(0).setVisibility(false);
     }
 };
 

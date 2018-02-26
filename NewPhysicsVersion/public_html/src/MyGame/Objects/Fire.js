@@ -39,8 +39,6 @@ Fire.prototype.shouldDie = function () {
 
 Fire.prototype.getScore = function () {
     
-    console.log("getting score from fire, shouldScore? ", this.shouldScore, ", score: ", this.scoreAmount);
-    
     if(this.shouldScore)
         return this.scoreAmount;
     else
@@ -52,7 +50,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
   
     var pos = this.getXform().getPosition();
   
-    if(otherObjectType === "Block" || otherObjectType === "Water"){
+//    if(otherObjectType === "Block" || otherObjectType === "Water"){
         
         if(this.isVisible()){
 
@@ -64,7 +62,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
 
             this.setVisibility(false);
         }
-    }
+//    }
     
     if(otherObjectType === "Water"){
         this.shouldScore = true;

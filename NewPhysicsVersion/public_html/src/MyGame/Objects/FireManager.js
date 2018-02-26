@@ -29,6 +29,12 @@ FireManager.prototype.relocate = function (x, y) {
 //    
 //};
 
+FireManager.prototype.incrementScoreBy = function (increment){
+  
+    this.score += increment;
+    
+};
+
 FireManager.prototype.update = function (){
   
     Manager.prototype.update.call(this);
