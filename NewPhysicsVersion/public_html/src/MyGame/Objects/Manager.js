@@ -53,6 +53,13 @@ Manager.prototype.getScore = function () {
     
 };
 
+Manager.prototype.setLowAndHigh = function (low, high) {
+    
+    this.low = low;
+    this.high = high;
+    
+};
+
 Manager.prototype.checkCollisions = function (otherManager, collisionInfo) {
     
     //check collisions with all objects in this object set

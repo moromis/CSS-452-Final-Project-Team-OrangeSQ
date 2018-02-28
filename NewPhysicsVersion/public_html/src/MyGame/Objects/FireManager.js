@@ -7,6 +7,8 @@ function FireManager (spriteTexture, low, high) {
     
     Manager.call(this, spriteTexture, Fire, low, high, true);
     
+    this.low;
+    this.high;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -43,9 +45,13 @@ FireManager.prototype.update = function (){
         this._toggleAutospawn();
     }
     
+    this.low *= 0.999;
+    this.high *= 0.999;
+    this.setLowAndHigh(this.low, this.high);
+    
 };
 //
-//SeedManager.prototype.draw = function (camera) {
+//FireManager.prototype.draw = function (camera) {
 //    
 //    Manager.prototype.draw.call(this, camera);
 //    
