@@ -38,15 +38,19 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.justStartedWalking = false;
     
     this.health = 3;
+    this.movementSpeed = 4;
     
+    this.name = "Hero";
     
-    var r = new RigidRectangle(this.getXform(), 55, 65);
+    var xform = this.getXform();
+    var r = new RigidRectangle(xform, 36, 62);
     console.log(this);
     
-    
+    var pos = xform.getPosition();
      r.setMass(0.7);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
+    r.setDrawBounds(true);
   //  r.setDrawBounds(true);
     //r.setAcceleration(-5);
     this.setPhysicsComponent(r);
@@ -57,14 +61,9 @@ function Hero(spriteTexture, size, x, y, speed) {
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
-        var xform = this.getXform();
+    
+    var xform = this.getXform();
 
-     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
-        xform.incXPosBy(-2);
-    }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
-        xform.incXPosBy(2);
-    }
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
         
@@ -78,7 +77,7 @@ Hero.prototype.update = function () {
         
         if(this.mState !== state.EXTENDING){
             
-            //TODO implement leftward movement here
+            xform.incXPosBy(-this.movementSpeed);
             
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
@@ -88,7 +87,7 @@ Hero.prototype.update = function () {
         
         if(this.mState !== state.EXTENDING){
             
-            //TODO implement rightward movement here
+            xform.incXPosBy(this.movementSpeed);
             
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
@@ -122,6 +121,12 @@ Hero.prototype.handleCollision = function (otherObjectType) {
     if(otherObjectType === "Fire"){
         this.health--;
     }
+    
+};
+
+Hero.prototype.getType = function () {
+  
+    return "Hero";
     
 };
 

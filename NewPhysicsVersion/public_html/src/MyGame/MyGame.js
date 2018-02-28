@@ -16,6 +16,7 @@ function MyGame() {
     this.kSnowman = "assets/Snowman.png";
     this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
+    this.kAngryFire = "assets/FireWithEyes.png";
     this.kWater = "assets/Water.png";
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
@@ -37,6 +38,8 @@ function MyGame() {
     
     this.Timer = 0;
     this.TimingAmount = 4;
+    
+    this.winningScore = 25000;
     
     this.mHero = null;
     this.mBlockManager = null;
@@ -60,6 +63,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kSnowman);
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kFire);
+    gEngine.Textures.loadTexture(this.kAngryFire);
     gEngine.Textures.loadTexture(this.kWater);
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kParticle);
@@ -71,6 +75,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kSnowman);
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kFire);
+    gEngine.Textures.unloadTexture(this.kAngryFire);
     gEngine.Textures.unloadTexture(this.kWater);
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kParticle);
@@ -116,7 +121,7 @@ MyGame.prototype.initialize = function () {
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
     
-    this.mFireManager = new FireManager(this.kFire, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kFire, this.kAngryFire, this.mHero.getXform().getPosition(), this.SpawnTime, this.SpawnTime * 3);
     
     this.mWaterManager = new WaterManager(this.kWater);
     
@@ -168,7 +173,7 @@ MyGame.prototype.update = function () {
     
     if(this.mHero.isAlive()){
         
-        if(this.mFireManager.getScore() < 100000){
+        if(this.mFireManager.getScore() < this.winningScore){
         
             this.mCamera.update();
 
@@ -198,20 +203,25 @@ MyGame.prototype.update = function () {
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
 
+            //collisions (non-physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
             this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
+           
+           //text updates
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
             this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
             
         }else{
             
+            //win message
             this.mStatusMsg.setText("YOU WIN!");
             
         }
         
     }else{
         
+        //lose message
         this.mStatusMsg.setText("You lose...");
         
     }

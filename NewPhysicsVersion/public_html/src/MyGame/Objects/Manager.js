@@ -91,11 +91,15 @@ Manager.prototype.checkCollisionsWith = function (obj, collisionInfo) {
         
         if(collided){
             
-            //this manager's object, handle the collision
-            this.getObjectAt(i).handleCollision(obj.name);
+            if(this.getObjectAt(i).isVisible() && obj.isVisible()){
+                
+                //this manager's object, handle the collision
+                this.getObjectAt(i).handleCollision(obj.constructor.name);
 
-            //passed object, handle the collision
-            obj.handleCollision(this.getObjectType());
+                //passed object, handle the collision
+                obj.handleCollision(this.getObjectType());
+            
+            }
         }
     }
 };

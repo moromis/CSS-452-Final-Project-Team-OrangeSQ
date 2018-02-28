@@ -19,7 +19,7 @@ function Block(spriteTexture, size, x, y) {
     
      var rigidShape = new RigidRectangle(this.getXform(), 31, 31);
         rigidShape.setMass(0);  // ensures no movements!
-    rigidShape.setDrawBounds(true);
+//    rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);
 
