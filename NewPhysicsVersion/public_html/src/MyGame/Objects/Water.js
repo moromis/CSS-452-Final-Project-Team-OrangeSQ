@@ -15,6 +15,11 @@ function Water(spriteTexture, size, x, y) {
     this.mSprite.getXform().setSize(size, size);
     GameObject.call(this, this.mSprite);
     
+     var r = new RigidRectangle(this.getXform(), 31, 31);
+ //r.setDrawBounds(true);
+    r.setColor([0, 0, 1, 1]);
+     this.setPhysicsComponent(r);
+    
 }
 gEngine.Core.inheritPrototype(Water, GameObject);
 

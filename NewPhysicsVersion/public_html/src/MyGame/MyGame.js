@@ -47,6 +47,11 @@ function MyGame() {
     this.mStatusMsg = null;
     this.mHealthMsg = null;
     
+    this.mAllObjs = null;
+    this.mCollisionInfos = []; 
+
+
+    
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -99,7 +104,7 @@ MyGame.prototype.initialize = function () {
     this.mStatusMsg.setTextHeight(32);
     
     //initialize hero object
-    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize / this.ScalingFactor, this.HeroSpeed);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter,  this.CameraCenter-400, this.HeroSpeed);
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
@@ -114,6 +119,15 @@ MyGame.prototype.initialize = function () {
     this.mFireManager = new FireManager(this.kFire, this.SpawnTime, this.SpawnTime * 3);
     
     this.mWaterManager = new WaterManager(this.kWater);
+    
+//    this.mAllObjs = new GameObjectSet();
+
+//    for(var i = 0; i < this.mBlockManager.size(); i++) {
+//        this.mAllObjs.addToSet(this.mBlockManager.mSet[i]);
+//    }
+//    this.mAllObjs.addToSet(this.mHero);
+//    console.log(this.mAllObjs.mSet);
+//    console.log(this.mBlockManager.mSet);
     
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
@@ -138,12 +152,17 @@ MyGame.prototype.draw = function () {
 
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
+    
+    this.mCollisionInfos = []; 
+
         
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
+       
+
     
 //    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
     
@@ -176,10 +195,12 @@ MyGame.prototype.update = function () {
                 this.mFireManager.incrementScoreBy(10000);
             }
 
-            //only need to call one way, handles collisions on both managers' objects    
-            this.mBlockManager.checkCollisions(this.mFireManager);
-            this.mFireManager.checkCollisions(this.mWaterManager);
-            this.mFireManager.checkCollisionsWith(this.mHero);
+            //only need to call one way, handles collisions on both managers' objects  
+            var collisionInfo = new CollisionInfo();
+
+            this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
+            this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
+           this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
             this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
             
@@ -194,4 +215,12 @@ MyGame.prototype.update = function () {
         this.mStatusMsg.setText("You lose...");
         
     }
+    
+// Hero platform
+    gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
+
+ 
 };
+
+ 
+

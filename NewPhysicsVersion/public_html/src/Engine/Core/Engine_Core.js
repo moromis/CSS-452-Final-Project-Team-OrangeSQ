@@ -85,7 +85,7 @@ gEngine.Core = (function () {
         gEngine.VertexBuffer.initialize();
         gEngine.Input.initialize(htmlCanvasID);
         gEngine.AudioClips.initAudioContext();
-        // gEngine.Physics.initialize();
+        gEngine.Physics.initialize();
         gEngine.LayerManager.initialize();
 
         // Inits DefaultResources, when done, invoke the anonymous function to call startScene(myGame).

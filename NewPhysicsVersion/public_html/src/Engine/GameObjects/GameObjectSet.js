@@ -46,11 +46,6 @@ GameObjectSet.prototype.addToSet = function (obj) {
     this.mSet.push(obj);
 };
 
-GameObjectSet.prototype.removeObjectAt = function (index) {
-    if (index > -1)
-        this.mSet.splice(index, 1);
-};
-
 /**
  * Remove GameObject from GameObjectSet
  * @param {GameObject} obj to remove from GameObjectSet
@@ -97,4 +92,10 @@ GameObjectSet.prototype.draw = function (aCamera) {
     for (i = 0; i < this.mSet.length; i++) {
         this.mSet[i].draw(aCamera);
     }
+};
+
+
+GameObjectSet.prototype.removeObjectAt = function (index) {
+    if (index > -1)
+        this.mSet.splice(index, 1);
 };

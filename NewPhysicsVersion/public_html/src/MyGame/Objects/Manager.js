@@ -53,14 +53,17 @@ Manager.prototype.getScore = function () {
     
 };
 
-Manager.prototype.checkCollisions = function (otherManager) {
+Manager.prototype.checkCollisions = function (otherManager, collisionInfo) {
     
     //check collisions with all objects in this object set
     //with all the objects in the other set
     for(var i = 0; i < otherManager.size(); i++){
         for(var j = 0; j < this.size(); j++){
             
-            if(this.getObjectAt(j).isCollidingWith(otherManager.getObjectAt(i))){
+            //console.log(this.getObjectAt(j));
+           // console.log(otherManager.getObjectAt(i));
+            var collided = this.getObjectAt(j).getPhysicsComponent().collided(otherManager.getObjectAt(i).getPhysicsComponent(), collisionInfo);
+            if(collided){
                 if(this.getObjectAt(j).isVisible() && otherManager.getObjectAt(i).isVisible()){
                 
                     //this manager's object, handle the collision
@@ -74,10 +77,12 @@ Manager.prototype.checkCollisions = function (otherManager) {
     }
 };
 
-Manager.prototype.checkCollisionsWith = function (obj) {
+Manager.prototype.checkCollisionsWith = function (obj, collisionInfo) {
     
     for(var i = 0; i < this.size(); i++){
-        if(this.getObjectAt(i).isCollidingWith(obj) && this.getObjectAt(i).isVisible() && obj.isVisible()){
+        var collided = obj.getPhysicsComponent().collided(this.getObjectAt(i).getPhysicsComponent(), collisionInfo);
+        
+        if(collided){
             
             //this manager's object, handle the collision
             this.getObjectAt(i).handleCollision(obj.name);
@@ -109,7 +114,7 @@ Manager.prototype._createObject = function () {
 };
 
 Manager.prototype._placeObject = function (size, x, y) {
-    
+ 
     //add a new patrol to the set
     var mObject = new this.object(this.sprite, size, x, y);
     this.addToSet(mObject);

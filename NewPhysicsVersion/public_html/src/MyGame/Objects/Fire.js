@@ -24,6 +24,10 @@ function Fire(spriteTexture, explosionManager) {
     this.scoreAmount = 0;
     
     this.mParticles = null;
+    
+     var r = new RigidRectangle(this.getXform(), 31, 31);
+
+     this.setPhysicsComponent(r);
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
 
@@ -52,16 +56,17 @@ Fire.prototype.handleCollision = function (otherObjectType) {
   
 //    if(otherObjectType === "Block" || otherObjectType === "Water"){
         
-        if(this.isVisible()){
-
-            this.mParticles = new ParticleGameObjectSet();
-            this.mParticles.addEmitterAt(
-                    [pos[0], pos[1] - this.size / this.downSize / 2], 200, 
-            this.createParticle);
-            this.mParticles.update(); // start emit immediately
-
+//        if(this.isVisible()){
+//
+//            this.mParticles = new ParticleGameObjectSet();
+//            this.mParticles.addEmitterAt(
+//                    [pos[0], pos[1] - this.size / this.downSize / 2], 200, 
+//            this.createParticle);
+//            this.mParticles.update(); // start emit immediately
+//
             this.setVisibility(false);
-        }
+            
+//        }
 //    }
     
     if(otherObjectType === "Water"){

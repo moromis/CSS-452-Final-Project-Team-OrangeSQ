@@ -39,10 +39,32 @@ function Hero(spriteTexture, size, x, y, speed) {
     
     this.health = 3;
     
+    
+    var r = new RigidRectangle(this.getXform(), 55, 65);
+    console.log(this);
+    
+    
+     r.setMass(0.7);
+    r.setRestitution(0);
+    r.setColor([0, 1, 0, 1]);
+  //  r.setDrawBounds(true);
+    //r.setAcceleration(-5);
+    this.setPhysicsComponent(r);
+    //this.toggleDrawRenderable();
+   // this.toggleDrawRigidShape();
+    
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
+        var xform = this.getXform();
+
+     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
+        xform.incXPosBy(-2);
+    }
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
+        xform.incXPosBy(2);
+    }
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
         
@@ -105,7 +127,7 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
 Hero.prototype.isAlive = function () {
   
-    return (this.isVisible() && this.health > 0);
+    return (this.isVisible() && this.getXform().getYPos() > 0 && this.health > 0);
     
 };
 
