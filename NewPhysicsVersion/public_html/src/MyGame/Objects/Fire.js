@@ -4,10 +4,10 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Fire(spriteTexture, explosionManager) {
+function Fire(spriteTexture, explosionManager, lightManager) {
     
-    this.kDelta = 1;
-    this.size = 64;
+    this.kDelta = 15;
+    this.size = 128;
     this.downSize = 1.5;
     
     this.mSprite = new LightRenderable(spriteTexture);
@@ -68,7 +68,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         this.shouldScore = true;
         this.scoreAmount = pos[1];
     }
-    
+       
 };
 
 Fire.prototype.relocate = function (x, y) {
@@ -85,7 +85,7 @@ Fire.prototype.update = function () {
     if(this.isVisible()){
         
         //update Y position    
-        this.mSprite.getXform().incYPosBy(-this.kDelta);
+        this.interpolateBy(0,-this.kDelta);
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();
@@ -123,18 +123,18 @@ Fire.prototype.createParticle = function(atX, atY) {
     p.getXform().setSize(r, r);
     
     // final color
-    var fr = 0.5;
-    var fg = 0.5;
-    var fb = 0.5;
+    var fr = 0.2;
+    var fg = 0.2;
+    var fb = 0.2;
     p.setFinalColor([fr, fg, fb, 0.6]);
     
     // velocity on the particle
     var fx = 10 * Math.random() - 20 * Math.random();
-    var fy = 20 * Math.random();
+    var fy = 10* Math.random();
     p.getParticle().setVelocity([fx, fy]);
     
     // size delta
-    p.setSizeDelta(0.98);
+    p.setSizeDelta(1.0);
     
     return p;
 };
