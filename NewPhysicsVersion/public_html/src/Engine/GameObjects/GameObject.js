@@ -67,7 +67,6 @@ GameObject.prototype.setVisibility = function (f) { this.mVisible = f; };
  */
 GameObject.prototype.isVisible = function () { return this.mVisible; };
 
-<<<<<<< HEAD
 /**
  * Set the Speed of the GameObject
  * @param {Number} s new speed of GameObject
@@ -90,31 +89,6 @@ GameObject.prototype.getSpeed = function () { return this.mSpeed; };
  * @memberOf GameObject
  */
 GameObject.prototype.incSpeedBy = function (delta) { this.mSpeed += delta; };
-=======
-/* - SS
- * set speed of object
- * @param {int} s
- */
-GameObject.prototype.setSpeed = function (s) {
-    this.mSpeed = s;
-};
-/* -SS
- * get current speed
- * @returns {Number}
- */
-GameObject.prototype.getSpeed = function () {
-    return this.mSpeed;
-};
-/* -SS
- * change speed by delta
- * @param {number} delta
- */
-GameObject.prototype.incSpeedBy = function (delta) {
-    this.mSpeed += delta;
-};
-
-GameObject.prototype.setCurrentFrontDir = function (f) { vec2.normalize(this.mCurrentFrontDir, f); };
->>>>>>> 3d6e768248c007113ecea7a5e29178dbea79a301
 
 /**
  * Set the front vector of the GameObject
