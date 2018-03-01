@@ -13,26 +13,27 @@
 
 function MyGame() {
     
-    this.kSnowman = "assets/Snowman.png";
-    this.kBlock = "assets/Block.png";
-    this.kFire = "assets/Fire.png";
+    this.kSnowman = "assets/Snowman@2x.png";
+    this.kBlock = "assets/Block@2x.png";
+    this.kFire = "assets/Fire@2x.png";
     this.kWater = "assets/Water.png";
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
+    this.kIgloo = "assets/Igloo.png";
     
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
-    this.HeroSize = 64;
-    this.HeroSpeed = 5;
-    this.BlockSize = 32;
+    this.HeroSize = 128;
+    this.HeroSpeed = 10;
+    this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
     
     this.IntroLight = true;
-    this.initialLightLevel = 1024;
+    this.initialLightLevel = 100;
     this.lightLevel = 4;
     
     this.Timer = 0;
@@ -46,6 +47,7 @@ function MyGame() {
     this.mScoreMsg = null;
     this.mStatusMsg = null;
     this.mHealthMsg = null;
+    this.mIgloo = null;
     
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -58,6 +60,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kWater);
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kParticle);
+    gEngine.Textures.loadTexture(this.kIgloo);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -69,6 +72,10 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kWater);
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kParticle);
+    gEngine.Textures.unloadTexture(this.kIgloo);
+    
+    var nextLevel = new StartScreen();  // load the next level
+    gEngine.Core.startScene(nextLevel);
 };
 
 MyGame.prototype.initialize = function () {
@@ -84,18 +91,18 @@ MyGame.prototype.initialize = function () {
     this.mScoreMsg = new FontRenderable("Status Message");
     this.mScoreMsg.setColor([1, 1, 1, 1]);
     this.mScoreMsg.getXform().setPosition(32, this.CanvasHeight - 32);
-    this.mScoreMsg.setTextHeight(16);
+    this.mScoreMsg.setTextHeight(24);
     
     //setup hero health message
     this.mHealthMsg = new FontRenderable("");
     this.mHealthMsg.setColor([1, 1, 1, 1]);
-    this.mHealthMsg.getXform().setPosition(this.CanvasWidth - 128, this.CanvasHeight - 32);
-    this.mHealthMsg.setTextHeight(16);
+    this.mHealthMsg.getXform().setPosition(this.CanvasWidth - 140, this.CanvasHeight - 32);
+    this.mHealthMsg.setTextHeight(24);
     
     //setup status message
     this.mStatusMsg = new FontRenderable("");
-    this.mStatusMsg.setColor([0, 0, 0, 1]);
-    this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 32, this.CanvasHeight / 2);
+    this.mStatusMsg.setColor([1, 1, 0, 1]);
+    this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 50, this.CanvasHeight / 2);
     this.mStatusMsg.setTextHeight(32);
     
     //initialize hero object
@@ -103,10 +110,17 @@ MyGame.prototype.initialize = function () {
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
-    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
+    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth-200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
+    
+    var igl = new LightRenderable(this.kIgloo);
+    igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
+    igl.getXform().setSize(512,512);
+    igl.getXform().setPosition(920, 320);
+    this.mIgloo = new GameObject(igl);
+    
     
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
@@ -121,8 +135,10 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
@@ -144,7 +160,7 @@ MyGame.prototype.draw = function () {
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
-    
+
 //    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
     
     if(this.mHero.isAlive()){

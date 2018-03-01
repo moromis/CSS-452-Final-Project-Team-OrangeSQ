@@ -55,8 +55,7 @@ Hero.prototype.update = function () {
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         
         if(this.mState !== state.EXTENDING){
-            
-            //TODO implement leftward movement here
+            this.interpolateBy(-this.kDelta,0);
             
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
@@ -65,8 +64,7 @@ Hero.prototype.update = function () {
     }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         
         if(this.mState !== state.EXTENDING){
-            
-            //TODO implement rightward movement here
+            this.interpolateBy(this.kDelta,0);
             
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
@@ -171,7 +169,7 @@ Hero.prototype._updateAnimation = function () {
                     break;
                 case state.WALKING:
                     if(this.justStartedWalking){
-                        this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 2, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;
@@ -187,7 +185,7 @@ Hero.prototype._updateAnimation = function () {
                     break;
                 case state.WALKING:
                     if(this.justStartedWalking){
-                        this.mSprite.setSpriteSequence(this.size, this.size * 2, this.size, this.size, 2, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;
