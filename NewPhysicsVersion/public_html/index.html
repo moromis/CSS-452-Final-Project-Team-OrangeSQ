@@ -5,7 +5,7 @@
 <!--Use embedded shader code for now, in order to remove async loading complexity.-->
 
 <body onload="
-        var myGame = new MyGame();
+        var myGame = new StartScreen();
         gEngine.Core.initializeEngineCore('GLCanvas', myGame);
             ">
     
@@ -60,11 +60,14 @@
         <script type="text/javascript" src="src/Engine/Shadows/ShadowReceiver.js"></script>
         <script type="text/javascript" src="src/Engine/Shadows/ShadowReceiver_Stencil.js"></script>
         <!-- GameObject -->
-        <script type="text/javascript" src="src/Engine/GameObjects/GameObject.js"></script>
-        <script type="text/javascript" src="src/Engine/GameObjects/GameObject_PixelCollision.js"></script>
-        <script type="text/javascript" src="src/Engine/GameObjects/GameObjectSet.js"></script>
-        <script type="text/javascript" src="src/Engine/GameObjects/TiledGameObject.js"></script>
-        <script type="text/javascript" src="src/Engine/GameObjects/ParallaxGameObject.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/GameObject.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/GameObjectState.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/GameObjectShake.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/GameObject_PixelCollision.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/GameObjectSet.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/TiledGameObject.js"></script>
+            <script type="text/javascript" src="src/Engine/GameObjects/ParallaxGameObject.js"></script>
+            
         <!-- Particles -->
         <script type="text/javascript" src="src/Engine/Particles/Particle.js"></script>
         <script type="text/javascript" src="src/Engine/Particles/ParticleGameObject.js"></script>
@@ -98,6 +101,7 @@
    
     <!-- Client game code -->
         <script type="text/javascript" src="src/MyGame/MyGame.js"></script>
+        <script type="text/javascript" src="src/MyGame/StartScreen.js"></script>
         <script type="text/javascript" src="src/MyGame/HelperFunctions.js"></script>
 
         
