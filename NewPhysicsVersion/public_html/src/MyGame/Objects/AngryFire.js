@@ -6,10 +6,12 @@
 
 function AngryFire(spriteTexture, heroPos) {
     
+    this.currentHeroPos = heroPos[0] + 8;
     this.heroPos = heroPos;
     this.kDelta = 1;
     this.size = 64;
     this.downSize = 1;
+    this.interp = null;
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -27,7 +29,7 @@ function AngryFire(spriteTexture, heroPos) {
     this.mParticles = null;
     
      var r = new RigidRectangle(this.getXform(), 31, 62);
-     r.setDrawBounds(true)
+     r.setDrawBounds(true);
 
      this.setPhysicsComponent(r);
 }
@@ -84,15 +86,34 @@ AngryFire.prototype.relocate = function (x, y) {
     
 };
 
-AngryFire.prototype.update = function (heroPosition) {
+AngryFire.prototype.update = function () {
     
     //call parent update
     GameObject.prototype.update.call(this);
     
+    var currentPos = this.getXform().getPosition();
+    
     if(this.isVisible()){
         
-        //update Y position    
-        this.mSprite.getXform().incYPosBy(-this.kDelta);
+        if(this.currentHeroPos !== this.heroPos[0]){
+            
+            this.currentHeroPos = this.heroPos[0];
+            if(this.interp === null){
+                this.interp = new Interpolate(this.currentHeroPos - currentPos[0], 50, 0.05);
+                this.interp.setFinalValue(0);
+//                this.interp.updateInterpolation();
+            }
+        }else if(currentPos[0] !== this.heroPos[0] && this.interp !== null){
+            var toMove = this.interp.getValue();
+            console.log(toMove);
+            this.getXform().incXPosBy(toMove);
+            this.interp.updateInterpolation();
+            if(this.toMove === 0){
+                this.interp = null;
+            }
+        }else{
+            this.interp = null;
+        }
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();

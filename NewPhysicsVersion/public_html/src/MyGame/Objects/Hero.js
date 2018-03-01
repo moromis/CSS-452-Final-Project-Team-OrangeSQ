@@ -44,7 +44,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     
     var xform = this.getXform();
     var r = new RigidRectangle(xform, 36, 62);
-    console.log(this);
+//    console.log(this);
     
     var pos = xform.getPosition();
      r.setMass(0.7);

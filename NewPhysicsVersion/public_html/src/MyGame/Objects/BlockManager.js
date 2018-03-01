@@ -4,8 +4,8 @@
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
-    console.log(blocksToCreate);
-    console.log(size);
+//    console.log(blocksToCreate);
+//    console.log(size);
 
     Manager.call(this, spriteTexture, Block, 0, 0, false);
     

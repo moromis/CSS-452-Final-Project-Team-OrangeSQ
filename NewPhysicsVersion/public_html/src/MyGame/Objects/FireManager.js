@@ -12,6 +12,7 @@ function FireManager (fireTexture, angryFireTexture, heroPos, low, high) {
     this.fireTexture = fireTexture;
     this.angryFireTexture = angryFireTexture;
     this.heroPos = heroPos;
+    this.maxFires = 1;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -57,19 +58,20 @@ FireManager.prototype.update = function (){
 FireManager.prototype._createObject = function (size, x, y) {
  
     var randomNumber = HelperFunctions.Core.generateRandomInt(0, 100);
-    console.log(randomNumber);
+//    console.log(randomNumber);
     
-    if(randomNumber === 42){
+    if(this.size() < this.maxFires){
+//    if(randomNumber === 42){
         
         var mObject = new AngryFire(this.angryFireTexture, this.heroPos);
         this.addToSet(mObject);
         
-    }else{
- 
-        var mObject = new Fire(this.fireTexture);
-        this.addToSet(mObject);
+//    }else{
+// 
+//        var mObject = new Fire(this.fireTexture);
+//        this.addToSet(mObject);
+//    }
     }
-    
 };
 
 //
