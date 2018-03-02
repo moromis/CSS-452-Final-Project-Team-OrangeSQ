@@ -1,14 +1,18 @@
 /*jslint node: true, vars: true */
 /*global gEngine: false, GameObjectSet: false, SpriteRenderable: false, 
- * HelperFunctions: false, Manager: false, Fire: false */
+ * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (spriteTexture, low, high) {
+function FireManager (fireTexture, angryFireTexture, heroPos, low, high) {
     
-    Manager.call(this, spriteTexture, Fire, low, high, true);
+    Manager.call(this, fireTexture, Fire, low, high, true);
     
     this.low;
     this.high;
+    this.fireTexture = fireTexture;
+    this.angryFireTexture = angryFireTexture;
+    this.heroPos = heroPos;
+    this.maxFires = 1;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -42,6 +46,24 @@ FireManager.prototype.update = function (){
     
 };
 
+FireManager.prototype._createObject = function (size, x, y) {
+ 
+    var randomNumber = HelperFunctions.Core.generateRandomInt(0, 100);
+//    console.log(randomNumber);
+    
+    if(this.size() < this.maxFires){
+//    if(randomNumber === 42){
+        
+        var mObject = new AngryFire(this.angryFireTexture, this.heroPos);
+        this.addToSet(mObject);
+        
+//    }else{
+// 
+//        var mObject = new Fire(this.fireTexture);
+//        this.addToSet(mObject);
+//    }
+    }
+};
 //FireManager.prototype.draw = function (camera) {
 //    
 //    Manager.prototype.draw.call(this, camera);

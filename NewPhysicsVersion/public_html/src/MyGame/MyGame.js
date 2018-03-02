@@ -15,11 +15,12 @@ function MyGame() {
     
     this.kSnowman = "assets/Snowman@2x.png";
     this.kBlock = "assets/Block@2x.png";
-    this.kFire = "assets/Fire@2x.png";
+    this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
     this.kIgloo = "assets/Igloo.png";
+    this.kAngryFire = "assets/FireWithEyes.png";
     
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
@@ -36,6 +37,8 @@ function MyGame() {
     this.initialLightLevel = 100;
     this.lightLevel = 4;
     
+    this.winningScore = 25000;
+    
     this.Timer = 0;
     this.TimingAmount = 4;
     
@@ -51,8 +54,6 @@ function MyGame() {
     
     this.mAllObjs = null;
     this.mCollisionInfos = []; 
-
-
     
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -66,6 +67,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kParticle);
     gEngine.Textures.loadTexture(this.kIgloo);
+    gEngine.Textures.loadTexture(this.kAngryFire);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -78,6 +80,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kParticle);
     gEngine.Textures.unloadTexture(this.kIgloo);
+    gEngine.Textures.unloadTexture(this.kAngryFire);
     
     var nextLevel = new StartScreen();  // load the next level
     gEngine.Core.startScene(nextLevel);
@@ -111,7 +114,7 @@ MyGame.prototype.initialize = function () {
     this.mStatusMsg.setTextHeight(32);
     
     //initialize hero object
-    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter,  this.CameraCenter-400, this.HeroSpeed);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize , this.HeroSpeed, this.BlockSize);
     
     //intialize background
     var bgR = new LightRenderable(this.kBG);
@@ -130,12 +133,12 @@ MyGame.prototype.initialize = function () {
     //initialize the block manager
     this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
     
-    this.mFireManager = new FireManager(this.kFire, this.SpawnTime, this.SpawnTime * 3);
+    this.mFireManager = new FireManager(this.kFire, this.kAngryFire, this.mHero.getXform().getPosition(), this.SpawnTime, this.SpawnTime * 3);
     
     this.mWaterManager = new WaterManager(this.kWater);
     
 //    this.mAllObjs = new GameObjectSet();
-
+ 
 //    for(var i = 0; i < this.mBlockManager.size(); i++) {
 //        this.mAllObjs.addToSet(this.mBlockManager.mSet[i]);
 //    }
@@ -170,19 +173,17 @@ MyGame.prototype.draw = function () {
     gEngine.LayerManager.drawAllLayers(this.mCamera);
     
     this.mCollisionInfos = []; 
-
         
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
-    
 //    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
     
     if(this.mHero.isAlive()){
         
-        if(this.mFireManager.getScore() < 100000){
+        if(this.mFireManager.getScore() < this.winningScore){
         
             this.mCamera.update();
 
@@ -209,32 +210,31 @@ MyGame.prototype.update = function () {
                 this.mFireManager.incrementScoreBy(10000);
             }
 
-            //only need to call one way, handles collisions on both managers' objects  
+             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
-
+ 
+            //collisions (non-physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
             this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
+           
+           //text updates
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
             this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
             
         }else{
-            
+             //win message
             this.mStatusMsg.setText("YOU WIN!");
             
         }
         
     }else{
-        
+        //lose message
         this.mStatusMsg.setText("You lose...");
         
     }
     
-// Hero platform
+    // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
-
  
 };
-
- 
-

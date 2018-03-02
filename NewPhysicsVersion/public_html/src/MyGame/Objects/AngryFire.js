@@ -4,11 +4,14 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Fire(spriteTexture, explosionManager, lightManager) {
+function AngryFire(spriteTexture, heroPos) {
     
-    this.kDelta = 15;
+    this.currentHeroPos = heroPos[0] + 8;
+    this.heroPos = heroPos;
+    this.kDelta = 1;
     this.size = 64;
-    this.downSize = 1.5;
+    this.downSize = 1;
+    this.interp = null;
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -16,7 +19,7 @@ function Fire(spriteTexture, explosionManager, lightManager) {
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
-    this.mSprite.getXform().setSize(this.size, this.size);
+    this.mSprite.getXform().setSize(this.size / this.downSize, this.size / this.downSize);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
     GameObject.call(this, this.mSprite);
     
@@ -25,13 +28,14 @@ function Fire(spriteTexture, explosionManager, lightManager) {
     
     this.mParticles = null;
     
-     var r = new RigidRectangle(this.getXform(), this.size, this.size);
+     var r = new RigidRectangle(this.getXform(), 31, 62);
+     r.setDrawBounds(true);
 
      this.setPhysicsComponent(r);
 }
-gEngine.Core.inheritPrototype(Fire, GameObject);
+gEngine.Core.inheritPrototype(AngryFire, GameObject);
 
-Fire.prototype.shouldDie = function () {
+AngryFire.prototype.shouldDie = function () {
     
     if(!this.isVisible() && this.mParticles === null) {
             return true;
@@ -41,23 +45,21 @@ Fire.prototype.shouldDie = function () {
     
 };
 
-Fire.prototype.getScore = function () {
+AngryFire.prototype.getScore = function () {
     
     if(this.shouldScore)
-        return Math.floor(this.scoreAmount);
+        return Math.floor(this.scoreAmount * 1.5);
     else
         return 0;
     
 };
 
-Fire.prototype.handleCollision = function (otherObjectType) {
+AngryFire.prototype.handleCollision = function (otherObjectType) {
   
     var pos = this.getXform().getPosition();
   
-    console.log(otherObjectType);
-  
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
-       
+        
         if(this.isVisible()){
 
             this.mParticles = new ParticleGameObjectSet();
@@ -75,24 +77,43 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         this.shouldScore = true;
         this.scoreAmount = pos[1];
     }
-       
+    
 };
 
-Fire.prototype.relocate = function (x, y) {
+AngryFire.prototype.relocate = function (x, y) {
   
     this.mSprite.getXform().setPosition(x, y);
     
 };
 
-Fire.prototype.update = function () {
+AngryFire.prototype.update = function () {
     
     //call parent update
     GameObject.prototype.update.call(this);
     
+    var currentPos = this.getXform().getPosition();
+    
     if(this.isVisible()){
         
-        //update Y position    
-        this.interpolateBy(0,-this.kDelta);
+        if(this.currentHeroPos !== this.heroPos[0]){
+            
+            this.currentHeroPos = this.heroPos[0];
+            if(this.interp === null){
+                this.interp = new Interpolate(this.currentHeroPos - currentPos[0], 50, 0.05);
+                this.interp.setFinalValue(0);
+//                this.interp.updateInterpolation();
+            }
+        }else if(currentPos[0] !== this.heroPos[0] && this.interp !== null){
+            var toMove = this.interp.getValue();
+            console.log(toMove);
+            this.getXform().incXPosBy(toMove);
+            this.interp.updateInterpolation();
+            if(this.toMove === 0){
+                this.interp = null;
+            }
+        }else{
+            this.interp = null;
+        }
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();
@@ -108,7 +129,7 @@ Fire.prototype.update = function () {
     }
 };
 
-Fire.prototype.draw = function (camera) {
+AngryFire.prototype.draw = function (camera) {
   
     // draw the projectile only if it has some interesting speed
     if (this.mParticles !== null) {
@@ -119,20 +140,20 @@ Fire.prototype.draw = function (camera) {
 
 };
 
-Fire.prototype.createParticle = function(atX, atY) {
+AngryFire.prototype.createParticle = function(atX, atY) {
     
     var life = 30 + Math.random() * 200;
     var p = new ParticleGameObject("assets/particle.png", atX, atY, life);
     p.getRenderable().setColor([1, 0.2, 0, 1]);
     
     // size of the particle
-    var r = 20 + Math.random() * 2.5;
+    var r = 40 + Math.random() * 2.5;
     p.getXform().setSize(r, r);
     
     // final color
-    var fr = 0.2;
-    var fg = 0.2;
-    var fb = 0.2;
+    var fr = 0.5;
+    var fg = 0.5;
+    var fb = 0.5;
     p.setFinalColor([fr, fg, fb, 0.6]);
     
     // velocity on the particle
@@ -141,7 +162,7 @@ Fire.prototype.createParticle = function(atX, atY) {
 //    p.getParticle().setVelocity([fx, fy]);
     
     // size delta
-    p.setSizeDelta(1.0);
+    p.setSizeDelta(0.98);
     
     return p;
 };
