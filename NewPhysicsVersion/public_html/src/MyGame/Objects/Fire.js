@@ -6,7 +6,7 @@
 
 function Fire(spriteTexture) {
     
-    this.kDelta = 1;
+    this.kDelta = 15;
     this.size = 64;
     this.downSize = 1.5;
     
@@ -16,7 +16,7 @@ function Fire(spriteTexture) {
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
-    this.mSprite.getXform().setSize(this.size / this.downSize, this.size / this.downSize);
+    this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
     GameObject.call(this, this.mSprite);
     
@@ -25,7 +25,7 @@ function Fire(spriteTexture) {
     
     this.mParticles = null;
     
-     var r = new RigidRectangle(this.getXform(), 31, 31);
+     var r = new RigidRectangle(this.getXform(), this.size, this.size);
 
      this.setPhysicsComponent(r);
 }

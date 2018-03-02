@@ -17,9 +17,9 @@ function Block(spriteTexture, size, x, y) {
 
     GameObject.call(this, this.mSprite);
     
-     var rigidShape = new RigidRectangle(this.getXform(), 31, 31);
+     var rigidShape = new RigidRectangle(this.getXform(), size, size-35);
         rigidShape.setMass(0);  // ensures no movements!
-//    rigidShape.setDrawBounds(true);
+    rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);
 
@@ -54,7 +54,6 @@ Block.prototype.handleCollision = function (otherObjectType) {
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);
                 //rigidShape.setMass(1);  // ensures no movements!
-
     }
     
 };
