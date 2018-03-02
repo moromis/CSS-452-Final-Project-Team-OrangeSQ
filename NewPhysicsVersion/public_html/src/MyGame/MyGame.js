@@ -155,7 +155,6 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
