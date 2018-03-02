@@ -6,8 +6,8 @@
 
 function AngryFire(spriteTexture, heroPos) {
     
-    this.currentHeroPos = heroPos[0] + 8;
     this.heroPos = heroPos;
+//    this.currentHeroPos = heroPos[0] + 8;
     this.kDelta = 1;
     this.size = 64;
     this.downSize = 1;
@@ -95,25 +95,14 @@ AngryFire.prototype.update = function () {
     
     if(this.isVisible()){
         
-        if(this.currentHeroPos !== this.heroPos[0]){
-            
-            this.currentHeroPos = this.heroPos[0];
-            if(this.interp === null){
-                this.interp = new Interpolate(this.currentHeroPos - currentPos[0], 50, 0.05);
-                this.interp.setFinalValue(0);
-//                this.interp.updateInterpolation();
-            }
-        }else if(currentPos[0] !== this.heroPos[0] && this.interp !== null){
-            var toMove = this.interp.getValue();
-            console.log(toMove);
-            this.getXform().incXPosBy(toMove);
-            this.interp.updateInterpolation();
-            if(this.toMove === 0){
-                this.interp = null;
-            }
-        }else{
-            this.interp = null;
-        }
+        //update Y position    
+        this.interpolateBy(0,-this.kDelta);
+        
+        //update X position
+        if(currentPos[0] > this.heroPos[0])
+            this.getXform().incXPosBy(-1.5);
+        else if(currentPos[0] < this.heroPos[0])
+            this.getXform().incXPosBy(1.5);
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();

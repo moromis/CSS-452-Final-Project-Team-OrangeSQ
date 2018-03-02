@@ -8,7 +8,7 @@ function WaterManager(spriteTexture) {
     
     this.spriteSize = 64;
     this.numberOfSegments = 0;
-    this.maxNumOfSegments = 14;
+    this.maxNumOfSegments = 17;
     this.timer = 0;
     this.timingAmount = 2;
     this.reset = false;

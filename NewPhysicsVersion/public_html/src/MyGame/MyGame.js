@@ -20,6 +20,7 @@ function MyGame() {
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
     this.kIgloo = "assets/Igloo.png";
+    this.kIglooNormal = "assets/IglooNormalMap.png";
     this.kAngryFire = "assets/FireWithEyes.png";
     
     this.BGWidth = 1024;
@@ -28,7 +29,7 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 10;
+    this.HeroSpeed = 40;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -67,6 +68,7 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBG);
     gEngine.Textures.loadTexture(this.kParticle);
     gEngine.Textures.loadTexture(this.kIgloo);
+    gEngine.Textures.loadTexture(this.kIglooNormal);
     gEngine.Textures.loadTexture(this.kAngryFire);
 };
 
@@ -80,6 +82,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBG);
     gEngine.Textures.unloadTexture(this.kParticle);
     gEngine.Textures.unloadTexture(this.kIgloo);
+    gEngine.Textures.unloadTexture(this.kIglooNormal);
     gEngine.Textures.unloadTexture(this.kAngryFire);
     
     var nextLevel = new StartScreen();  // load the next level
@@ -110,8 +113,14 @@ MyGame.prototype.initialize = function () {
     //setup status message
     this.mStatusMsg = new FontRenderable("");
     this.mStatusMsg.setColor([1, 1, 0, 1]);
-    this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 50, this.CanvasHeight / 2);
+    this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 60, this.CanvasHeight / 2);
     this.mStatusMsg.setTextHeight(32);
+    
+    //setup status message
+    this.mRestartMsg = new FontRenderable("");
+    this.mRestartMsg.setColor([1, 1, 0, 1]);
+    this.mRestartMsg.getXform().setPosition(this.CanvasWidth / 2 - 250, this.CanvasHeight / 2 - 100);
+    this.mRestartMsg.setTextHeight(32);
     
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize , this.HeroSpeed, this.BlockSize);
@@ -123,7 +132,7 @@ MyGame.prototype.initialize = function () {
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
     
-    var igl = new LightRenderable(this.kIgloo);
+    var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
     igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
     igl.getXform().setSize(512,512);
     igl.getXform().setPosition(920, 320);
@@ -150,6 +159,7 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mRestartMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
@@ -230,6 +240,11 @@ MyGame.prototype.update = function () {
     }else{
         //lose message
         this.mStatusMsg.setText("You lose...");
+        this.mRestartMsg.setText("Press space bar to restart");
+        
+        if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)){
+            gEngine.GameLoop.stop();
+        }
         
     }
     

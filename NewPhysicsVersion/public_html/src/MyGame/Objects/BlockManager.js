@@ -15,7 +15,7 @@ function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
     this._placeObject(size, x -size, y+ size);
     for(var i = 0; i < blocksToCreate; i++){
         
-        this._placeObject(size, x - (size) + (i * size), y);
+        this._placeObject(size, x + ((i - 1) * size), y);
         
     }
     
