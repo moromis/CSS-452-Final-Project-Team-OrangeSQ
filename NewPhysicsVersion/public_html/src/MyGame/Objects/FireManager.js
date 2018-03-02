@@ -25,15 +25,6 @@ FireManager.prototype.relocate = function (x, y) {
     }
     
 };
-//
-////overwrite parent method
-//FireManager.prototype._createObject = function () {
-//    
-//    //add a new patrol to the set
-//    var mObject = new this.object(this.sprite);
-//    this.addToSet(mObject);
-//    
-//};
 
 FireManager.prototype.incrementScoreBy = function (increment){
   
@@ -73,8 +64,6 @@ FireManager.prototype._createObject = function (size, x, y) {
 //    }
     }
 };
-
-//
 //FireManager.prototype.draw = function (camera) {
 //    
 //    Manager.prototype.draw.call(this, camera);

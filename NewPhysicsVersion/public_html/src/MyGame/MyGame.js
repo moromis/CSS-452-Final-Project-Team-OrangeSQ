@@ -20,7 +20,6 @@ function MyGame() {
     this.kBG = "assets/BG.png";
     this.kParticle = "assets/particle.png";
     this.kIgloo = "assets/Igloo.png";
-    
     this.kAngryFire = "assets/FireWithEyes.png";
     
     this.BGWidth = 1024;
@@ -35,7 +34,7 @@ function MyGame() {
     this.SpawnTime = 60;
     
     this.IntroLight = true;
-    this.initialLightLevel = 1024;
+    this.initialLightLevel = 100;
     this.lightLevel = 4;
     
     this.winningScore = 25000;
@@ -180,7 +179,6 @@ MyGame.prototype.draw = function () {
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
-
 //    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
     
     if(this.mHero.isAlive()){

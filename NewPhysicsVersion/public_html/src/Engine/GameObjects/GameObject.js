@@ -21,16 +21,16 @@ function GameObject(renderableObj) {
     this.mRenderComponent = renderableObj;
     this.mVisible = true;
     this.mCurrentFrontDir = vec2.fromValues(0, 1);  // this is the current front direction of the object
+    this.mPhysicsComponent = null;
     this.mRigidBody = null;
     this.mDrawRenderable = true;
     this.mDrawRigidShape = false; 
     //custom additions - SS    
     this.mSpeed = 0;
-        //shake variables
+    //shake variables
     var xf = this.getXform();
     this.mGameObjectState = new GameObjectState(xf.getPosition(), xf.getWidth());
     this.mGameObjectShake = null;
-    this.mPhysicsComponent = null;
 }
 
 /**
@@ -224,6 +224,23 @@ GameObject.prototype.rotateObjPointTo = function (p, rate) {
     rad *= rate;  // actual angle need to rotate from Obj's front
     vec2.rotate(this.getCurrentFrontDir(), this.getCurrentFrontDir(), rad);
     this.getXform().incRotationByRad(rad);
+    
+        //object shake - SS
+        //needed for interpolate as well
+    if (this.mGameObjectShake !== null) {
+        var tempPos = vec2.fromValues(this.mGameObjectShake.getCenter()[0], this.mGameObjectShake.getCenter()[1]);
+        this.getXform().setXPos(tempPos[0]);
+        this.getXform().setYPos(tempPos[1]);
+        if (this.mGameObjectShake.shakeDone()) {
+            this.mGameObjectShake = null;
+            this.die = true;
+        } else {
+            this.mGameObjectShake.setRefCenter(this.getXform().getPosition());
+            this.mGameObjectShake.updateShakeState();
+        }
+    }
+
+    this.mGameObjectState.updateGameObjectState();
 };
 
 GameObject.prototype.shake = function (xDelta, yDelta, shakeFrequency, duration) {
@@ -267,4 +284,66 @@ GameObject.prototype.draw = function (aCamera) {
     if (this.mPhysicsComponent !== null) {
         this.mPhysicsComponent.draw(aCamera);
     }
+};
+
+
+// Orientate the entire object to point towards point p
+// will rotate Xform() accordingly
+/*
+ * rotate object towards (p) at the rate of(rate)
+ */
+GameObject.prototype.rotateObjPointTo = function (p, rate) {
+    // Step A: determine if reach the destination position p
+    var dir = [];
+    vec2.sub(dir, p, this.getXform().getPosition());
+    var len = vec2.length(dir);
+    if (len < Number.MIN_VALUE) {
+        return; // we are there.
+    }
+    vec2.scale(dir, dir, 1 / len);
+
+    // Step B: compute the angle to rotate
+    var fdir = this.getCurrentFrontDir();
+    var cosTheta = vec2.dot(dir, fdir);
+
+    if (cosTheta > 0.999999) { // almost exactly the same direction
+        return;
+    }
+
+    // Step C: clamp the cosTheda to -1 to 1 
+    // in a perfect world, this would never happen! BUT ...
+    if (cosTheta > 1) {
+        cosTheta = 1;
+    } else {
+        if (cosTheta < -1) {
+            cosTheta = -1;
+        }
+    }
+
+    // Step D: compute whether to rotate clockwise, or counterclockwise
+    var dir3d = vec3.fromValues(dir[0], dir[1], 0);
+    var f3d = vec3.fromValues(fdir[0], fdir[1], 0);
+    var r3d = [];
+    vec3.cross(r3d, f3d, dir3d);
+
+    var rad = Math.acos(cosTheta);  // radian to roate
+    if (r3d[2] < 0) {
+        rad = -rad;
+    }
+
+    // Step E: rotate the facing direction with the angle and rate
+    rad *= rate;  // actual angle need to rotate from Obj's front
+    vec2.rotate(this.getCurrentFrontDir(), this.getCurrentFrontDir(), rad);
+    this.getXform().incRotationByRad(rad);
+};
+
+GameObject.prototype.shake = function (xDelta, yDelta, shakeFrequency, duration) {
+    this.mGameObjectShake = new GameObjectShake(this.mGameObjectState, xDelta, yDelta, shakeFrequency, duration);
+};
+
+GameObject.prototype.interpolateBy = function (dx, dy) {
+    var oldC = vec2.clone(this.getXform().getPosition());
+    oldC[0] += dx;
+    oldC[1] += dy;
+    this.mGameObjectState.setCenter(oldC);
 };

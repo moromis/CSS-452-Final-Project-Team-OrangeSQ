@@ -74,20 +74,17 @@ Hero.prototype.update = function () {
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-
-        if (this.mState !== state.EXTENDING) {
-
-            xform.incXPosBy(-this.movementSpeed);
-
+        if(this.mState !== state.EXTENDING){
+            this.interpolateBy(-this.kDelta,0);
+            
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
         }
-
-    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-
-        if (this.mState !== state.EXTENDING) {
-
-            xform.incXPosBy(this.movementSpeed);
+        
+    }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+        
+        if(this.mState !== state.EXTENDING){
+            this.interpolateBy(this.kDelta,0);
 
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
@@ -197,6 +194,7 @@ Hero.prototype._updateAnimation = function () {
                     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 0, 0);
                     break;
                 case state.WALKING:
+
                     if (this.justStartedWalking) {
                         this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
                         this.justStartedWalking = !this.justStartedWalking;
