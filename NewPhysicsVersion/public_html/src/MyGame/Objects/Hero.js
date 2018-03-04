@@ -47,7 +47,7 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
 //    console.log(this);
 
     var pos = xform.getPosition();
-    r.setMass(0.7);
+    r.setMass(0.01);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
     r.setDrawBounds(true);
