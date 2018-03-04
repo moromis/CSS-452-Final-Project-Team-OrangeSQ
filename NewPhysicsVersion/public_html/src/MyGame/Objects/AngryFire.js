@@ -48,7 +48,8 @@ gEngine.Core.inheritPrototype(AngryFire, GameObject);
 AngryFire.prototype.shouldDie = function () {
     
     if(!this.isVisible() && this.mParticles === null) {
-            return true;
+        this.mlight.setLightTo(false);
+        return true;
     }
     
     return false;
@@ -101,9 +102,13 @@ AngryFire.prototype.update = function () {
     //call parent update
     GameObject.prototype.update.call(this);
     
-    var currentPos = this.getXform().getPosition();
+    var pos = this.getXform().getPosition();
     
     if(this.isVisible()){
+        
+        if(pos[1] < 0){
+            this.setVisibility(false);
+        }
         
         //update Y position    
         this.interpolateBy(0,-this.kDelta);
@@ -112,9 +117,9 @@ AngryFire.prototype.update = function () {
         
         //update X position
         this.rotateObjPointTo(this.heroPos,0.1);
-        if(currentPos[0] > this.heroPos[0])
+        if(pos[0] > this.heroPos[0])
             this.getXform().incXPosBy(-1.5);
-        else if(currentPos[0] < this.heroPos[0])
+        else if(pos[0] < this.heroPos[0])
             this.getXform().incXPosBy(1.5);
 
         //update the sprite's animation    

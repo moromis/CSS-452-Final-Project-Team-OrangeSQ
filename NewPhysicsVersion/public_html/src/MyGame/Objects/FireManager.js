@@ -36,14 +36,20 @@ FireManager.prototype.incrementScoreBy = function (increment){
 
 FireManager.prototype.update = function (){
   
+//  console.log(this.size());
+  
     Manager.prototype.update.call(this);
     
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
         this.autoSpawn();
     }
     
-    this.low *= 0.999;
-    this.high *= 0.999;
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
+        this._createObject();
+    }
+    
+    this.low *= 0.9999;
+    this.high *= 0.9999;
     this.setLowAndHigh(this.low, this.high);
 };
 
@@ -57,7 +63,7 @@ FireManager.prototype._createObject = function () {
     if(this.size() < this.maxFires){
         
         //create light
-        if(randomNumber >=42 && randomNumber <= 62){
+        if(randomNumber >=42 && randomNumber <= 48){
             var mObject = new AngryFire(this.angryFireTexture, this.heroPos, this.mBg, this.igloo);
             this.addToSet(mObject);
 

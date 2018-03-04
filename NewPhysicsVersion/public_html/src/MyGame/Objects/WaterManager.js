@@ -51,7 +51,7 @@ WaterManager.prototype.retract = function () {
 WaterManager.prototype.update = function () {
     
     Manager.prototype.update.call(this);
-    if(this.numberOfSegments < this.maxNumOfSegments && gEngine.Input.isKeyPressed(gEngine.Input.keys.Up) && !this.reset){
+    if(this.numberOfSegments < this.maxNumOfSegments && gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && !this.reset){
         this.extend();
     }else if(this.numberOfSegments === this.maxNumOfSegments){
         this.reset = true;
@@ -61,7 +61,7 @@ WaterManager.prototype.update = function () {
         this.retract();
         if(this.numberOfSegments === 0)
             this.reset = false;
-    }else if(!gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)){
+    }else if(!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)){
         this.retract();
     }
     

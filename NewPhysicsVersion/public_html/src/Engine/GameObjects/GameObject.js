@@ -36,7 +36,7 @@ function GameObject(renderableObj) {
 GameObject.prototype.addLight = function(light){
     if(this.mRenderComponent instanceof LightRenderable)
     {
-        console.log("tru");
+//        console.log("tru");
         this.mRenderComponent.addLight(light);
     }
 };

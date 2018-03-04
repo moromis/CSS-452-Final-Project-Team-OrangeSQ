@@ -46,7 +46,8 @@ gEngine.Core.inheritPrototype(Fire, GameObject);
 Fire.prototype.shouldDie = function () {
     
     if(!this.isVisible() && this.mParticles === null) {
-            return true;
+        this.mlight.setLightTo(false);
+        return true;
     }
     
     return false;
@@ -66,7 +67,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
   
     var pos = this.getXform().getPosition();
   
-    console.log(otherObjectType);
+//    console.log(otherObjectType);
   
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
        
@@ -103,7 +104,8 @@ Fire.prototype.update = function () {
     GameObject.prototype.update.call(this);
     
     if(this.isVisible()){
-        if(pos < 0){
+        
+        if(pos[1] < 0){
             this.setVisibility(false);
         }
         
@@ -126,6 +128,7 @@ Fire.prototype.update = function () {
         this.mSprite.updateAnimation();
         
     }else{
+        
         if(this.focusCamera !== null){
             CameraManager.Core.returnCamera();
             this.focusCamera = null;

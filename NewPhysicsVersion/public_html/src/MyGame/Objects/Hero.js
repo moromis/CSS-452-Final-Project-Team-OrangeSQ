@@ -38,19 +38,19 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     this.justStartedWalking = false;
 
     this.health = 3;
-    this.movementSpeed = 4;
+//    this.movementSpeed = 15;
 
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size-30, size+35);
+    var r = new RigidRectangle(xform, size / 3, size);
 //    console.log(this);
 
     r.setMass(0.01);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
     r.setDrawBounds(true);
-    //  r.setDrawBounds(true);
+      r.setDrawBounds(true);
     //r.setAcceleration(-5);
     this.setPhysicsComponent(r);
     //this.toggleDrawRenderable();
@@ -70,8 +70,11 @@ Hero.prototype.update = function () {
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        this.interpolateBy(-this.kDelta,0);
+        
         if(this.mState !== state.EXTENDING){
-            this.interpolateBy(-this.kDelta,0);
+            
             
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
@@ -79,12 +82,15 @@ Hero.prototype.update = function () {
         
     }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        this.interpolateBy(this.kDelta,0);
+        
         if(this.mState !== state.EXTENDING){
-            this.interpolateBy(this.kDelta,0);
 
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
         }
+
 
     } else {
 
@@ -93,7 +99,7 @@ Hero.prototype.update = function () {
 
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
 
         this.walking = false;
         this.mState = state.EXTENDING;
@@ -113,7 +119,7 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
         this.health--;
-        this.shake(4,1,5,50);
+//        this.shake(4,1,5,50);
     }
 
 };

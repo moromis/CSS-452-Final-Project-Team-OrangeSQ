@@ -32,6 +32,7 @@ function LightShader(vertexShaderPath, fragmentShaderPath) {
     this.mShaderLights = [];
     var i, ls;
     for (i = 0; i < this.kGLSLuLightArraySize; i++) {
+        if(i > this.kGLSLuLightArraySize) console.log("you have too many lights!");
         ls = new ShaderLightAtIndex(this.mCompiledShader, i);
         this.mShaderLights.push(ls);
     }

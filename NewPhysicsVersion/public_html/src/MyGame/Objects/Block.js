@@ -18,7 +18,7 @@ function Block(spriteTexture, size, x, y, camera) {
 
     GameObject.call(this, this.mSprite);
     
-     var rigidShape = new RigidRectangle(this.getXform(), size, size-35);
+     var rigidShape = new RigidRectangle(this.getXform(), size, size);
         rigidShape.setMass(0);  // ensures no movements!
     rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
@@ -49,13 +49,6 @@ Block.prototype.handleCollision = function (otherObjectType) {
     
     if(otherObjectType === "Fire"){
         this.setVisibility(false);
-        var rigidShape = new RigidRectangle(this.getXform(), 31, 31);
-        rigidShape.setMass(1);  // ensures no movements!
-    rigidShape.setDrawBounds(true);
-    rigidShape.setColor([0, 0, 1, 1]);
-    this.setPhysicsComponent(rigidShape);
-                //rigidShape.setMass(1);  // ensures no movements!
-    this.camera.shake(2,2,5,20);
     }
     
 };

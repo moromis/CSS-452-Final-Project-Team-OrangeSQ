@@ -23,7 +23,7 @@ function MyGame() {
     this.kIgloo = "assets/Igloo.png";
     this.kIglooNormal = "assets/IglooNormalMap.png";
     this.kbgNormal = "assets/bgNormal.png";
-    this.kAngryFire = "assets/FireWithEyes.png";
+    this.kAngryFire = "assets/FireWithEyes_2.png";
 
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
@@ -31,7 +31,7 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 40;
+    this.HeroSpeed = 80;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -40,7 +40,9 @@ function MyGame() {
     this.initialLightLevel = 100;
     this.lightLevel = 4;
 
-    this.winningScore = 25000;
+    this.nextNewBlock = 5000;
+    this.nextNewBlockCount = 0;
+    this.winningScore = 100000;
 
     this.Timer = 0;
     this.TimingAmount = 4;
@@ -128,7 +130,7 @@ MyGame.prototype.initialize = function () {
     //setup status message
     this.mRestartMsg = new FontRenderable("");
     this.mRestartMsg.setColor([1, 1, 0, 1]);
-    this.mRestartMsg.getXform().setPosition(this.CanvasWidth / 2 - 250, this.CanvasHeight / 2 - 100);
+    this.mRestartMsg.getXform().setPosition(this.CanvasWidth / 2 - 175, this.CanvasHeight / 2 - 100);
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
@@ -163,15 +165,6 @@ MyGame.prototype.initialize = function () {
             this.mBG, this.mIgloo);
     this.mWaterManager = new WaterManager(this.kWater);
 
-//    this.mAllObjs = new GameObjectSet();
-
-//    for(var i = 0; i < this.mBlockManager.size(); i++) {
-//        this.mAllObjs.addToSet(this.mBlockManager.mSet[i]);
-//    }
-//    this.mAllObjs.addToSet(this.mHero);
-//    console.log(this.mAllObjs.mSet);
-//    console.log(this.mBlockManager.mSet);
-
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
@@ -201,8 +194,6 @@ MyGame.prototype.draw = function () {
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
 
-
-
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
@@ -213,86 +204,107 @@ MyGame.prototype.update = function () {
     if (this.mHero.isAlive()) {
 
         if (this.mFireManager.getScore() < this.winningScore) {
-
+            
             CameraManager.Core.update();
             this.mCamera.update();
-
+            
             gEngine.LayerManager.updateAllLayers();
+            
+//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
+//            if(this.nextNewBlockCount > 4500){
+//                this.mBlockManager.replaceBlock();
+//            }
 
             this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
 
-            //Booting up light sequence
-            var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
-            if (intensity > this.lightLevel)
-                if (this.Timer >= this.TimingAmount) {
-                    gEngine.DefaultResources.setGlobalAmbientIntensity(intensity / 2);
-                    this.Timer = 0;
-                } else
-                    this.Timer++;
+            this.bootUpLight();
+                
+            this.checkDevKeys();
 
-            //dev key to relocate all fire objects
-            if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
-                var mousePosition = CameraManager.Core.getMouseLocation();
-                this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
-            }
+            //only need to call one way, handles collisions on both managers' objects  
+            var collisionInfo = new CollisionInfo();
 
-                //dev key to increment score
-                if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
-                    this.mFireManager.incrementScoreBy(10000);
-                }
+            //collisions (non-physics)
+            this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
+            this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
+            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
 
-                //camera checkout keys for testing
-                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
-                    this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
-                    if (this.firstCamera === null)
-                        CameraManager.Core.returnIthCamera(0);
-                }
-                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
-                    this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
-                    if (this.secondCamera === null)
-                        CameraManager.Core.returnIthCamera(1);
-                }
-                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
-                    this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
-                    if (this.thirdCamera === null)
-                        CameraManager.Core.returnIthCamera(2);
-                }
-                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
-                    this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
-                    if (this.fourthCamera === null)
-                        CameraManager.Core.returnIthCamera(3);
-                }
-                //only need to call one way, handles collisions on both managers' objects  
-                var collisionInfo = new CollisionInfo();
-
-                //collisions (non-physics)
-                this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
-                this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
-                this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
-
-                //text updates
-                this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
-                this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
-
-            } else {
-                //win message
-                this.mStatusMsg.setText("YOU WIN!");
-
-            }
+            //text updates
+            this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
+            this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
 
         } else {
-            //lose message
-            this.mStatusMsg.setText("You lose...");
-            this.mRestartMsg.setText("Press space bar to restart");
-            this.mFireManager.deleteFires();
-            if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-                gEngine.GameLoop.stop();
-            }
+            //win message
+            this.mStatusMsg.setText("YOU WIN!");
 
         }
 
-        // Hero platform
-        gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
+    } else {
+        //lose message
+        this.mStatusMsg.setText("You lose...");
+        this.mRestartMsg.setText("Press 'r' to restart");
+        this.mFireManager.deleteFires();
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+            gEngine.GameLoop.stop();
+        }
 
     }
-    ;
+
+    // Hero platform
+    gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
+
+};
+
+MyGame.prototype.bootUpLight = function () {
+  
+    //Booting up light sequence
+    var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
+    if (intensity > this.lightLevel)
+        if (this.Timer >= this.TimingAmount) {
+            gEngine.DefaultResources.setGlobalAmbientIntensity(intensity / 2);
+            this.Timer = 0;
+        } else
+            this.Timer++;
+    
+};
+
+MyGame.prototype.checkDevKeys = function () {
+  
+  
+    //dev key to relocate all fire objects
+    if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
+        var mousePosition = CameraManager.Core.getMouseLocation();
+        this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
+    }
+
+    //dev key to increment score
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.I)) {
+        this.mFireManager.incrementScoreBy(4600);
+    }
+//    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
+//        this.mFireManager.incrementScoreBy(10000);
+//    }
+
+    //camera checkout keys for testing
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
+        this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
+        if (this.firstCamera === null)
+            CameraManager.Core.returnIthCamera(0);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
+        this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
+        if (this.secondCamera === null)
+            CameraManager.Core.returnIthCamera(1);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
+        this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
+        if (this.thirdCamera === null)
+            CameraManager.Core.returnIthCamera(2);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
+        this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
+        if (this.fourthCamera === null)
+            CameraManager.Core.returnIthCamera(3);
+    }
+    
+};

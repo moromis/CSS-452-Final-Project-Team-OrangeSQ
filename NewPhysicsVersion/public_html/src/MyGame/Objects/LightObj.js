@@ -2,7 +2,7 @@
  * File: LightObj: support the creation of light for MyGame
  */
 /*jslint node: true, vars: true */
-/*global gEngine, MyGame, Light, LightSet */
+/*global gEngine, MyGame, Light, LightSet, HelperFunctions*/
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -24,9 +24,9 @@ LightObj.prototype._createALight = function (pos, color, n, f, intensity) {
 };
 
 LightObj.prototype._initializeLights = function () {
-    var red = this.generateRandomFloat(0, 1);
-    var green = this.generateRandomFloat(0, 1);
-    var blue = this.generateRandomFloat(0, 1);
+    var red = HelperFunctions.Core.generateRandomFloat(0, 1);
+    var green = HelperFunctions.Core.generateRandomFloat(0, 1);
+    var blue = HelperFunctions.Core.generateRandomFloat(0, 1);
     var l = this._createALight(
         [20, 20, 5],       // light position
         [red, green, blue, 1],  // some color
@@ -37,4 +37,4 @@ LightObj.prototype._initializeLights = function () {
 };
 
  // generates a random float in the range low to high
-LightObj.prototype.generateRandomFloat = function (low, high){ return Math.random() * (high - low) + low; };
+//LightObj.prototype.generateRandomFloat = function (low, high){ return Math.random() * (high - low) + low; };
