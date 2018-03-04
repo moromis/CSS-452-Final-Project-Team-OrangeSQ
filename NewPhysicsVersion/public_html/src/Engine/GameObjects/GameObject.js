@@ -252,8 +252,8 @@ GameObject.prototype.shake = function (xDelta, yDelta, shakeFrequency, duration)
 };
 
 GameObject.prototype.interpolateBy = function (dx, dy) {
-    var oldC = vec2.clone(this.getXform().getPosition());
-    oldC[0] += dx;
-    oldC[1] += dy;
-    this.mGameObjectState.setCenter(oldC);
+    var newC = vec2.clone(this.getXform().getPosition());
+    newC[0] += dx;
+    newC[1] += dy;
+    this.mGameObjectState.setCenter(newC);
 };

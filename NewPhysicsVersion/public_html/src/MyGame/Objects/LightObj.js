@@ -30,7 +30,7 @@ LightObj.prototype._initializeLights = function () {
     var l = this._createALight(
         [20, 20, 5],       // light position
         [red, green, blue, 1],  // some color
-        20, 50,             // Near and Far
+        10, 50,             // Near and Far
         2.89               // intensity
     );
     return l;

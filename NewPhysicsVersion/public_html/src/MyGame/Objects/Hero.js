@@ -26,7 +26,7 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(x, y);
+    this.mSprite.getXform().setPosition(x,y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.getXform().setSize(size, size);
@@ -43,7 +43,7 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size-30, size-30 + blockSize);
+    var r = new RigidRectangle(xform, size-30, size+35);
 //    console.log(this);
 
     r.setMass(0.01);

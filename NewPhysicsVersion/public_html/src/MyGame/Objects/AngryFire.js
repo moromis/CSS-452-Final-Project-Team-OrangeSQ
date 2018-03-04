@@ -27,6 +27,7 @@ function AngryFire(spriteTexture, heroPos, bg, igloo) {
     var pos = this.mSprite.getXform().getPosition();
     this.mlight.setXPos(pos[0]);
     this.mlight.setYPos(pos[1]);
+    this.mlight.setColor([1,0,1,1]);
     this.mSprite.addLight(this.mlight);
     bg.addLight(this.mlight);
     igloo.addLight(this.mlight);
@@ -78,7 +79,7 @@ AngryFire.prototype.handleCollision = function (otherObjectType) {
             this.mParticles.update(); // start emit immediately
 
             this.setVisibility(false);
-            
+            this.mlight.setLightTo(false);
         }
     }
     
@@ -107,6 +108,7 @@ AngryFire.prototype.update = function () {
         //update Y position    
         this.interpolateBy(0,-this.kDelta);
         this.mlight.setYPos(this.mSprite.getXform().getYPos());
+        this.mlight.setXPos(this.mSprite.getXform().getXPos());
         
         //update X position
         if(currentPos[0] > this.heroPos[0])
