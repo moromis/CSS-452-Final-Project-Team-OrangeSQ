@@ -148,8 +148,19 @@ MyGame.prototype.initialize = function () {
     this.mIgloo = new GameObject(igl);
 
     //initialize the block manager
-    this.mBlockManager = new BlockManager(this.kBlock, this.CameraCanvasWidth / this.BlockSize + 1, this.BlockSize, this.BlockSize / 2, this.BlockSize / (this.ScalingFactor * 2));
-    this.mFireManager = new FireManager(this.kFire, this.kAngryFire, this.mHero.getXform().getPosition(), this.SpawnTime, this.SpawnTime * 3, this.mBG, this.mIgloo);
+    this.mBlockManager = new BlockManager(
+            this.kBlock, 
+            this.CameraCanvasWidth / this.BlockSize + 1, 
+            this.BlockSize, this.BlockSize / 2, 
+            this.BlockSize / (this.ScalingFactor * 2), 
+            this.mCamera);
+    this.mFireManager = new FireManager(
+            this.kFire, 
+            this.kAngryFire, 
+            this.mHero.getXform().getPosition(), 
+            this.SpawnTime, 
+            this.SpawnTime * 3, 
+            this.mBG, this.mIgloo);
     this.mWaterManager = new WaterManager(this.kWater);
 
 //    this.mAllObjs = new GameObjectSet();

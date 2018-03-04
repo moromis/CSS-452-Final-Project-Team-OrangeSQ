@@ -113,6 +113,7 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
         this.health--;
+        this.shake(4,1,5,50);
     }
 
 };

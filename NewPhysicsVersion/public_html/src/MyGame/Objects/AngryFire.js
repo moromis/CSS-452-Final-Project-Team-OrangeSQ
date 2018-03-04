@@ -111,6 +111,7 @@ AngryFire.prototype.update = function () {
         this.mlight.setXPos(this.mSprite.getXform().getXPos());
         
         //update X position
+        this.rotateObjPointTo(this.heroPos,0.1);
         if(currentPos[0] > this.heroPos[0])
             this.getXform().incXPosBy(-1.5);
         else if(currentPos[0] < this.heroPos[0])
@@ -158,12 +159,12 @@ AngryFire.prototype.createParticle = function(atX, atY) {
     p.setFinalColor([fr, fg, fb, 0.6]);
     
     // velocity on the particle
-    var fx = 10 * Math.random() - 20 * Math.random();
-    var fy = 20 * Math.random();
+//    var fx = 10 * Math.random() - 20 * Math.random();
+//    var fy = 20 * Math.random();
 //    p.getParticle().setVelocity([fx, fy]);
     
     // size delta
-    p.setSizeDelta(0.98);
+    p.setSizeDelta(0.7);
     
     return p;
 };

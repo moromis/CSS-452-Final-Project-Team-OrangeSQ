@@ -57,7 +57,7 @@ FireManager.prototype._createObject = function () {
     if(this.size() < this.maxFires){
         
         //create light
-        if(randomNumber >=42 && randomNumber <= 52){
+        if(randomNumber >=42 && randomNumber <= 62){
             var mObject = new AngryFire(this.angryFireTexture, this.heroPos, this.mBg, this.igloo);
             this.addToSet(mObject);
 

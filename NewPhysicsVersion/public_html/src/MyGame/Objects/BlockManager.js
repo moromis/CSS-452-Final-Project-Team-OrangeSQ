@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Block: false */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
+function BlockManager (spriteTexture, blocksToCreate, size, x, y, camera) {
 //    console.log(blocksToCreate);
 //    console.log(size);
 
@@ -15,11 +15,11 @@ function BlockManager (spriteTexture, blocksToCreate, size, x, y) {
     this._placeObject(size, x -size, y+ size);
     for(var i = 0; i < blocksToCreate; i++){
         
-        this._placeObject(size, x + ((i - 1) * size), y);
+        this._placeObject(size, x + ((i - 1) * size), y, camera);
         
     }
     
-        this._placeObject(size, x - size + (blocksToCreate * size), y+ size);
+        this._placeObject(size, x - size + (blocksToCreate * size), y+ size, camera);
 
     //store x and y for "collision" considerations with regards
     //to the hero object

@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Block(spriteTexture, size, x, y) {
+function Block(spriteTexture, size, x, y, camera) {
     
     this.size = size;
     
@@ -12,6 +12,7 @@ function Block(spriteTexture, size, x, y) {
     this.mSprite.setColor([1, 1, 1, 0]);
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.getXform().setSize(size, size);
+    this.camera = camera;
    // this.mSprite.setElementPixelPositions(0, size * 2, 0, size * 2);
     
 
@@ -54,6 +55,7 @@ Block.prototype.handleCollision = function (otherObjectType) {
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);
                 //rigidShape.setMass(1);  // ensures no movements!
+    this.camera.shake(2,2,5,20);
     }
     
 };
