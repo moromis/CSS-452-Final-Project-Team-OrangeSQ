@@ -57,8 +57,10 @@ LightShader.prototype.activateShader = function (pixelColor, aCamera) {
     var numLight = 0;
     if (this.mLights !== null) {
         while (numLight < this.mLights.length) {
-            this.mShaderLights[numLight].loadToShader(aCamera, this.mLights[numLight]);
-            numLight++;
+            if (this.mShaderLights[numLight] !== undefined) {
+                this.mShaderLights[numLight].loadToShader(aCamera, this.mLights[numLight]);
+                numLight++;
+            }
         }
     }
     // switch off the left over ones.

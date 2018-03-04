@@ -53,6 +53,13 @@ Manager.prototype.getScore = function () {
     
 };
 
+Manager.prototype.deleteAll = function(){
+    for(var i = 0; i < this.size(); i++){
+            this.score += this.getObjectAt(i).getScore();
+            this.removeObjectAt(i);
+    }
+};
+
 Manager.prototype.setLowAndHigh = function (low, high) {
     
     this.low = low;

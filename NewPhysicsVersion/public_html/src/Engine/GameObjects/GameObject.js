@@ -4,7 +4,7 @@
  */
 
 /*jslint node: true, vars: true */
-/*global gEngine, vec2, vec3, BoundingBox */
+/*global gEngine, vec2, vec3, BoundingBox, IllumRenderable, LightRenderable */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -32,6 +32,14 @@ function GameObject(renderableObj) {
     this.mGameObjectState = new GameObjectState(xf.getPosition(), xf.getWidth());
     this.mGameObjectShake = null;
 }
+
+GameObject.prototype.addLight = function(light){
+    if(this.mRenderComponent instanceof LightRenderable)
+    {
+        console.log("tru");
+        this.mRenderComponent.addLight(light);
+    }
+};
 
 /**
  * Return the GameObject's Transform

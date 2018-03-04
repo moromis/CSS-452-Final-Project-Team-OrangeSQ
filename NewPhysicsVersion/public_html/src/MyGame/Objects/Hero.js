@@ -46,8 +46,7 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     var r = new RigidRectangle(xform, size-30, size-30 + blockSize);
 //    console.log(this);
 
-    var pos = xform.getPosition();
-    r.setMass(0.01);
+    r.setMass(0.5);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
     r.setDrawBounds(true);
@@ -61,9 +60,6 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
-
-    var xform = this.getXform();
-
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)) {
 

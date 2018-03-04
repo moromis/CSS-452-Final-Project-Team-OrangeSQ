@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (fireTexture, angryFireTexture, heroPos, low, high) {
+function FireManager (fireTexture, angryFireTexture, heroPos, low, high, bg, igloo) {
     
     Manager.call(this, fireTexture, Fire, low, high, true);
     
@@ -13,6 +13,8 @@ function FireManager (fireTexture, angryFireTexture, heroPos, low, high) {
     this.angryFireTexture = angryFireTexture;
     this.heroPos = heroPos;
     this.maxFires = 20;
+    this.mBg = bg;
+    this.igloo = igloo;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -37,37 +39,36 @@ FireManager.prototype.update = function (){
     Manager.prototype.update.call(this);
     
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
-        this._toggleAutospawn();
+        this.autoSpawn();
     }
     
     this.low *= 0.999;
     this.high *= 0.999;
     this.setLowAndHigh(this.low, this.high);
-    
 };
 
-FireManager.prototype._createObject = function (size, x, y) {
- 
-    var randomNumber = HelperFunctions.Core.generateRandomInt(0, 100);
-//    console.log(randomNumber);
-    
-    if(this.size() < this.maxFires){
-        if(randomNumber === 42){
+FireManager.prototype.autoSpawn = function(){
+    this._toggleAutospawn();
+};
 
-            var mObject = new AngryFire(this.angryFireTexture, this.heroPos);
+FireManager.prototype._createObject = function () {
+ 
+    var randomNumber = HelperFunctions.Core.generateRandomInt(0, 100); 
+    if(this.size() < this.maxFires){
+        
+        //create light
+        if(randomNumber === 42){
+            var mObject = new AngryFire(this.angryFireTexture, this.heroPos, this.mBg, this.igloo);
             this.addToSet(mObject);
 
         }else{
 
-            var mObject = new Fire(this.fireTexture);
+            var mObject = new Fire(this.fireTexture, this.mBg, this.igloo);
             this.addToSet(mObject);
         }
     }
 };
-//FireManager.prototype.draw = function (camera) {
-//    
-//    Manager.prototype.draw.call(this, camera);
-//    
-//};
 
-
+FireManager.prototype.deleteFires = function(){
+    this.deleteAll();
+};

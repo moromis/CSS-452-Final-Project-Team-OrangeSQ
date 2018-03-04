@@ -24,37 +24,17 @@ LightObj.prototype._createALight = function (pos, color, n, f, intensity) {
 };
 
 LightObj.prototype._initializeLights = function () {
-    this.mGlobalLightSet = new LightSet();
-
+    var red = this.generateRandomFloat(0, 1);
+    var green = this.generateRandomFloat(0, 1);
+    var blue = this.generateRandomFloat(0, 1);
     var l = this._createALight(
-        [21, 58, 5],       // Hero
-        [0.2, 0.2, 0.8, 1],  // some color
+        [20, 20, 5],       // light position
+        [red, green, blue, 1],  // some color
         20, 50,             // Near and Far
-        5.5                // intensity
+        2.89               // intensity
     );
-    this.mGlobalLightSet.addToSet(l);
-
-    l = this._createALight(
-        [24, 24, 8],           // Left minion position
-        [0.4, 0.7, 0.4, 1],    // color
-        20, 45,                // near and far
-        2.8                    // intensity
-    );
-    this.mGlobalLightSet.addToSet(l);
-
-    l = this._createALight(
-        [66, 23, 10],            // Right minion position
-        [0.7, 0.7, 0.7, 1],     // color
-        10, 35,                 // near and far
-        3                       // intensity
-    );
-    this.mGlobalLightSet.addToSet(l);
-
-    l = this._createALight(
-        [72, 57, 6],            // Center of camera 
-        [0.8, 0.6, 0.6, 1],     // color
-        15, 40,                 // near and far
-        3                       // intensity
-    );
-    this.mGlobalLightSet.addToSet(l);
+    return l;
 };
+
+ // generates a random float in the range low to high
+LightObj.prototype.generateRandomFloat = function (low, high){ return Math.random() * (high - low) + low; };

@@ -44,3 +44,14 @@ LightSet.prototype.getLightAt = function (index) {
 LightSet.prototype.addToSet = function (light) {
     this.mSet.push(light);
 };
+
+/**
+ * Remove light from lightSet
+ * @param {GameObject} obj to remove from GameObjectSet
+ * @returns {void}
+ * @memberOf GameObjectSet
+ */
+LightSet.prototype.removeFromSet = function (index) {
+    if (index > -1)
+        this.mSet.splice(index, 1);
+};

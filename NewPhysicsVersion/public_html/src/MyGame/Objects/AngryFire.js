@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function AngryFire(spriteTexture, heroPos) {
+function AngryFire(spriteTexture, heroPos, bg, igloo) {
     
     this.heroPos = heroPos;
 //    this.currentHeroPos = heroPos[0] + 8;
@@ -21,6 +21,15 @@ function AngryFire(spriteTexture, heroPos) {
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
     this.mSprite.getXform().setSize(this.size / this.downSize, this.size / this.downSize);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
+   
+    this.mlightObj = new LightObj();
+    this.mlight = this.mlightObj._initializeLights();
+    var pos = this.mSprite.getXform().getPosition();
+    this.mlight.setXPos(pos[0]);
+    this.mlight.setYPos(pos[1]);
+    this.mSprite.addLight(this.mlight);
+    bg.addLight(this.mlight);
+    igloo.addLight(this.mlight);
     GameObject.call(this, this.mSprite);
     
     this.shouldScore = false;
@@ -97,6 +106,7 @@ AngryFire.prototype.update = function () {
         
         //update Y position    
         this.interpolateBy(0,-this.kDelta);
+        this.mlight.setYPos(this.mSprite.getXform().getYPos());
         
         //update X position
         if(currentPos[0] > this.heroPos[0])
