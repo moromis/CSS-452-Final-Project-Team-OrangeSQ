@@ -6,7 +6,8 @@
 /*jslint node: true, vars: true, white: true */
 /*global gEngine, Scene, GameObjectset, TextureObject, Camera, vec2,
   Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
-  GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions */
+  GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions,
+  CameraManager*/
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -33,6 +34,11 @@ function MyGame() {
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
+    
+    this.firstCamera = null;
+    this.secondCamera = null;
+    this.thirdCamera = null;
+    this.fourthCamera = null;
     
     this.IntroLight = true;
     this.initialLightLevel = 100;
@@ -91,13 +97,6 @@ MyGame.prototype.unloadScene = function () {
 
 MyGame.prototype.initialize = function () {
     
-    this.mCamera = new Camera(
-        vec2.fromValues(this.CameraCenter, this.CameraCenter),  // position of the camera
-        this.CameraCanvasWidth,                                 // width of camera
-        [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
-    );
-    this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-    
     //setup score message
     this.mScoreMsg = new FontRenderable("Status Message");
     this.mScoreMsg.setColor([1, 1, 1, 1]);
@@ -146,15 +145,6 @@ MyGame.prototype.initialize = function () {
     
     this.mWaterManager = new WaterManager(this.kWater);
     
-//    this.mAllObjs = new GameObjectSet();
- 
-//    for(var i = 0; i < this.mBlockManager.size(); i++) {
-//        this.mAllObjs.addToSet(this.mBlockManager.mSet[i]);
-//    }
-//    this.mAllObjs.addToSet(this.mHero);
-//    console.log(this.mAllObjs.mSet);
-//    console.log(this.mBlockManager.mSet);
-    
     //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
@@ -168,6 +158,8 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
+    
+    CameraManager.Core.initCameraManager(4, this.CanvasHeight / 4);
 
 };
 
@@ -177,9 +169,8 @@ MyGame.prototype.draw = function () {
     
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
-
-    this.mCamera.setupViewProjection();
-    gEngine.LayerManager.drawAllLayers(this.mCamera);
+    
+    CameraManager.Core.draw();
     
     this.mCollisionInfos = []; 
         
@@ -194,7 +185,7 @@ MyGame.prototype.update = function () {
         
         if(this.mFireManager.getScore() < this.winningScore){
         
-            this.mCamera.update();
+            CameraManager.Core.update();
 
             gEngine.LayerManager.updateAllLayers();
 
@@ -211,12 +202,35 @@ MyGame.prototype.update = function () {
 
             //dev key to relocate all fire objects
             if(gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)){
-                this.mFireManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
+                var mousePosition = CameraManager.Core.getMouseLocation();
+                this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
             }
             
             //dev key to increment score
             if(gEngine.Input.isKeyPressed(gEngine.Input.keys.I)){
                 this.mFireManager.incrementScoreBy(10000);
+            }
+            
+            //camera checkout keys for testing
+            if(gEngine.Input.isKeyClicked(gEngine.Input.keys.One)){
+                this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
+                if(this.firstCamera === null)
+                    CameraManager.Core.returnIthCamera(0);
+            }
+            if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)){
+                this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
+                if(this.secondCamera === null)
+                    CameraManager.Core.returnIthCamera(1);
+            }
+            if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)){
+                this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
+                if(this.thirdCamera === null)
+                    CameraManager.Core.returnIthCamera(2);
+            }
+            if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)){
+                this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
+                if(this.fourthCamera === null)
+                    CameraManager.Core.returnIthCamera(3);
             }
 
              //only need to call one way, handles collisions on both managers' objects  
