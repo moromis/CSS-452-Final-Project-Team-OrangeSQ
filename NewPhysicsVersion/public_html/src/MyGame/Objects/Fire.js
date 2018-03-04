@@ -1,10 +1,10 @@
 /*jslint node: true, vars: true */
-/*global gEngine, GameObject, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable, CameraManager */
+/*global gEngine, GameObject, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Fire(spriteTexture, explosionManager, lightManager) {
+function Fire(spriteTexture, bg, igloo) {
     
     this.kDelta = 15;
     this.size = 64;
@@ -18,19 +18,25 @@ function Fire(spriteTexture, explosionManager, lightManager) {
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
     this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
+    
+    this.mlightObj = new LightObj();
+    this.mlight = this.mlightObj._initializeLights();
+    var pos = this.mSprite.getXform().getPosition();
+    this.mlight.setXPos(pos[0]);
+    this.mlight.setYPos(pos[1]);
+    this.mSprite.addLight(this.mlight);
+    bg.addLight(this.mlight);
+    igloo.addLight(this.mlight);
     GameObject.call(this, this.mSprite);
     
     this.shouldScore = false;
     this.scoreAmount = 0;
-    this.dangerHeight = 240;
-    
-    this.focusCamera = null;
     
     this.mParticles = null;
     
-     var r = new RigidRectangle(this.getXform(), this.size, this.size);
+    var r = new RigidRectangle(this.getXform(), this.size, this.size);
 
-     this.setPhysicsComponent(r);
+    this.setPhysicsComponent(r);
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
 
@@ -70,6 +76,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
             this.mParticles.update(); // start emit immediately
 
             this.setVisibility(false);
+            this.mlight.setLightTo(false);
             
         }
     }
@@ -84,7 +91,6 @@ Fire.prototype.handleCollision = function (otherObjectType) {
 Fire.prototype.relocate = function (x, y) {
   
     this.mSprite.getXform().setPosition(x, y);
-    
 };
 
 Fire.prototype.update = function () {
@@ -92,36 +98,16 @@ Fire.prototype.update = function () {
     //call parent update
     GameObject.prototype.update.call(this);
     
-    var pos = this.getXform().getPosition();
-    
     if(this.isVisible()){
         
-        if(pos < 0){
-            this.setVisibility(false);
-        }
-        
-        if(pos[1] < this.dangerHeight){
-            if(this.focusCamera === null){
-                this.focusCamera = CameraManager.Core.checkoutCamera();
-            }
-        }
-        
-        if(this.focusCamera !== null){
-            this.focusCamera.setWCCenter(pos[0], pos[1]);
-        }
-        
         //update Y position    
-        this.interpolateBy(0, -this.kDelta);
+        this.interpolateBy(0,-this.kDelta);
+        this.mlight.setYPos(this.mSprite.getXform().getYPos());
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();
         
     }else{
-        
-        if(this.focusCamera !== null){
-            CameraManager.Core.returnCamera();
-            this.focusCamera = null;
-        }
         
         if (this.mParticles !== null) {
             this.mParticles.update();  // this will remove expired particles
