@@ -6,7 +6,8 @@
 /*jslint node: true, vars: true, white: true */
 /*global gEngine, Scene, GameObjectset, TextureObject, Camera, vec2,
  Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
- GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions */
+ GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions 
+ ,CameraManager*/
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -58,6 +59,10 @@ function MyGame() {
     this.mAllObjs = null;
     this.mCollisionInfos = [];
 
+    this.firstCamera = null;
+    this.secondCamera = null;
+    this.thirdCamera = null;
+    this.fourthCamera = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -170,6 +175,7 @@ MyGame.prototype.initialize = function () {
 
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 
+    CameraManager.Core.initCameraManager(4, this.CanvasHeight / 4);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -179,10 +185,12 @@ MyGame.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
+    CameraManager.Core.draw();
+    this.mCollisionInfos = [];
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
 
-    this.mCollisionInfos = [];
+
 
 };
 
@@ -195,6 +203,7 @@ MyGame.prototype.update = function () {
 
         if (this.mFireManager.getScore() < this.winningScore) {
 
+            CameraManager.Core.update();
             this.mCamera.update();
 
             gEngine.LayerManager.updateAllLayers();
@@ -212,44 +221,67 @@ MyGame.prototype.update = function () {
 
             //dev key to relocate all fire objects
             if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
-                this.mFireManager.relocate(this.mCamera.mouseWCX(), this.mCamera.mouseWCY());
+                var mousePosition = CameraManager.Core.getMouseLocation();
+                this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
             }
 
-            //dev key to increment score
-            if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
-                this.mFireManager.incrementScoreBy(10000);
+                //dev key to increment score
+                if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
+                    this.mFireManager.incrementScoreBy(10000);
+                }
+
+                //camera checkout keys for testing
+                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
+                    this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
+                    if (this.firstCamera === null)
+                        CameraManager.Core.returnIthCamera(0);
+                }
+                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
+                    this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
+                    if (this.secondCamera === null)
+                        CameraManager.Core.returnIthCamera(1);
+                }
+                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
+                    this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
+                    if (this.thirdCamera === null)
+                        CameraManager.Core.returnIthCamera(2);
+                }
+                if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
+                    this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
+                    if (this.fourthCamera === null)
+                        CameraManager.Core.returnIthCamera(3);
+                }
+                //only need to call one way, handles collisions on both managers' objects  
+                var collisionInfo = new CollisionInfo();
+
+                //collisions (non-physics)
+                this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
+                this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
+                this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
+
+                //text updates
+                this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
+                this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
+
+            } else {
+                //win message
+                this.mStatusMsg.setText("YOU WIN!");
+
             }
-
-            //only need to call one way, handles collisions on both managers' objects  
-            var collisionInfo = new CollisionInfo();
-
-            //collisions (non-physics)
-            this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
-            this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
-            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
-
-            //text updates
-            this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
-            this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
 
         } else {
-            //win message
-            this.mStatusMsg.setText("YOU WIN!");
+            //lose message
+            this.mStatusMsg.setText("You lose...");
+            this.mRestartMsg.setText("Press space bar to restart");
+            this.mFireManager.deleteFires();
+            if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+                gEngine.GameLoop.stop();
+            }
 
         }
 
-    } else {
-        //lose message
-        this.mStatusMsg.setText("You lose...");
-        this.mRestartMsg.setText("Press space bar to restart");
-        this.mFireManager.deleteFires();
-        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-            gEngine.GameLoop.stop();
-        }
+        // Hero platform
+        gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
 
     }
-
-    // Hero platform
-    gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
-
-};
+    ;

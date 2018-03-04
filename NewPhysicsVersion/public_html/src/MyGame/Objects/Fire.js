@@ -1,5 +1,5 @@
 /*jslint node: true, vars: true */
-/*global gEngine, GameObject, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
+/*global gEngine, GameObject,CameraManager, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -31,6 +31,9 @@ function Fire(spriteTexture, bg, igloo) {
     
     this.shouldScore = false;
     this.scoreAmount = 0;
+    this.dangerHeight = 240;
+    
+    this.focusCamera = null;
     
     this.mParticles = null;
     
@@ -95,10 +98,24 @@ Fire.prototype.relocate = function (x, y) {
 
 Fire.prototype.update = function () {
     
+     var pos = this.getXform().getPosition();
     //call parent update
     GameObject.prototype.update.call(this);
     
     if(this.isVisible()){
+        if(pos < 0){
+            this.setVisibility(false);
+        }
+        
+        if(pos[1] < this.dangerHeight){
+            if(this.focusCamera === null){
+                this.focusCamera = CameraManager.Core.checkoutCamera();
+            }
+        }
+        
+        if(this.focusCamera !== null){
+            this.focusCamera.setWCCenter(pos[0], pos[1]);
+        }
         
         //update Y position    
         this.interpolateBy(0,-this.kDelta);
@@ -108,7 +125,10 @@ Fire.prototype.update = function () {
         this.mSprite.updateAnimation();
         
     }else{
-        
+        if(this.focusCamera !== null){
+            CameraManager.Core.returnCamera();
+            this.focusCamera = null;
+        }
         if (this.mParticles !== null) {
             this.mParticles.update();  // this will remove expired particles
             if (this.mParticles.size() === 0) // all gone

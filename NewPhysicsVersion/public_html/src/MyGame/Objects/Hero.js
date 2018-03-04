@@ -46,7 +46,7 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     var r = new RigidRectangle(xform, size-30, size-30 + blockSize);
 //    console.log(this);
 
-    r.setMass(0.5);
+    r.setMass(0.01);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
     r.setDrawBounds(true);
