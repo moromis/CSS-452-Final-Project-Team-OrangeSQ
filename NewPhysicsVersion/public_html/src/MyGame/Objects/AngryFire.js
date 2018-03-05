@@ -1,14 +1,17 @@
 /*jslint node: true, vars: true */
-/*global gEngine, GameObject,CameraManager, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
+/*global gEngine, GameObject, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Fire(spriteTexture, bg, igloo) {
+function AngryFire(spriteTexture, heroPos, bg, igloo) {
     
-    this.kDelta = 15;
+    this.heroPos = heroPos;
+//    this.currentHeroPos = heroPos[0] + 8;
+    this.kDelta = 1;
     this.size = 64;
-    this.downSize = 1.5;
+    this.downSize = 1;
+    this.interp = null;
     
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -16,14 +19,15 @@ function Fire(spriteTexture, bg, igloo) {
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
-    this.mSprite.getXform().setSize(this.size, this.size);
+    this.mSprite.getXform().setSize(this.size / this.downSize, this.size / this.downSize);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
-    
+   
     this.mlightObj = new LightObj();
     this.mlight = this.mlightObj._initializeLights();
     var pos = this.mSprite.getXform().getPosition();
     this.mlight.setXPos(pos[0]);
     this.mlight.setYPos(pos[1]);
+    this.mlight.setColor([1,0,1,1]);
     this.mSprite.addLight(this.mlight);
     bg.addLight(this.mlight);
     igloo.addLight(this.mlight);
@@ -31,19 +35,17 @@ function Fire(spriteTexture, bg, igloo) {
     
     this.shouldScore = false;
     this.scoreAmount = 0;
-    this.dangerHeight = 240;
-    
-    this.focusCamera = null;
     
     this.mParticles = null;
     
-    var r = new RigidRectangle(this.getXform(), this.size, this.size);
+     var r = new RigidRectangle(this.getXform(), 31, 62);
+     r.setDrawBounds(true);
 
-    this.setPhysicsComponent(r);
+     this.setPhysicsComponent(r);
 }
-gEngine.Core.inheritPrototype(Fire, GameObject);
+gEngine.Core.inheritPrototype(AngryFire, GameObject);
 
-Fire.prototype.shouldDie = function () {
+AngryFire.prototype.shouldDie = function () {
     
     if(!this.isVisible() && this.mParticles === null) {
         this.mlight.setLightTo(false);
@@ -54,23 +56,21 @@ Fire.prototype.shouldDie = function () {
     
 };
 
-Fire.prototype.getScore = function () {
+AngryFire.prototype.getScore = function () {
     
     if(this.shouldScore)
-        return Math.floor(this.scoreAmount);
+        return Math.floor(this.scoreAmount * 1.5);
     else
         return 0;
     
 };
 
-Fire.prototype.handleCollision = function (otherObjectType) {
+AngryFire.prototype.handleCollision = function (otherObjectType) {
   
     var pos = this.getXform().getPosition();
   
-//    console.log(otherObjectType);
-  
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
-       
+        
         if(this.isVisible()){
 
             this.mParticles = new ParticleGameObjectSet();
@@ -81,7 +81,6 @@ Fire.prototype.handleCollision = function (otherObjectType) {
 
             this.setVisibility(false);
             this.mlight.setLightTo(false);
-            
         }
     }
     
@@ -89,19 +88,21 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         this.shouldScore = true;
         this.scoreAmount = pos[1];
     }
-       
+    
 };
 
-Fire.prototype.relocate = function (x, y) {
+AngryFire.prototype.relocate = function (x, y) {
   
     this.mSprite.getXform().setPosition(x, y);
+    
 };
 
-Fire.prototype.update = function () {
+AngryFire.prototype.update = function () {
     
-     var pos = this.getXform().getPosition();
     //call parent update
     GameObject.prototype.update.call(this);
+    
+    var pos = this.getXform().getPosition();
     
     if(this.isVisible()){
         
@@ -109,30 +110,23 @@ Fire.prototype.update = function () {
             this.setVisibility(false);
         }
         
-        if(pos[1] < this.dangerHeight){
-            if(this.focusCamera === null){
-                this.focusCamera = CameraManager.Core.checkoutCamera();
-            }
-        }
-        
-        if(this.focusCamera !== null){
-            this.focusCamera.setWCCenter(pos[0], pos[1]);
-        }
-        
         //update Y position    
         this.interpolateBy(0,-this.kDelta);
         this.mlight.setYPos(this.mSprite.getXform().getYPos());
         this.mlight.setXPos(this.mSprite.getXform().getXPos());
+        
+        //update X position
+        this.rotateObjPointTo(this.heroPos,0.1);
+        if(pos[0] > this.heroPos[0])
+            this.getXform().incXPosBy(-1.5);
+        else if(pos[0] < this.heroPos[0])
+            this.getXform().incXPosBy(1.5);
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();
         
     }else{
         
-        if(this.focusCamera !== null){
-            CameraManager.Core.returnCamera();
-            this.focusCamera = null;
-        }
         if (this.mParticles !== null) {
             this.mParticles.update();  // this will remove expired particles
             if (this.mParticles.size() === 0) // all gone
@@ -142,7 +136,7 @@ Fire.prototype.update = function () {
     }
 };
 
-Fire.prototype.draw = function (camera) {
+AngryFire.prototype.draw = function (camera) {
   
     // draw the projectile only if it has some interesting speed
     if (this.mParticles !== null) {
@@ -153,20 +147,20 @@ Fire.prototype.draw = function (camera) {
 
 };
 
-Fire.prototype.createParticle = function(atX, atY) {
+AngryFire.prototype.createParticle = function(atX, atY) {
     
     var life = 30 + Math.random() * 200;
     var p = new ParticleGameObject("assets/particle.png", atX, atY, life);
     p.getRenderable().setColor([1, 0.2, 0, 1]);
     
     // size of the particle
-    var r = 20 + Math.random() * 2.5;
+    var r = 40 + Math.random() * 2.5;
     p.getXform().setSize(r, r);
     
     // final color
-    var fr = 0.2;
-    var fg = 0.2;
-    var fb = 0.2;
+    var fr = 0.5;
+    var fg = 0.5;
+    var fb = 0.5;
     p.setFinalColor([fr, fg, fb, 0.6]);
     
     // velocity on the particle

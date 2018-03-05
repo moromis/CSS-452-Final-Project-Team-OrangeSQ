@@ -32,6 +32,7 @@ function LightShader(vertexShaderPath, fragmentShaderPath) {
     this.mShaderLights = [];
     var i, ls;
     for (i = 0; i < this.kGLSLuLightArraySize; i++) {
+        if(i > this.kGLSLuLightArraySize) console.log("you have too many lights!");
         ls = new ShaderLightAtIndex(this.mCompiledShader, i);
         this.mShaderLights.push(ls);
     }
@@ -57,8 +58,10 @@ LightShader.prototype.activateShader = function (pixelColor, aCamera) {
     var numLight = 0;
     if (this.mLights !== null) {
         while (numLight < this.mLights.length) {
-            this.mShaderLights[numLight].loadToShader(aCamera, this.mLights[numLight]);
-            numLight++;
+            if (this.mShaderLights[numLight] !== undefined) {
+                this.mShaderLights[numLight].loadToShader(aCamera, this.mLights[numLight]);
+                numLight++;
+            }
         }
     }
     // switch off the left over ones.

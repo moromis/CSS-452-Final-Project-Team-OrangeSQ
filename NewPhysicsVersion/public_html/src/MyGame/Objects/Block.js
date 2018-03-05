@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Block(spriteTexture, size, x, y) {
+function Block(spriteTexture, size, x, y, camera) {
     
     this.size = size;
     
@@ -12,12 +12,13 @@ function Block(spriteTexture, size, x, y) {
     this.mSprite.setColor([1, 1, 1, 0]);
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.getXform().setSize(size, size);
+    this.camera = camera;
    // this.mSprite.setElementPixelPositions(0, size * 2, 0, size * 2);
     
 
     GameObject.call(this, this.mSprite);
     
-     var rigidShape = new RigidRectangle(this.getXform(), 31, 31);
+     var rigidShape = new RigidRectangle(this.getXform(), size, size);
         rigidShape.setMass(0);  // ensures no movements!
     rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
@@ -48,13 +49,6 @@ Block.prototype.handleCollision = function (otherObjectType) {
     
     if(otherObjectType === "Fire"){
         this.setVisibility(false);
-        var rigidShape = new RigidRectangle(this.getXform(), 31, 31);
-        rigidShape.setMass(1);  // ensures no movements!
-    rigidShape.setDrawBounds(true);
-    rigidShape.setColor([0, 0, 1, 1]);
-    this.setPhysicsComponent(rigidShape);
-                //rigidShape.setMass(1);  // ensures no movements!
-
     }
     
 };

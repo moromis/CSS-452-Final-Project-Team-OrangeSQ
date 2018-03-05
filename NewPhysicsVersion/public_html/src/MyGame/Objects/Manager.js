@@ -53,6 +53,13 @@ Manager.prototype.getScore = function () {
     
 };
 
+Manager.prototype.deleteAll = function(){
+    for(var i = 0; i < this.size(); i++){
+            this.score += this.getObjectAt(i).getScore();
+            this.removeObjectAt(i);
+    }
+};
+
 Manager.prototype.setLowAndHigh = function (low, high) {
     
     this.low = low;
@@ -91,11 +98,15 @@ Manager.prototype.checkCollisionsWith = function (obj, collisionInfo) {
         
         if(collided){
             
-            //this manager's object, handle the collision
-            this.getObjectAt(i).handleCollision(obj.name);
+            if(this.getObjectAt(i).isVisible() && obj.isVisible()){
+                
+                //this manager's object, handle the collision
+                this.getObjectAt(i).handleCollision(obj.constructor.name);
 
-            //passed object, handle the collision
-            obj.handleCollision(this.getObjectType());
+                //passed object, handle the collision
+                obj.handleCollision(this.getObjectType());
+            
+            }
         }
     }
 };
@@ -120,10 +131,10 @@ Manager.prototype._createObject = function () {
     
 };
 
-Manager.prototype._placeObject = function (size, x, y) {
+Manager.prototype._placeObject = function (size, x, y, camera) {
  
     //add a new patrol to the set
-    var mObject = new this.object(this.sprite, size, x, y);
+    var mObject = new this.object(this.sprite, size, x, y, camera);
     this.addToSet(mObject);
     
 };

@@ -99,3 +99,8 @@ GameObjectSet.prototype.removeObjectAt = function (index) {
     if (index > -1)
         this.mSet.splice(index, 1);
 };
+
+GameObjectSet.prototype.addObjectAt = function (index, item) {
+    if (index > -1)
+        this.mSet.splice(index, 0, item);
+};

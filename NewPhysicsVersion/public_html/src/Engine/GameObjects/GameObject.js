@@ -4,7 +4,7 @@
  */
 
 /*jslint node: true, vars: true */
-/*global vec2, vec3, BoundingBox */
+/*global gEngine, vec2, vec3, BoundingBox, IllumRenderable, LightRenderable */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -21,9 +21,25 @@ function GameObject(renderableObj) {
     this.mRenderComponent = renderableObj;
     this.mVisible = true;
     this.mCurrentFrontDir = vec2.fromValues(0, 1);  // this is the current front direction of the object
-    this.mSpeed = 0;
     this.mPhysicsComponent = null;
+    this.mRigidBody = null;
+    this.mDrawRenderable = true;
+    this.mDrawRigidShape = false; 
+    //custom additions - SS    
+    this.mSpeed = 0;
+    //shake variables
+    var xf = this.getXform();
+    this.mGameObjectState = new GameObjectState(xf.getPosition(), xf.getWidth());
+    this.mGameObjectShake = null;
 }
+
+GameObject.prototype.addLight = function(light){
+    if(this.mRenderComponent instanceof LightRenderable)
+    {
+//        console.log("tru");
+        this.mRenderComponent.addLight(light);
+    }
+};
 
 /**
  * Return the GameObject's Transform
@@ -58,36 +74,30 @@ GameObject.prototype.setVisibility = function (f) { this.mVisible = f; };
  */
 GameObject.prototype.isVisible = function () { return this.mVisible; };
 
-/**
- * Set the Speed of the GameObject
- * @param {Number} s new speed of GameObject
- * @returns {void}
- * @memberOf GameObject
+/* - SS
+ * set speed of object
+ * @param {int} s
  */
-GameObject.prototype.setSpeed = function (s) { this.mSpeed = s; };
+GameObject.prototype.setSpeed = function (s) {
+    this.mSpeed = s;
+};
+/* -SS
+ * get current speed
+ * @returns {Number}
+ */
+GameObject.prototype.getSpeed = function () {
+    return this.mSpeed;
+};
+/* -SS
+ * change speed by delta
+ * @param {number} delta
+ */
+GameObject.prototype.incSpeedBy = function (delta) {
+    this.mSpeed += delta;
+};
 
-/**
- * Return the speed og the GameObject
- * @returns {Number} Speed of GameObject
- * @memberOf GameObject
- */
-GameObject.prototype.getSpeed = function () { return this.mSpeed; };
-
-/**
- * Increment the speed by delta
- * @param {Number} delta to increment the speed by
- * @returns {void}
- * @memberOf GameObject
- */
-GameObject.prototype.incSpeedBy = function (delta) { this.mSpeed += delta; };
-
-/**
- * Set the front vector of the GameObject
- * @param {vec2} f new front vector
- * @returns {void}
- * @memberOf GameObject
- */
 GameObject.prototype.setCurrentFrontDir = function (f) { vec2.normalize(this.mCurrentFrontDir, f); };
+
 
 /**
  * Return the front vector of the GameObject
@@ -102,7 +112,6 @@ GameObject.prototype.getCurrentFrontDir = function () { return this.mCurrentFron
  * @memberOf GameObject
  */
 GameObject.prototype.getRenderable = function () { return this.mRenderComponent; };
-
 /**
  * Set the Physics Component for the GameObject
  * @param {RigidShape} p new Physics Compenent of the GameObject
@@ -110,21 +119,88 @@ GameObject.prototype.getRenderable = function () { return this.mRenderComponent;
  * @memberOf GameObject
  */
 GameObject.prototype.setPhysicsComponent = function (p) { this.mPhysicsComponent = p;  };
-
+ 
 /**
  * Return the Physics Component for the GameObject
  * @returns {RigidShape} Physics Compenent of the GameObject
  * @memberOf GameObject
  */
 GameObject.prototype.getPhysicsComponent = function () { return this.mPhysicsComponent; };
+ 
 
+GameObject.prototype.setRigidBody = function (r) {
+    this.mRigidBody = r;
+};
+GameObject.prototype.getRigidBody = function () { return this.mRigidBody; };
+GameObject.prototype.toggleDrawRenderable = function() { 
+    this.mDrawRenderable = !this.mDrawRenderable; };
+GameObject.prototype.toggleDrawRigidShape = function() { 
+    this.mDrawRigidShape = !this.mDrawRigidShape; };
+
+GameObject.prototype.isCollidingWith = function (o) { var h = []; return this.pixelTouches(o, h); };
+
+GameObject.prototype.update = function () {
+    
+    // simple default behavior
+    var pos = this.getXform().getPosition();
+    vec2.scaleAndAdd(pos, pos, this.getCurrentFrontDir(), this.getSpeed());
+ 
+    if (this.mPhysicsComponent !== null) {
+        this.mPhysicsComponent.update();
+    }
+    
+    // simple default behavior
+    if (this.mRigidBody !== null)
+            this.mRigidBody.update();
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.T)) {
+        this.toggleDrawRenderable();
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.B)) {
+        if (this.mRigidBody !== null)
+            this.mRigidBody.toggleDrawBound();
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        this.toggleDrawRigidShape();
+    }
+    
+        //object shake - SS
+        //needed for interpolate as well
+    if (this.mGameObjectShake !== null) {
+        var tempPos = vec2.fromValues(this.mGameObjectShake.getCenter()[0], this.mGameObjectShake.getCenter()[1]);
+        this.getXform().setXPos(tempPos[0]);
+        this.getXform().setYPos(tempPos[1]);
+        if (this.mGameObjectShake.shakeDone()) {
+            this.mGameObjectShake = null;
+            this.die = true;
+        } else {
+            this.mGameObjectShake.setRefCenter(this.getXform().getPosition());
+            this.mGameObjectShake.updateShakeState();
+        }
+    }
+
+    this.mGameObjectState.updateGameObjectState();
+};
+ 
 /**
- * Orientate the entire object to point towards point p<p>
- * will rotate Xform() accordingly
- * @param {vec2} p position to rotate to
- * @param {Number} rate rate of turn towards point
+ * Draw function called by GameLoop
+ * @param {Camera} aCamera Camera to draw too
  * @returns {void}
  * @memberOf GameObject
+ */
+GameObject.prototype.draw = function (aCamera) {
+    if (this.isVisible()) {
+        this.mRenderComponent.draw(aCamera);
+    }
+    if (this.mPhysicsComponent !== null) {
+        this.mPhysicsComponent.draw(aCamera);
+    }
+};
+
+
+// Orientate the entire object to point towards point p
+// will rotate Xform() accordingly
+/*
+ * rotate object towards (p) at the rate of(rate)
  */
 GameObject.prototype.rotateObjPointTo = function (p, rate) {
     // Step A: determine if reach the destination position p
@@ -171,32 +247,13 @@ GameObject.prototype.rotateObjPointTo = function (p, rate) {
     this.getXform().incRotationByRad(rad);
 };
 
-/**
- * Update Function called by GameLoop
- * @returns {void}
- * @memberOf GameObject
- */
-GameObject.prototype.update = function () {
-    // simple default behavior
-    var pos = this.getXform().getPosition();
-    vec2.scaleAndAdd(pos, pos, this.getCurrentFrontDir(), this.getSpeed());
-
-    if (this.mPhysicsComponent !== null) {
-        this.mPhysicsComponent.update();
-    }
+GameObject.prototype.shake = function (xDelta, yDelta, shakeFrequency, duration) {
+    this.mGameObjectShake = new GameObjectShake(this.mGameObjectState, xDelta, yDelta, shakeFrequency, duration);
 };
 
-/**
- * Draw function called by GameLoop
- * @param {Camera} aCamera Camera to draw too
- * @returns {void}
- * @memberOf GameObject
- */
-GameObject.prototype.draw = function (aCamera) {
-    if (this.isVisible()) {
-        this.mRenderComponent.draw(aCamera);
-    }
-    if (this.mPhysicsComponent !== null) {
-        this.mPhysicsComponent.draw(aCamera);
-    }
+GameObject.prototype.interpolateBy = function (dx, dy) {
+    var newC = vec2.clone(this.getXform().getPosition());
+    newC[0] += dx;
+    newC[1] += dy;
+    this.mGameObjectState.setCenter(newC);
 };
