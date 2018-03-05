@@ -267,7 +267,7 @@ MyGame.prototype.update = function () {
     } else {
         //lose message
         this.isLost = true;
-        //gEngine.GameLoop.stop(); //restart game
+        gEngine.GameLoop.stop(); //restart game
     }
 
     // Hero platform
