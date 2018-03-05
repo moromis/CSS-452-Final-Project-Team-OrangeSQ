@@ -254,4 +254,5 @@ GameObject.prototype.interpolateBy = function (dx, dy) {
 
 GameObject.prototype.panTo = function (cx, cy) {
     this.mGameObjectState.setCenter([cx,cy]);
+    };
 };
