@@ -43,7 +43,7 @@ CameraManager.Core = (function () {
         CameraCanvasWidth,                                 // width of camera
         [0, 0, CanvasWidth, CanvasWidth]              // viewport (orgX, orgY, width, height)
         );
-        mainCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+        mainCamera.setBackgroundColor([1, 1, 1, 1]);
 
     };
 
@@ -161,7 +161,7 @@ CameraManager.Core = (function () {
             WCSize,                       // width of camera
             [point[0], point[1], VPSize, VPSize]           // viewport (orgX, orgY, width, height)
         );
-        cam.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+        cam.setBackgroundColor([1, 1, 1, 1]);
         cam.configInterpolation(1, 0.001);
 
         return cam;

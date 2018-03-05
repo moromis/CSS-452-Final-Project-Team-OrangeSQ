@@ -38,7 +38,7 @@ function MyGame() {
 
     this.IntroLight = true;
     this.initialLightLevel = 100;
-    this.lightLevel = 4;
+    this.lightLevel = 3.4;
 
     this.nextNewBlock = 5000;
     this.nextNewBlockCount = 0;
@@ -65,6 +65,7 @@ function MyGame() {
     this.secondCamera = null;
     this.thirdCamera = null;
     this.fourthCamera = null;
+    this.isLost = false;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -96,7 +97,11 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kbgNormal);
     gEngine.Textures.unloadTexture(this.kAngryFire);
 
-    var nextLevel = new StartScreen();  // load the next level
+    var nextLevel;
+    if (this.isLost)
+        nextLevel = new MyGame();  // load the next level
+    else
+        nextLevel = new StartScreen();
     gEngine.Core.startScene(nextLevel);
 };
 
@@ -107,7 +112,7 @@ MyGame.prototype.initialize = function () {
             this.CameraCanvasWidth, // width of camera
             [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
             );
-    this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+    this.mCamera.setBackgroundColor([1, 1, 1, 1]);
 
     //setup score message
     this.mScoreMsg = new FontRenderable("Status Message");
@@ -129,14 +134,12 @@ MyGame.prototype.initialize = function () {
 
     //setup status message
     this.mRestartMsg = new FontRenderable("");
-    this.mRestartMsg.setColor([1, 1, 0, 1]);
-    this.mRestartMsg.getXform().setPosition(this.CanvasWidth / 2 - 175, this.CanvasHeight / 2 - 100);
+    this.mRestartMsg.setColor([1, 1, 1, 1]);
+    this.mRestartMsg.getXform().setPosition(50, this.CanvasHeight / 2 -50);
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed);
-
-    
 
     this.mLightManager = new LightManager();
     var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
@@ -144,17 +147,17 @@ MyGame.prototype.initialize = function () {
     igl.getXform().setSize(512, 512);
     igl.getXform().setPosition(920, 320);
     var light = this.mLightManager.createLight(3);
-    light.set2DPosition([750,80]);
-    light.setColor([0.7,0.7,0,1]);
-    light.setDirection([-1,0,-2]);
+    light.set2DPosition([730, 80]);
+    light.setColor([0.7, 0.7, 0, 1]);
+    light.setDirection([-1, 0, -2]);
     light.setInner(1.5);
     light.setOuter(2.5);
     light.setNear(200);
     light.setFar(400);
     igl.addLight(light);
     this.mIgloo = new GameObject(igl);
-   
-    
+
+
     //intialize background
     var bgR = new IllumRenderable(this.kBG, this.kbgNormal);
     bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
@@ -203,7 +206,7 @@ MyGame.prototype.initialize = function () {
 MyGame.prototype.draw = function () {
 
     // Step A: clear the canvas
-    gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
+    gEngine.Core.clearCanvas([1, 1, 1, 1.0]); // clear to light gray
 
     CameraManager.Core.draw();
     this.mCollisionInfos = [];
@@ -223,9 +226,9 @@ MyGame.prototype.update = function () {
 
             CameraManager.Core.update();
             this.mCamera.update();
-            
+
             gEngine.LayerManager.updateAllLayers();
-            
+
 //            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
 //            if(this.nextNewBlockCount > 4500){
 //                this.mBlockManager.replaceBlock();
@@ -262,8 +265,8 @@ MyGame.prototype.update = function () {
 
     } else {
         //lose message
-        this.mStatusMsg.setText("You lose...");
-        this.finishGame();
+        this.isLost = true;
+        gEngine.GameLoop.stop(); //restart game
     }
 
     // Hero platform
@@ -272,10 +275,16 @@ MyGame.prototype.update = function () {
 
 MyGame.prototype.finishGame = function ()
 {
-    this.mRestartMsg.setText("Press 'r' to restart");
+
     this.mFireManager.deleteFires();
     this.mLightManager.switchOffAll();
+    gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
+    this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
+        gEngine.GameLoop.stop();
+    }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        this.isLost = true;
         gEngine.GameLoop.stop();
     }
 };
@@ -304,7 +313,7 @@ MyGame.prototype.checkDevKeys = function () {
 
     //dev key to increment score
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.I)) {
-        this.mFireManager.incrementScoreBy(4600);
+        this.mFireManager.incrementScoreBy(5000);
     }
 //    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
 //        this.mFireManager.incrementScoreBy(10000);
