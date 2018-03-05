@@ -31,7 +31,7 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 80;
+    this.HeroSpeed = 150;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -252,6 +252,10 @@ MyGame.prototype.update = function () {
 
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
+       // gEngine.Physics.processSelfSet(this.mHero);
+
+       // this._physicsSimulation();
+
 
 };
 

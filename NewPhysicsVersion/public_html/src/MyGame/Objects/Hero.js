@@ -23,10 +23,11 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
 
     this.kDelta = speed;
     this.size = size;
+    this.velocity = 1200;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(x,y);
+    this.mSprite.getXform().setPosition(x, y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.getXform().setSize(size, size);
@@ -50,8 +51,9 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
     r.setDrawBounds(true);
-      r.setDrawBounds(true);
+    r.setDrawBounds(true);
     //r.setAcceleration(-5);
+    r.setFriction(.085);
     this.setPhysicsComponent(r);
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
@@ -61,44 +63,41 @@ gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
 
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)) {
+    var v = this.getPhysicsComponent().getVelocity();
 
-        //when left or right is called for the first time, we should change
-        //the sprite sequence to a walking sprite sequence. here we change
-        //a boolean to let the state manager know that the sequence should change.
-        this.justStartedWalking = true;
-    }
-
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        this.interpolateBy(-this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
-            
-            
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
+        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        //this.interpolateBy(-this.kDelta,0);
+        v[0] = -this.kDelta;
+        if (this.mState !== state.EXTENDING) {
+            this.justStartedWalking = true;
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
         }
-        
-    }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-        
-        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        this.interpolateBy(this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
 
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
+
+        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        //this.interpolateBy(this.kDelta,0);
+        v[0] = this.kDelta;
+        if (this.mState !== state.EXTENDING) {
+            this.justStartedWalking = true;
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
         }
 
 
     } else {
-
         this.setCurrentFrontDir([0, 0]);
         this.mState = state.STANDING;
-
     }
-
+    
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+        if (v[1] < 1 && v[1] > -1) {
+            v[1] = this.velocity; // Jump velocity
+        }
+    }
+    
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
 
         this.walking = false;
