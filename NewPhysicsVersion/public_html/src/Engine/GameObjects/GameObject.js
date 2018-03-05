@@ -125,6 +125,12 @@ GameObject.prototype.setPhysicsComponent = function (p) { this.mPhysicsComponent
  * @memberOf GameObject
  */
 GameObject.prototype.getPhysicsComponent = function () { return this.mPhysicsComponent; };
+
+/**
+ * Set Physics Component to null for the GameObject
+ * @memberOf GameObject
+ */
+GameObject.prototype.removePhysicsComponent = function(){this.mPhysicsComponent = null;};
  
 
 GameObject.prototype.setRigidBody = function (r) {

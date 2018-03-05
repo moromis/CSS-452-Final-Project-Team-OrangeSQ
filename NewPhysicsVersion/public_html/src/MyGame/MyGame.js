@@ -181,7 +181,8 @@ MyGame.prototype.initialize = function () {
             this.SpawnTime,
             this.SpawnTime * 3,
             this.mBG, this.mIgloo,
-            this.mLightManager);
+            this.mLightManager,
+            this.mBlockManager);
     this.mWaterManager = new WaterManager(this.kWater);
 
     //add everything to the correct layer

@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager) {
+function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager, blockManager) {
 
     this.heroPos = heroPos;
 //    this.currentHeroPos = heroPos[0] + 8;
@@ -12,6 +12,8 @@ function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager) {
     this.size = 64;
     this.downSize = 1;
     this.interp = null;
+    this.name = "AngryFire";
+    this.blockManager = blockManager;
   
     Fire.call(this, spriteTexture,bg,igloo, lightmanager);
 
@@ -43,4 +45,14 @@ AngryFire.prototype.update = function () {
     this.mlight.setDirection(dir);
 };
 
+AngryFire.prototype.handleCollision = function (otherObjectType) {
+
+Fire.prototype.handleCollision.call(this,otherObjectType);
+
+    if (otherObjectType === "Water") {
+        this.shouldScore = true;
+        this.blockManager.reset();
+        this.scoreAmount = this.getXform().getPosition()[1]*2;
+    }
+};
 

@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (fireTexture, angryFireTexture, heroPos, low, high,bg,igloo, lightManager) {
+function FireManager (fireTexture, angryFireTexture, heroPos, low, high,bg,igloo, lightManager, blockManager) {
     
     Manager.call(this, fireTexture, Fire, low, high, true);
     
@@ -16,15 +16,14 @@ function FireManager (fireTexture, angryFireTexture, heroPos, low, high,bg,igloo
     this.mbg= bg;
     this.migloo= igloo;
     this.lightManager = lightManager;
+    this.blockManager = blockManager;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
 FireManager.prototype.relocate = function (x, y) {
     
     for(var i = 0; i < this.size(); i++) {
-        
         this.getObjectAt(i).relocate(x, y);
-        
     }
     
 };
@@ -68,7 +67,8 @@ FireManager.prototype._createObject = function () {
         if(randomNumber >=42 && randomNumber <= 58){
             var mObject = new AngryFire(this.angryFireTexture, 
             this.heroPos,this.mbg,this.migloo, 
-            this.lightManager);
+            this.lightManager,
+            this.blockManager);
             this.addToSet(mObject);
 
         }else{

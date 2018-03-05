@@ -71,13 +71,12 @@ Fire.prototype.handleCollision = function (otherObjectType) {
        
         if(this.isVisible()){
             this.setVisibility(false);
+            this.removePhysicsComponent();
             this.mParticles = new ParticleGameObjectSet();
             this.mParticles.addEmitterAt(
                     [pos[0], pos[1] - this.size / this.downSize / 2], 200,
                     this.createParticle);
             this.mParticles.update(); // start emit immediately
-
-            
         }
     }
 

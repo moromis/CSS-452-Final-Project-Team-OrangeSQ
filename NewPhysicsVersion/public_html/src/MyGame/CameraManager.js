@@ -158,7 +158,7 @@ CameraManager.Core = (function () {
         // set up the cameras
         var cam = new Camera(
             vec2.fromValues(0, 0),   // position of the camera
-            WCSize,                       // width of camera
+            WCSize+100,                       // width of camera
             [point[0], point[1], VPSize, VPSize]           // viewport (orgX, orgY, width, height)
         );
         cam.setBackgroundColor([1, 1, 1, 1]);

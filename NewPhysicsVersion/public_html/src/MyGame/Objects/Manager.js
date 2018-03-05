@@ -48,16 +48,11 @@ Manager.prototype.update = function () {
 };
 
 Manager.prototype.getScore = function () {
-
     return this.score;
-
 };
 
 Manager.prototype.deleteAll = function () {
-    for (var i = 0; i < this.size(); i++) {
-        this.score += this.getObjectAt(i).getScore();
-        this.removeObjectAt(i);
-    }
+    this.emptySet();
 };
 
 Manager.prototype.setLowAndHigh = function (low, high) {
@@ -135,7 +130,6 @@ Manager.prototype._placeObject = function (size, x, y, camera) {
     //add a new patrol to the set
     var mObject = new this.object(this.sprite, size, x, y, camera);
     this.addToSet(mObject);
-
 };
 
 
