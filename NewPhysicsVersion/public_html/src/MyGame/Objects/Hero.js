@@ -45,7 +45,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size / 3, size);
+    var r = new RigidRectangle(xform, size / 2.5, size);
 //    console.log(this);
 
     r.setMass(0.01);
@@ -66,7 +66,7 @@ Hero.prototype.update = function () {
 
     var v = this.getPhysicsComponent().getVelocity();
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
         //this.interpolateBy(-this.kDelta,0);
         v[0] = -this.kDelta;
@@ -76,10 +76,8 @@ Hero.prototype.update = function () {
             this.mState = state.WALKING;
         }
 
-    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
-
-        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        //this.interpolateBy(this.kDelta,0);
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+       if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
         v[0] = this.kDelta;
         if (this.mState !== state.EXTENDING) {
             this.justStartedWalking = true;
@@ -92,7 +90,8 @@ Hero.prototype.update = function () {
         this.mState = state.STANDING;
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)
+            || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
         if (v[1] < 1 && v[1] > -1) {
             v[1] = this.velocity; // Jump velocity
         }
