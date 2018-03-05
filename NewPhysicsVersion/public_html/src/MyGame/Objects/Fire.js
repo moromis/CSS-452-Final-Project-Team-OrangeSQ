@@ -31,6 +31,7 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
     this.dangerHeight = 240;
 
     this.focusCamera = null;
+
     this.mParticles = null;
     var r = new RigidRectangle(this.getXform(), this.size, this.size);
     this.setPhysicsComponent(r);
@@ -40,6 +41,7 @@ gEngine.Core.inheritPrototype(Fire, GameObject);
 Fire.prototype.shouldDie = function () {
 
     if (!this.isVisible() && this.mParticles === null) {
+
         this.mlight.setLightTo(false);
         return true;
     }
@@ -57,9 +59,12 @@ Fire.prototype.getScore = function () {
 Fire.prototype.handleCollision = function (otherObjectType) {
 
     var pos = this.getXform().getPosition();
-    if (otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero") {
 
-        if (this.isVisible()) {
+//    console.log(otherObjectType);
+  
+    if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
+       
+        if(this.isVisible()){
 
             this.mParticles = new ParticleGameObjectSet();
             this.mParticles.addEmitterAt(
@@ -116,6 +121,7 @@ Fire.prototype.update = function () {
 
     } else {
         if (this.focusCamera !== null) {
+
             CameraManager.Core.returnCamera();
             this.focusCamera = null;
         }

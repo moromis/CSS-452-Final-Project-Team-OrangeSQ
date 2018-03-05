@@ -251,7 +251,6 @@ GameObject.prototype.interpolateBy = function (dx, dy) {
     newC[0] += dx;
     newC[1] += dy;
     this.mGameObjectState.setCenter(newC);
-};
 
 GameObject.prototype.panTo = function (cx, cy) {
     this.mGameObjectState.setCenter([cx,cy]);

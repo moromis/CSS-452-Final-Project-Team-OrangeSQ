@@ -31,7 +31,7 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 30;
+    this.HeroSpeed = 150;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -42,7 +42,7 @@ function MyGame() {
 
     this.nextNewBlock = 5000;
     this.nextNewBlockCount = 0;
-    this.winningScore = 4000;
+    this.winningScore = 5000;
 
     this.Timer = 0;
     this.TimingAmount = 4;
@@ -223,8 +223,13 @@ MyGame.prototype.update = function () {
 
             CameraManager.Core.update();
             this.mCamera.update();
-
+            
             gEngine.LayerManager.updateAllLayers();
+            
+//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
+//            if(this.nextNewBlockCount > 4500){
+//                this.mBlockManager.replaceBlock();
+//            }
 
 //            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
 //            if(this.nextNewBlockCount > 4500){
@@ -326,5 +331,4 @@ MyGame.prototype.checkDevKeys = function () {
         if (this.fourthCamera === null)
             CameraManager.Core.returnIthCamera(3);
     }
-
 };

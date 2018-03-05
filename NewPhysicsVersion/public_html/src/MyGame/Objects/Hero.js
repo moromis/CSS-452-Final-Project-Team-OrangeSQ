@@ -24,6 +24,7 @@ function Hero(spriteTexture, size, x, y, speed) {
 
     this.kDelta = speed;
     this.size = size;
+    this.velocity = 1200;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -44,7 +45,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size / 1.5, size);
+    var r = new RigidRectangle(xform, size / 3, size);
 //    console.log(this);
 
     r.setMass(0.01);
@@ -53,6 +54,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     r.setDrawBounds(true);
     r.setDrawBounds(true);
     //r.setAcceleration(-5);
+    r.setFriction(.085);
     this.setPhysicsComponent(r);
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
@@ -62,44 +64,38 @@ gEngine.Core.inheritPrototype(Hero, GameObject);
 
 Hero.prototype.update = function () {
 
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)) {
+    var v = this.getPhysicsComponent().getVelocity();
 
-        //when left or right is called for the first time, we should change
-        //the sprite sequence to a walking sprite sequence. here we change
-        //a boolean to let the state manager know that the sequence should change.
-        this.justStartedWalking = true;
-    }
-
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        this.interpolateBy(-this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
-            
-            
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
+        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        //this.interpolateBy(-this.kDelta,0);
+        v[0] = -this.kDelta;
+        if (this.mState !== state.EXTENDING) {
+            this.justStartedWalking = true;
             this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
         }
-        
-    }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-        
-        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        this.interpolateBy(this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
 
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
+
+        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+        //this.interpolateBy(this.kDelta,0);
+        v[0] = this.kDelta;
+        if (this.mState !== state.EXTENDING) {
+            this.justStartedWalking = true;
             this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
         }
-    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up))
-    {
-            this.mDirection = direction.UP;
-            this.mState = state.WALKING;
-    }else {
 
+    } else {
         this.setCurrentFrontDir([0, 0]);
         this.mState = state.STANDING;
+    }
 
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+        if (v[1] < 1 && v[1] > -1) {
+            v[1] = this.velocity; // Jump velocity
+        }
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
@@ -122,7 +118,6 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
         this.health--;
-       // this.shake(4, 1, 5, 50);
     }
 
 };
@@ -187,8 +182,6 @@ Hero.prototype._providePrintout = function () {
     console.log("position: ", pos[0], pos[1], "state: ", statePrintout,
             " direction: ", directionPrintout, " atLeftEdge: ", this.atLeftEdge,
             " atRightEdge: ", this.atRightEdge, " canWalk: ", this._canWalk());
-
-
 };
 
 Hero.prototype._updateAnimation = function () {

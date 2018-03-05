@@ -68,6 +68,3 @@ LightObj.prototype.createSpotLight = function () {
             );
     return l;
 };
-
-// generates a random float in the range low to high
-//LightObj.prototype.generateRandomFloat = function (low, high){ return Math.random() * (high - low) + low; };

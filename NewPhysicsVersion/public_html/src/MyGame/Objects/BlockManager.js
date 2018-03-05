@@ -14,15 +14,24 @@ function BlockManager (spriteTexture, blocksToCreate, size, x, y, camera) {
     
     this.Blocks = new Array(blocksToCreate);
     this.Blocks.fill(true);
-    
-    this._placeObject(size, x -size, y+ size);
+    for(var i = 1; i < 6; i++) {
+        this._placeObject(size, x -size, y+ size * i);
+        this._placeObject(size, x - size + (blocksToCreate * size), y+ size * i);
+
+    }
+        this._placeObject(size, x + size *2, y+ size);
+    this._placeObject(size, x + size * 4, y+ size);
+
+    this._placeObject(size, x + size * 5, y+ size);
+        this._placeObject(size, x + size * 5, y+ size * 2);
+
     for(var i = 0; i < blocksToCreate; i++){
         
         this._placeObject(size, x + ((i - 1) * size), y, camera);
         
     }
-    
-        this._placeObject(size, x - size + (blocksToCreate * size), y+ size, camera);
+
+    this._placeObject(size, x - size + (blocksToCreate * size), y+ size, camera);
 
     //store x and y for "collision" considerations with regards
     //to the hero object
@@ -56,6 +65,7 @@ BlockManager.prototype.update = function (){
 //    }
 //    console.log(this.Blocks);
 //    console.log(indeces);
+
 //    
 //    var index = indeces[HelperFunctions.Core.generateRandomInt(0, indeces.length)];
 //    console.log("going to fix block", index);
@@ -64,7 +74,7 @@ BlockManager.prototype.update = function (){
 //    this.Blocks[index] === true;
 //    
 //};
-//
+
 //BlockManager.prototype._placeObjectAtIndex = function (x, y, index) {
 // 
 //    //add a new patrol to the set
@@ -72,4 +82,5 @@ BlockManager.prototype.update = function (){
 //    this.addObjectAt(index, mObject);
 //    
 //};
+
 

@@ -12,7 +12,7 @@ function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager) {
     this.size = 64;
     this.downSize = 1;
     this.interp = null;
-
+  
     Fire.call(this, spriteTexture,bg,igloo, lightmanager);
 
     this.mlight.setLightType(Light.eLightType.eSpotLight);
