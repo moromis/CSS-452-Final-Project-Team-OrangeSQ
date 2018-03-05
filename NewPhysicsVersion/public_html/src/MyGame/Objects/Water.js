@@ -42,8 +42,7 @@ Water.prototype.setDirection = function (dir) {
         offset += this.size;
         
         this.mSprite.setElementPixelPositions(offset, offset + this.size, 0, this.size);
-    }
-    
+    }    
 };
 
 Water.prototype.getScore = function () {

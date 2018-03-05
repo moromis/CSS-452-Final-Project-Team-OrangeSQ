@@ -83,6 +83,9 @@ WaterManager.prototype.updatePosition = function (pos, direction) {
         if(direction === 1)
             obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset, pos[1] + (i * this.spriteSize / divisor) + offset);
         
+        if(direction === 2)
+            obj.getXform().setPosition(pos[0] + i+ offset, pos[1] + i+ offset);
+        
         obj.setDirection(direction);
     }
 };

@@ -15,7 +15,7 @@
 function MyGame() {
 
     this.kSnowman = "assets/Snowman@2x.png";
-    this.kBlock = "assets/Block@2x.png";
+    this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
     this.kBG = "assets/BG.png";
@@ -42,7 +42,7 @@ function MyGame() {
 
     this.nextNewBlock = 5000;
     this.nextNewBlockCount = 0;
-    this.winningScore = 100000;
+    this.winningScore = 5000;
 
     this.Timer = 0;
     this.TimingAmount = 4;
@@ -134,35 +134,51 @@ MyGame.prototype.initialize = function () {
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
-    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed, this.BlockSize);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed);
 
+    
+
+    this.mLightManager = new LightManager();
+    var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
+    igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
+    igl.getXform().setSize(512, 512);
+    igl.getXform().setPosition(920, 320);
+    var light = this.mLightManager.createLight(3);
+    light.set2DPosition([750,80]);
+    light.setColor([0.7,0.7,0,1]);
+    light.setDirection([-1,0,-2]);
+    light.setInner(1.5);
+    light.setOuter(2.5);
+    light.setNear(200);
+    light.setFar(400);
+    igl.addLight(light);
+    this.mIgloo = new GameObject(igl);
+   
+    
     //intialize background
     var bgR = new IllumRenderable(this.kBG, this.kbgNormal);
     bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
+    bgR.addLight(this.mLightManager.createLight(2));
+    bgR.addLight(light);
     this.mBG = new GameObject(bgR);
-
-    var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
-    igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
-    igl.getXform().setSize(512, 512);
-    igl.getXform().setPosition(920, 320);
-    this.mIgloo = new GameObject(igl);
 
     //initialize the block manager
     this.mBlockManager = new BlockManager(
-            this.kBlock, 
-            this.CameraCanvasWidth / this.BlockSize + 1, 
-            this.BlockSize, this.BlockSize / 2, 
-            this.BlockSize / (this.ScalingFactor * 2), 
+            this.kBlock,
+            this.CameraCanvasWidth / this.BlockSize + 1,
+            this.BlockSize, this.BlockSize / 2,
+            this.BlockSize / (this.ScalingFactor * 2),
             this.mCamera);
     this.mFireManager = new FireManager(
-            this.kFire, 
-            this.kAngryFire, 
-            this.mHero.getXform().getPosition(), 
-            this.SpawnTime, 
-            this.SpawnTime * 3, 
-            this.mBG, this.mIgloo);
+            this.kFire,
+            this.kAngryFire,
+            this.mHero.getXform().getPosition(),
+            this.SpawnTime,
+            this.SpawnTime * 3,
+            this.mBG, this.mIgloo,
+            this.mLightManager);
     this.mWaterManager = new WaterManager(this.kWater);
 
     //add everything to the correct layer
@@ -204,7 +220,7 @@ MyGame.prototype.update = function () {
     if (this.mHero.isAlive()) {
 
         if (this.mFireManager.getScore() < this.winningScore) {
-            
+
             CameraManager.Core.update();
             this.mCamera.update();
             
@@ -215,10 +231,15 @@ MyGame.prototype.update = function () {
 //                this.mBlockManager.replaceBlock();
 //            }
 
+//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
+//            if(this.nextNewBlockCount > 4500){
+//                this.mBlockManager.replaceBlock();
+//            }
+
             this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
 
             this.bootUpLight();
-                
+
             this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
@@ -236,31 +257,31 @@ MyGame.prototype.update = function () {
         } else {
             //win message
             this.mStatusMsg.setText("YOU WIN!");
-
+            this.finishGame();
         }
 
     } else {
         //lose message
         this.mStatusMsg.setText("You lose...");
-        this.mRestartMsg.setText("Press 'r' to restart");
-        this.mFireManager.deleteFires();
-        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
-            gEngine.GameLoop.stop();
-        }
-
+        this.finishGame();
     }
 
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
-       // gEngine.Physics.processSelfSet(this.mHero);
+};
 
-       // this._physicsSimulation();
-
-
+MyGame.prototype.finishGame = function ()
+{
+    this.mRestartMsg.setText("Press 'r' to restart");
+    this.mFireManager.deleteFires();
+    this.mLightManager.switchOffAll();
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        gEngine.GameLoop.stop();
+    }
 };
 
 MyGame.prototype.bootUpLight = function () {
-  
+
     //Booting up light sequence
     var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
     if (intensity > this.lightLevel)
@@ -269,12 +290,12 @@ MyGame.prototype.bootUpLight = function () {
             this.Timer = 0;
         } else
             this.Timer++;
-    
+
 };
 
 MyGame.prototype.checkDevKeys = function () {
-  
-  
+
+
     //dev key to relocate all fire objects
     if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
         var mousePosition = CameraManager.Core.getMouseLocation();
@@ -310,5 +331,4 @@ MyGame.prototype.checkDevKeys = function () {
         if (this.fourthCamera === null)
             CameraManager.Core.returnIthCamera(3);
     }
-    
 };

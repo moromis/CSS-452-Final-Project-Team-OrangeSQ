@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (fireTexture, angryFireTexture, heroPos, low, high, bg, igloo) {
+function FireManager (fireTexture, angryFireTexture, heroPos, low, high,bg,igloo, lightManager) {
     
     Manager.call(this, fireTexture, Fire, low, high, true);
     
@@ -13,8 +13,9 @@ function FireManager (fireTexture, angryFireTexture, heroPos, low, high, bg, igl
     this.angryFireTexture = angryFireTexture;
     this.heroPos = heroPos;
     this.maxFires = 20;
-    this.mBg = bg;
-    this.igloo = igloo;
+    this.mbg= bg;
+    this.migloo= igloo;
+    this.lightManager = lightManager;
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -63,13 +64,16 @@ FireManager.prototype._createObject = function () {
     if(this.size() < this.maxFires){
         
         //create light
-        if(randomNumber >=42 && randomNumber <= 48){
-            var mObject = new AngryFire(this.angryFireTexture, this.heroPos, this.mBg, this.igloo);
+
+        if(randomNumber >=42 && randomNumber <= 58){
+            var mObject = new AngryFire(this.angryFireTexture, 
+            this.heroPos,this.mbg,this.migloo, 
+            this.lightManager);
             this.addToSet(mObject);
 
         }else{
 
-            var mObject = new Fire(this.fireTexture, this.mBg, this.igloo);
+            var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
             this.addToSet(mObject);
         }
     }
@@ -77,4 +81,5 @@ FireManager.prototype._createObject = function () {
 
 FireManager.prototype.deleteFires = function(){
     this.deleteAll();
+    this.lightManager.removeLights();
 };

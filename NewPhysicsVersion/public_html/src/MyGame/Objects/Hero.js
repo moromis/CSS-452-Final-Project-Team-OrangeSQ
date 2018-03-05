@@ -16,10 +16,11 @@ var state = {
 
 var direction = {
     LEFT: 0,
-    RIGHT: 1
+    RIGHT: 1,
+    UP: 2
 };
 
-function Hero(spriteTexture, size, x, y, speed, blockSize) {
+function Hero(spriteTexture, size, x, y, speed) {
 
     this.kDelta = speed;
     this.size = size;
@@ -86,18 +87,17 @@ Hero.prototype.update = function () {
             this.mState = state.WALKING;
         }
 
-
     } else {
         this.setCurrentFrontDir([0, 0]);
         this.mState = state.STANDING;
     }
-    
+
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
         if (v[1] < 1 && v[1] > -1) {
             v[1] = this.velocity; // Jump velocity
         }
     }
-    
+
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
 
         this.walking = false;
@@ -118,7 +118,6 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
         this.health--;
-//        this.shake(4,1,5,50);
     }
 
 };
@@ -183,8 +182,6 @@ Hero.prototype._providePrintout = function () {
     console.log("position: ", pos[0], pos[1], "state: ", statePrintout,
             " direction: ", directionPrintout, " atLeftEdge: ", this.atLeftEdge,
             " atRightEdge: ", this.atRightEdge, " canWalk: ", this._canWalk());
-
-
 };
 
 Hero.prototype._updateAnimation = function () {
@@ -208,20 +205,37 @@ Hero.prototype._updateAnimation = function () {
             }
             break;
         case direction.RIGHT:
-        switch (this.mState) {
-            case state.STANDING:
-                this.mSprite.setSpriteSequence(this.size, this.size * 3, this.size, this.size, 0, 0);
-                break;
-            case state.WALKING:
-                if (this.justStartedWalking) {
-                    this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
-                    this.justStartedWalking = !this.justStartedWalking;
-                }
-                break;
-            case state.EXTENDING:
-                this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
-                break;
-        }
+            switch (this.mState) {
+                case state.STANDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 3, this.size, this.size, 0, 0);
+                    break;
+                case state.WALKING:
+                    if (this.justStartedWalking) {
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.justStartedWalking = !this.justStartedWalking;
+                    }
+                    break;
+                case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
+                    break;
+            }
+            break;
+        case direction.UP:
+            switch (this.mState) {
+                case state.STANDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 0, 0);
+                    break;
+                case state.WALKING:
+                    if (this.justStartedWalking) {
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.justStartedWalking = !this.justStartedWalking;
+                    }
+                    break;
+                case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 6, this.size, this.size, 0, 0);
+                    break;
+            }
+            break;
     }
 
 

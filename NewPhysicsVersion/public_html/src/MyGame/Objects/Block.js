@@ -8,24 +8,21 @@ function Block(spriteTexture, size, x, y, camera) {
     
     this.size = size;
     
-    this.mSprite = new TextureRenderable(spriteTexture);
+    this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.getXform().setSize(size, size);
     this.camera = camera;
-   // this.mSprite.setElementPixelPositions(0, size * 2, 0, size * 2);
-    
+
+    this.mSprite.setElementPixelPositions(0, size, 0, size);  
 
     GameObject.call(this, this.mSprite);
     
      var rigidShape = new RigidRectangle(this.getXform(), size, size);
         rigidShape.setMass(0);  // ensures no movements!
-    rigidShape.setDrawBounds(true);
+    //rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);
-
-    //this.toggleDrawRenderable();
-   // this.toggleDrawRigidShape();
 
 }
 gEngine.Core.inheritPrototype(Block, GameObject);
@@ -49,6 +46,7 @@ Block.prototype.handleCollision = function (otherObjectType) {
     
     if(otherObjectType === "Fire"){
         this.setVisibility(false);
+        this.camera.shake(3,3,5,20);
     }
     
 };

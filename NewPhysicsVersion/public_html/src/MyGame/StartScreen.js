@@ -16,7 +16,7 @@
 function StartScreen() {
     this.kBG = "assets/SplashScreen.png";
     this.BGWidth = 1024;
-    this.initialLightLevel = 5;
+    this.initialLightLevel = 3.5;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();

@@ -4,7 +4,7 @@
  */
 
 /*jslint node: true, vars: true */
-/*global gEngine, vec2, vec3, BoundingBox, IllumRenderable, LightRenderable */
+/*global gEngine, vec2, vec3, BoundingBox, IllumRenderable, LightRenderable,Hero */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -36,7 +36,6 @@ function GameObject(renderableObj) {
 GameObject.prototype.addLight = function(light){
     if(this.mRenderComponent instanceof LightRenderable)
     {
-//        console.log("tru");
         this.mRenderComponent.addLight(light);
     }
 };
@@ -140,10 +139,6 @@ GameObject.prototype.toggleDrawRigidShape = function() {
 GameObject.prototype.isCollidingWith = function (o) { var h = []; return this.pixelTouches(o, h); };
 
 GameObject.prototype.update = function () {
-    
-    // simple default behavior
-    var pos = this.getXform().getPosition();
-    vec2.scaleAndAdd(pos, pos, this.getCurrentFrontDir(), this.getSpeed());
  
     if (this.mPhysicsComponent !== null) {
         this.mPhysicsComponent.update();
@@ -256,4 +251,7 @@ GameObject.prototype.interpolateBy = function (dx, dy) {
     newC[0] += dx;
     newC[1] += dy;
     this.mGameObjectState.setCenter(newC);
+
+GameObject.prototype.panTo = function (cx, cy) {
+    this.mGameObjectState.setCenter([cx,cy]);
 };
