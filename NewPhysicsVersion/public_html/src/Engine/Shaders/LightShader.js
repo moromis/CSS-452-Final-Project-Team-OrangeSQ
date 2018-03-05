@@ -28,10 +28,11 @@ function LightShader(vertexShaderPath, fragmentShaderPath) {
     //*******WARNING***************
     // this number MUST correspond to the GLSL uLight[] array size (for LightFS.glsl and IllumFS.glsl)
     //*******WARNING********************
-    this.kGLSLuLightArraySize = 25;  // <-- make sure this is the same as LightFS.glsl and IllumFS.glsl
+    this.kGLSLuLightArraySize = 65;  // <-- make sure this is the same as LightFS.glsl and IllumFS.glsl
     this.mShaderLights = [];
     var i, ls;
     for (i = 0; i < this.kGLSLuLightArraySize; i++) {
+        if(i > this.kGLSLuLightArraySize) console.log("you have too many lights!");
         ls = new ShaderLightAtIndex(this.mCompiledShader, i);
         this.mShaderLights.push(ls);
     }

@@ -131,10 +131,10 @@ Manager.prototype._createObject = function () {
     
 };
 
-Manager.prototype._placeObject = function (size, x, y) {
+Manager.prototype._placeObject = function (size, x, y, camera) {
  
     //add a new patrol to the set
-    var mObject = new this.object(this.sprite, size, x, y);
+    var mObject = new this.object(this.sprite, size, x, y, camera);
     this.addToSet(mObject);
     
 };
