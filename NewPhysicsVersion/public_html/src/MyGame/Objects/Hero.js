@@ -51,8 +51,6 @@ function Hero(spriteTexture, size, x, y, speed) {
     r.setMass(0.01);
     r.setRestitution(0);
     r.setColor([0, 1, 0, 1]);
-    r.setDrawBounds(true);
-    r.setDrawBounds(true);
     //r.setAcceleration(-5);
     r.setFriction(.085);
     this.setPhysicsComponent(r);
@@ -61,6 +59,10 @@ function Hero(spriteTexture, size, x, y, speed) {
 
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
+
+Hero.prototype.getSprite = function(){
+  return this.mSprite;  
+};
 
 Hero.prototype.update = function () {
 

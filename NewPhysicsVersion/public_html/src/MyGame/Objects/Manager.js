@@ -1,5 +1,5 @@
 /*jslint node: true, vars: true */
-/*global gEngine: false, GameObjectSet: false, SpriteRenderable: false, HelperFunctions: false */
+/*global gEngine: false, GameObjectSet: false,Hero, SpriteRenderable: false, HelperFunctions: false */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 function Manager(spriteTexture, object, low, high, autospawn) {
@@ -91,21 +91,19 @@ Manager.prototype.checkCollisions = function (otherManager, collisionInfo) {
     }
 };
 
-Manager.prototype.checkCollisionsWith = function (obj, collisionInfo) {
+Manager.prototype.checkCollisionsWith = function (obj) {
     
     for(var i = 0; i < this.size(); i++){
-        var collided = obj.getPhysicsComponent().collided(this.getObjectAt(i).getPhysicsComponent(), collisionInfo);
-        
+        var h=[];
+        var fire = this.getObjectAt(i);
+        var collided = fire.pixelTouches(obj, h);
         if(collided){
-            
             if(this.getObjectAt(i).isVisible() && obj.isVisible()){
-                
                 //this manager's object, handle the collision
                 this.getObjectAt(i).handleCollision(obj.constructor.name);
 
                 //passed object, handle the collision
                 obj.handleCollision(this.getObjectType());
-            
             }
         }
     }

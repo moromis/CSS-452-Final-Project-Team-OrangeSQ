@@ -248,10 +248,11 @@ MyGame.prototype.update = function () {
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
 
-            //collisions (non-physics)
+            //collisions (physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
             this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
-            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
+            //per pixel collision
+            this.mFireManager.checkCollisionsWith(this.mHero);
 
             //text updates
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
@@ -266,7 +267,7 @@ MyGame.prototype.update = function () {
     } else {
         //lose message
         this.isLost = true;
-        gEngine.GameLoop.stop(); //restart game
+        //gEngine.GameLoop.stop(); //restart game
     }
 
     // Hero platform

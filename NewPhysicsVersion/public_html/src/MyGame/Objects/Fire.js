@@ -56,6 +56,11 @@ Fire.prototype.getScore = function () {
         return 0;
 };
 
+Fire.prototype.getSprite = function()
+{
+    return this.mSprite;
+};
+
 Fire.prototype.handleCollision = function (otherObjectType) {
 
     var pos = this.getXform().getPosition();
