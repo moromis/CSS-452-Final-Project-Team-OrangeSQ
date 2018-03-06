@@ -31,7 +31,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
-    this.mSprite.getXform().setSize(size, size);
+    this.mSprite.getXform().setSize(size*0.75, size*0.85);
     this.mSprite.setElementPixelPositions(0, size, 0, size);
     GameObject.call(this, this.mSprite);
 
@@ -45,7 +45,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size / 1.5, size);
+    var r = new RigidRectangle(xform, size / 2, size-20);
 //    console.log(this);
 
     r.setMass(0.01);
@@ -53,6 +53,7 @@ function Hero(spriteTexture, size, x, y, speed) {
     r.setColor([0, 1, 0, 1]);
     //r.setAcceleration(-5);
     r.setFriction(.085);
+    r.setDrawBounds(true);
     this.setPhysicsComponent(r);
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
