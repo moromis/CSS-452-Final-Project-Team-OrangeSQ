@@ -64,7 +64,7 @@ StartScreen.prototype.initialize = function () {
     this.mStatusMsg.setColor([1, 1, 1, 1]);
     this.mStatusMsg.getXform().setPosition(70, 40);
     this.mStatusMsg.setTextHeight(32);
-    this.mStatusMsg.setText("P - Requirements    SPACEBAR - Start Game...");
+    this.mStatusMsg.setText("I - Instructions    SPACEBAR - Start Game...");
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);

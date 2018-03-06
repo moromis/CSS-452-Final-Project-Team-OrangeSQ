@@ -45,7 +45,8 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size / 2, size-20);
+    //-5 so its a little less than the block size and the snowman will fall off the edge.
+    var r = new RigidRectangle(xform,(size / 2 )-5, size-20); 
 //    console.log(this);
 
     r.setMass(0.01);

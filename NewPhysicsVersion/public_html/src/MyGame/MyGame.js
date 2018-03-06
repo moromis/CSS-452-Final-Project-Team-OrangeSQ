@@ -142,20 +142,7 @@ MyGame.prototype.initialize = function () {
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed);
 
     this.mLightManager = new LightManager();
-    var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
-    igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
-    igl.getXform().setSize(512, 512);
-    igl.getXform().setPosition(920, 320);
-    var light = this.mLightManager.createLight(3);
-    light.set2DPosition([730, 80]);
-    light.setColor([0.7, 0.7, 0, 1]);
-    light.setDirection([-1, 0, -2]);
-    light.setInner(1.5);
-    light.setOuter(2.5);
-    light.setNear(200);
-    light.setFar(400);
-    igl.addLight(light);
-    this.mIgloo = new GameObject(igl);
+    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth, this.mLightManager);
 
 
     //intialize background
@@ -164,7 +151,6 @@ MyGame.prototype.initialize = function () {
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     bgR.addLight(this.mLightManager.createLight(2));
-    bgR.addLight(light);
     this.mBG = new GameObject(bgR);
 
     //initialize the block manager
@@ -185,7 +171,7 @@ MyGame.prototype.initialize = function () {
             this.mBlockManager);
     this.mWaterManager = new WaterManager(this.kWater);
 
-    //add everything to the correct layer
+    //add everything to the correct layergEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
@@ -267,12 +253,14 @@ MyGame.prototype.update = function () {
 
     } else {
         //lose message
-        this.isLost = true;
-        gEngine.GameLoop.stop(); //restart game
+        this.mStatusMsg.setText("You Lose!");
+        this.finishGame();
     }
 
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
+    gEngine.Physics.processObjSet(this.mIgloo, this.mBlockManager);
+    this.mIgloo.update();
 };
 
 MyGame.prototype.finishGame = function ()
