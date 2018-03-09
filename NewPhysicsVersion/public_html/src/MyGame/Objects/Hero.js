@@ -94,8 +94,8 @@ Hero.prototype.update = function () {
         this.mState = state.STANDING;
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)
-            || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)
+            || gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)) {
         if (v[1] < 1 && v[1] > -1) {
             v[1] = this.velocity; // Jump velocity
         }

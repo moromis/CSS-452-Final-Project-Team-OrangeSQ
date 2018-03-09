@@ -7,9 +7,7 @@
 function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager, blockManager) {
 
     this.heroPos = heroPos;
-//    this.currentHeroPos = heroPos[0] + 8;
     this.kDelta = 1;
-    this.size = 64;
     this.downSize = 1;
     this.interp = null;
     this.name = "AngryFire";
@@ -24,6 +22,9 @@ function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager, blockManager)
     this.mlight.setOuter(1.6);
     this.mlight.setIntensity(15);
     this.mlight.setColor([1,0,1,1]);
+    
+    this.mSprite.getXform().setSize(this.size, this.size);
+    this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
 }
 gEngine.Core.inheritPrototype(AngryFire, Fire);
 
@@ -36,9 +37,9 @@ AngryFire.prototype.update = function () {
     //update X position
     this.rotateObjPointTo(this.heroPos, 0.1);
     if (pos[0] > this.heroPos[0])
-        this.getXform().incXPosBy(-1.5);
+        this.getXform().incXPosBy(-1);
     else if (pos[0] < this.heroPos[0])
-        this.getXform().incXPosBy(1.5);
+        this.getXform().incXPosBy(1);
 
     var fdr = this.getCurrentFrontDir();
     var dir = vec3.fromValues(fdr[0], fdr[1], this.mlight.getDirection()[2]);
@@ -52,7 +53,7 @@ Fire.prototype.handleCollision.call(this,otherObjectType);
     if (otherObjectType === "Water") {
         this.shouldScore = true;
         this.blockManager.reset();
-        this.scoreAmount = this.getXform().getPosition()[1]*2;
+        this.scoreAmount = this.getXform().getPosition()[1] * 2;
     }
 };
 

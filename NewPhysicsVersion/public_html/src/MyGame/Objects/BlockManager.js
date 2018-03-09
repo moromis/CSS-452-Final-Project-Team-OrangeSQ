@@ -52,7 +52,7 @@ BlockManager.prototype.reset = function () {
    this.createBlocks();
 };
 
-BlockManager.prototype.createMore = function () {
+BlockManager.prototype._createMore = function () {
     this._placeObject(this.blockSize, this.x + this.blockSize * 2, this.y + this.blockSize, this.camera);
     this._placeObject(this.blockSize, this.x + this.blockSize * 4, this.y + this.blockSize, this.camera);
 
@@ -69,5 +69,5 @@ BlockManager.prototype.createBlocks = function () {
                 this.y,
                 this.camera);
     }
-    this.createMore();
+    this._createMore();
 };
