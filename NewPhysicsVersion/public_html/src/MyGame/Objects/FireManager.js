@@ -66,16 +66,16 @@ FireManager.prototype._createObject = function () {
         //create light
 
         //1 in 100 chance to spawn an angry fire
-//        if(randomNumber >= 100 && randomNumber < 200){
-//            
-//            var mObject = new AngryFire(this.angryFireTexture, 
-//            this.heroPos,this.mbg,this.migloo, 
-//            this.lightManager,
-//            this.blockManager);
-//            this.addToSet(mObject);
+        if(randomNumber >= 100 && randomNumber < 200){
+            
+            var mObject = new AngryFire(this.angryFireTexture, 
+            this.heroPos,this.mbg,this.migloo, 
+            this.lightManager,
+            this.blockManager);
+            this.addToSet(mObject);
 
         //1 in 1000 chance to spawn a meteor
-//        }else if(randomNumber === 42){
+        }else if(randomNumber === 42){
          
             var mObject = new Meteor(this.meteorTexture,
             this.mbg,
@@ -85,11 +85,11 @@ FireManager.prototype._createObject = function () {
             this.addToSet(mObject);
             
         //if we don't create a special fire, just create a normal one    
-//        }else{
-//
-//            var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
-//            this.addToSet(mObject);
-//        }
+        }else{
+
+            var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
+            this.addToSet(mObject);
+        }
     }
 };
 
