@@ -198,7 +198,7 @@ Hero.prototype._updateAnimation = function () {
                 case state.WALKING:
 
                     if (this.justStartedWalking) {
-                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 4, 0);
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;

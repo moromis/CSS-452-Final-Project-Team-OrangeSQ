@@ -16,15 +16,12 @@ function Meteor(spriteTexture, bg, igloo, lightmanager, blockManager) {
     
     this.lightColor = [1, 0, 1, 1];
 
-    this.mlight.setNear(600);
-    this.mlight.setFar(700);
-    this.mlight.setInner(1.4);
-    this.mlight.setOuter(8);
-    this.mlight.setIntensity(5);
-    this.mlight.setColor(this.lightColor);
-    
-    this.size = 96;
-    this.mSprite.getXform().setSize(this.size, this.size);
+    this.mlight.setNear(50);
+    this.mlight.setFar(100);
+    this.mlight.setInner(64);
+    this.mlight.setOuter(70);
+    this.mlight.setIntensity(2);
+    this.mlight.setColor([0.5, 0.7, 0.5, 1]);this.interpolateBy(0, -this.kDelta);
 }
 gEngine.Core.inheritPrototype(Meteor, Fire);
 
@@ -33,24 +30,17 @@ Meteor.prototype.update = function () {
     //call parent update
     Fire.prototype.update.call(this);
     
-    for(var i = 0; i < 3; i++){
-        if(this.lightColor[i] < 1) this.lightColor[i] += 0.1;
-        else this.lightColor[i] = 0;
-    }
-    this.mlight.setColor(this.lightColor);
+    //move again
+    this.interpolateBy(0, -5 * this.kDelta);
+    this.mlight.setYPos(this.mSprite.getXform().getYPos());
+    this.mlight.setXPos(this.mSprite.getXform().getXPos());
     
-    console.log(this.lightColor);
-
 };
 
 Meteor.prototype.handleCollision = function (otherObjectType) {
 
-Fire.prototype.handleCollision.call(this, otherObjectType);
+    Fire.prototype.handleCollision.call(this, otherObjectType);
 
-    if (otherObjectType === "Block") {
-        this.blockManager.deleteAll();
-    }
-    
     if (otherObjectType === "Water") {
         this.shouldScore = true;
         this.scoreAmount = this.getXform().getPosition()[1] * 5;

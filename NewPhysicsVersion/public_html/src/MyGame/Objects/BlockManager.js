@@ -22,7 +22,7 @@ function BlockManager(spriteTexture, blocksToCreate, size, x, y, camera) {
 
     //store x and y for "collision" considerations with regards
     //to the hero object
-    this.x = x - (size / 2);
+    this.x = x;
     this.y = y;
 
 }
@@ -69,5 +69,5 @@ BlockManager.prototype.createBlocks = function () {
                 this.y,
                 this.camera);
     }
-    this._createMore();
+//    this._createMore();
 };

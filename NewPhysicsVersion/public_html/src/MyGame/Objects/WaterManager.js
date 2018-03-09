@@ -8,9 +8,9 @@ function WaterManager(spriteTexture) {
     
     this.spriteSize = 64;
     this.numberOfSegments = 0;
-    this.maxNumOfSegments = 7;
+    this.maxNumOfSegments = 9;
     this.timer = 0;
-    this.timingAmount = 2;
+    this.timingAmount = 1;
     this.reset = false;
     
     Manager.call(this, spriteTexture, Water, 0, 0, 0, false);
