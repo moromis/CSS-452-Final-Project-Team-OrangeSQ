@@ -13,6 +13,7 @@
         <group>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/BlockManager.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/Bomb.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/Igloo.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/AngryFire.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/LightManager.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/MyGame.js</file>
@@ -20,11 +21,14 @@
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/WaterManager.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Instructions.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/StartScreen.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/CameraManager.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/assets/bomb.png</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/Meteor.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/index.html</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/Engine/Lights/LightSet.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/Hero.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/Fire.js</file>
+            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/Engine/Lights/Light.js</file>
             <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/Objects/LightObj.js</file>
         </group>
     </open-files>

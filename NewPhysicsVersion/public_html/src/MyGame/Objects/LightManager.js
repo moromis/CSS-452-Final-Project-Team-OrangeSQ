@@ -5,7 +5,7 @@
 
 function LightManager() {
     this.mLightSet = new LightSet();
-    this.count = -1;
+    this.count = 0;
 }
 
 LightManager.prototype.addLight = function (light) {
@@ -40,7 +40,9 @@ LightManager.prototype.createLight = function (val) {
         var lobj = new LightObj();
         light = lobj.createSpotLight();
     }
-    this.mLightSet.addToSet(light);
+    this.addLight(light);
+    
+    console.log(this.mLightSet.numLights());
     return light;
 };
 
@@ -50,6 +52,7 @@ LightManager.prototype.addLightsTo = function(obj){
 };
 
 LightManager.prototype.removeLights = function(){
+    
   for(var i=0; i< this.count; i++)
   {
       if(!this.mLightSet.getLightAt(i).isLightOn())
@@ -58,4 +61,5 @@ LightManager.prototype.removeLights = function(){
           this.count--;
       }
   }
+  
 };

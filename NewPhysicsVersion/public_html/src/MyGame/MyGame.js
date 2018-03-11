@@ -33,7 +33,6 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 300;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -145,7 +144,7 @@ MyGame.prototype.initialize = function () {
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
-    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
 
     this.mLightManager = new LightManager();
     this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth, this.mLightManager);
@@ -223,16 +222,6 @@ MyGame.prototype.update = function () {
             this.mCamera.update();
 
             gEngine.LayerManager.updateAllLayers();
-
-//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
-//            if(this.nextNewBlockCount > 4500){
-//                this.mBlockManager.replaceBlock();
-//            }
-
-//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
-//            if(this.nextNewBlockCount > 4500){
-//                this.mBlockManager.replaceBlock();
-//            }
 
             this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
 
