@@ -12,13 +12,14 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(0, 960), 640);
+    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(this.size, 960 - this.size), 640);
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
     this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
 
+    this.mLightManager = lightmanager;
    
     this.mlight = lightmanager.createLight(1);
     this.mSprite.addLight(this.mlight);
@@ -42,7 +43,9 @@ Fire.prototype.shouldDie = function () {
 
     if (!this.isVisible() && this.mParticles === null) {
 
+        console.log("fire should die, will call removeLights");
         this.mlight.setLightTo(false);
+        this.mLightManager.removeLights();
         return true;
     }
     return false;

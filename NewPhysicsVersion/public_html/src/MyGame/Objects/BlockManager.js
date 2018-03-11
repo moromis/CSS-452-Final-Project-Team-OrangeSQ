@@ -53,13 +53,23 @@ BlockManager.prototype.reset = function () {
 };
 
 BlockManager.prototype._createMore = function () {
-    this._placeObject(this.blockSize, this.x + this.blockSize * 2, this.y + this.blockSize, this.camera);
-    this._placeObject(this.blockSize, this.x + this.blockSize * 4, this.y + this.blockSize, this.camera);
-
-    this._placeObject(this.blockSize, this.x + this.blockSize * 5, this.y + this.blockSize, this.camera);
-    this._placeObject(this.blockSize, this.x + this.blockSize * 8, this.y + this.blockSize, this.camera);
-    this._placeObject(this.blockSize, this.x + this.blockSize * 9, this.y + this.blockSize, this.camera);
-    this.blockCount+=4;
+    
+    this._placeObject(this.blockSize, this.x - this.blockSize, this.y + this.blockSize, this.camera);
+    this._placeObject(this.blockSize, this.x - this.blockSize, this.y + this.blockSize * 2, this.camera);
+    this._placeObject(this.blockSize, this.x - this.blockSize, this.y + this.blockSize * 3, this.camera);
+    this._placeObject(this.blockSize, this.x - this.blockSize, this.y + this.blockSize * 4, this.camera);
+    
+    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y + this.blockSize, this.camera);
+    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y + this.blockSize * 2, this.camera);
+    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y + this.blockSize * 3, this.camera);
+    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y + this.blockSize * 4, this.camera);
+//    this._placeObject(this.blockSize, this.x + this.blockSize * 2, this.y + this.blockSize, this.camera);
+//    this._placeObject(this.blockSize, this.x + this.blockSize * 4, this.y + this.blockSize, this.camera);
+//
+//    this._placeObject(this.blockSize, this.x + this.blockSize * 5, this.y + this.blockSize, this.camera);
+//    this._placeObject(this.blockSize, this.x + this.blockSize * 8, this.y + this.blockSize, this.camera);
+//    this._placeObject(this.blockSize, this.x + this.blockSize * 9, this.y + this.blockSize, this.camera);
+//    this.blockCount+=4;
 };
 
 BlockManager.prototype.createBlocks = function () {
@@ -69,5 +79,5 @@ BlockManager.prototype.createBlocks = function () {
                 this.y,
                 this.camera);
     }
-//    this._createMore();
+    this._createMore();
 };

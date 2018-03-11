@@ -20,11 +20,9 @@ var direction = {
     UP: 2
 };
 
-function Hero(spriteTexture, size, x, y, speed) {
+function Hero(spriteTexture, size, x, y) {
 
-    this.kDelta = speed;
     this.size = size;
-    this.velocity = 1200;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -39,23 +37,26 @@ function Hero(spriteTexture, size, x, y, speed) {
     this.mDirection = direction.RIGHT;
     this.justStartedWalking = false;
 
+    this.kDelta = 300;
+    this.jumpVelocity = 400;
     this.health = 3;
-//    this.movementSpeed = 15;
+    this.friction = 0.5;
 
     this.name = "Hero";
 
     var xform = this.getXform();
+    
     //-5 so its a little less than the block size and the snowman will fall off the edge.
     this.rigidBody = new RigidRectangle(xform,(size / 2 )-5, size-20); 
 //    console.log(this);
 
-    this.rigidBody.setMass(0.01);
+    this.rigidBody.setMass(0.05);
     this.rigidBody.setRestitution(0);
     this.rigidBody.setColor([0, 1, 0, 1]);
-    //r.setAcceleration(-5);
-    this.rigidBody.setFriction(0.1);
+    this.rigidBody.setFriction(this.friction);
     this.rigidBody.setDrawBounds(true);
     this.setPhysicsComponent(this.rigidBody);
+    
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
 
@@ -69,40 +70,41 @@ Hero.prototype.getSprite = function(){
 Hero.prototype.update = function () {
 
     var v = this.getPhysicsComponent().getVelocity();
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
+        this.justStartedWalking = true;
+        this.mDirection = direction.LEFT;
+    }else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
+        this.justStartedWalking = true;
+        this.mDirection = direction.RIGHT;
+    }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        //this.interpolateBy(-this.kDelta,0);
-        v[0] = -this.kDelta;
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+            v[0] = -this.kDelta;
         if (this.mState !== state.EXTENDING) {
-            this.justStartedWalking = true;
-            this.mDirection = direction.LEFT;
             this.mState = state.WALKING;
         }
 
     } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-       if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        v[0] = this.kDelta;
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+            v[0] = this.kDelta;
         if (this.mState !== state.EXTENDING) {
-            this.justStartedWalking = true;
-            this.mDirection = direction.RIGHT;
             this.mState = state.WALKING;
         }
 
     } else {
-        this.setCurrentFrontDir([0, 0]);
         this.mState = state.STANDING;
     }
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)
             || gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)) {
         if (v[1] < 1 && v[1] > -1) {
-            v[1] = this.velocity; // Jump velocity
+            v[1] = this.jumpVelocity; // Jump velocity
         }
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
-
 
         this.rigidBody.setFriction(1);
         this.setPhysicsComponent(this.rigidBody);
@@ -110,7 +112,8 @@ Hero.prototype.update = function () {
         this.mState = state.EXTENDING;
 
     }else{
-        this.rigidBody.setFriction(0.1);
+        
+        this.rigidBody.setFriction(this.friction);
         this.setPhysicsComponent(this.rigidBody);
     }
 
@@ -204,7 +207,7 @@ Hero.prototype._updateAnimation = function () {
                 case state.WALKING:
 
                     if (this.justStartedWalking) {
-                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 4, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;
