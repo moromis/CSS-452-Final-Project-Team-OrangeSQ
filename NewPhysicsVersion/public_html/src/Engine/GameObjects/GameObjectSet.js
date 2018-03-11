@@ -24,7 +24,9 @@ function GameObjectSet() {
  * @returns {Number} count of GameObjects in set
  * @memberOf GameObjectSet
  */
-GameObjectSet.prototype.size = function () { return this.mSet.length; };
+GameObjectSet.prototype.size = function () {
+    return this.mSet.length;
+};
 
 /**
  * Return the GameObject at index
@@ -94,7 +96,6 @@ GameObjectSet.prototype.draw = function (aCamera) {
     }
 };
 
-
 GameObjectSet.prototype.removeObjectAt = function (index) {
     if (index > -1)
         this.mSet.splice(index, 1);
@@ -103,4 +104,8 @@ GameObjectSet.prototype.removeObjectAt = function (index) {
 GameObjectSet.prototype.addObjectAt = function (index, item) {
     if (index > -1)
         this.mSet.splice(index, 0, item);
+};
+
+GameObjectSet.prototype.emptySet = function () {
+    this.mSet = [];
 };

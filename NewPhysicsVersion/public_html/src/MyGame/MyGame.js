@@ -15,7 +15,7 @@
 function MyGame() {
 
     this.kSnowman = "assets/Snowman@2x.png";
-    this.kBlock = "assets/Block@2x.png";
+    this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
     this.kBG = "assets/BG.png";
@@ -24,6 +24,8 @@ function MyGame() {
     this.kIglooNormal = "assets/IglooNormalMap.png";
     this.kbgNormal = "assets/bgNormal.png";
     this.kAngryFire = "assets/FireWithEyes_2.png";
+    this.kMeteor = "assets/comet.png";
+    this.kBomb = "assets/bomb.png";
 
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
@@ -31,18 +33,17 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 80;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
 
     this.IntroLight = true;
     this.initialLightLevel = 100;
-    this.lightLevel = 4;
+    this.lightLevel = 3.4;
 
     this.nextNewBlock = 5000;
     this.nextNewBlockCount = 0;
-    this.winningScore = 100000;
+    this.winningScore = 1000000;
 
     this.Timer = 0;
     this.TimingAmount = 4;
@@ -65,6 +66,17 @@ function MyGame() {
     this.secondCamera = null;
     this.thirdCamera = null;
     this.fourthCamera = null;
+    this.isLost = false;
+    this.playedEndGameAudio = false;
+    
+    this.kFizzAudio = "assets/sounds/fizz.wav";
+    this.kExplosionAudio = "assets/sounds/explosion.wav";
+    this.kBombAudio = "assets/sounds/bmb.wav";
+    this.kStartGameAudio = "assets/sounds/";
+    this.kLoseAudio = "assets/sounds/lose.wav";
+    this.kWaterAudio = "assets/sounds/water.wav";
+    this.kGameSceneAudio = "assets/sounds/Something_Wicked.mp3";
+    this.kStartAudio = "assets/sounds/start.wav";
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -80,9 +92,34 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kIglooNormal);
     gEngine.Textures.loadTexture(this.kbgNormal);
     gEngine.Textures.loadTexture(this.kAngryFire);
+    gEngine.Textures.loadTexture(this.kMeteor);
+    gEngine.Textures.loadTexture(this.kBomb);
+    
+    //aduio
+    gEngine.AudioClips.loadAudio(this.kGameSceneAudio);
+    gEngine.AudioClips.loadAudio(this.kFizzAudio);
+        gEngine.AudioClips.loadAudio(this.kBombAudio);
+                gEngine.AudioClips.loadAudio(this.kExplosionAudio);
+
+    gEngine.AudioClips.loadAudio(this.kWaterAudio);
+    gEngine.AudioClips.loadAudio(this.kLoseAudio);
+    gEngine.AudioClips.loadAudio(this.kStartAudio);
+
+
+
 };
 
 MyGame.prototype.unloadScene = function () {
+    gEngine.AudioClips.stopBackgroundAudio();
+    gEngine.AudioClips.unloadAudio(this.kFizzAudio);
+    gEngine.AudioClips.unloadAudio(this.kWaterAudio);
+        gEngine.AudioClips.unloadAudio(this.kExplosionAudio);
+            gEngine.AudioClips.unloadAudio(this.kBombAudio);
+            gEngine.AudioClips.unloadAudio(this.kLoseAudio);
+            gEngine.AudioClips.unloadAudio(this.kStartAudio);
+
+
+
 
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kSnowman);
@@ -95,19 +132,28 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kIglooNormal);
     gEngine.Textures.unloadTexture(this.kbgNormal);
     gEngine.Textures.unloadTexture(this.kAngryFire);
+    gEngine.Textures.unloadTexture(this.kMeteor);
+    gEngine.Textures.unloadTexture(this.kBomb);
 
-    var nextLevel = new StartScreen();  // load the next level
+    var nextLevel;
+    if (this.isLost)
+        nextLevel = new MyGame();  // load the next level
+    else
+        nextLevel = new StartScreen();
     gEngine.Core.startScene(nextLevel);
 };
 
 MyGame.prototype.initialize = function () {
+    
+    gEngine.AudioClips.playBackgroundAudio(this.kGameSceneAudio);
+
 
     this.mCamera = new Camera(
             vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
             this.CameraCanvasWidth, // width of camera
             [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
             );
-    this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+    this.mCamera.setBackgroundColor([1, 1, 1, 1]);
 
     //setup score message
     this.mScoreMsg = new FontRenderable("Status Message");
@@ -129,43 +175,46 @@ MyGame.prototype.initialize = function () {
 
     //setup status message
     this.mRestartMsg = new FontRenderable("");
-    this.mRestartMsg.setColor([1, 1, 0, 1]);
-    this.mRestartMsg.getXform().setPosition(this.CanvasWidth / 2 - 175, this.CanvasHeight / 2 - 100);
+    this.mRestartMsg.setColor([1, 1, 1, 1]);
+    this.mRestartMsg.getXform().setPosition(50, this.CanvasHeight / 2 -50);
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
-    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize, this.HeroSpeed, this.BlockSize);
+    this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
+
+    this.mLightManager = new LightManager();
+    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth, this.mLightManager);
+
 
     //intialize background
     var bgR = new IllumRenderable(this.kBG, this.kbgNormal);
     bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
+    bgR.addLight(this.mLightManager.createLight(2));
     this.mBG = new GameObject(bgR);
-
-    var igl = new IllumRenderable(this.kIgloo, this.kIglooNormal);
-    igl.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth);
-    igl.getXform().setSize(512, 512);
-    igl.getXform().setPosition(920, 320);
-    this.mIgloo = new GameObject(igl);
 
     //initialize the block manager
     this.mBlockManager = new BlockManager(
-            this.kBlock, 
-            this.CameraCanvasWidth / this.BlockSize + 1, 
-            this.BlockSize, this.BlockSize / 2, 
-            this.BlockSize / (this.ScalingFactor * 2), 
+            this.kBlock,
+            this.CameraCanvasWidth / this.BlockSize + 1,
+            this.BlockSize, this.BlockSize / 2,
+            this.BlockSize / (this.ScalingFactor * 2),
             this.mCamera);
     this.mFireManager = new FireManager(
-            this.kFire, 
-            this.kAngryFire, 
-            this.mHero.getXform().getPosition(), 
-            this.SpawnTime, 
-            this.SpawnTime * 3, 
-            this.mBG, this.mIgloo);
+            this.kFire,
+            this.kAngryFire,
+            this.kMeteor,
+            this.kBomb,
+            this.mHero.getXform().getPosition(),
+            this.SpawnTime,
+            this.SpawnTime * 3,
+            this.mBG, this.mIgloo,
+            this.mLightManager,
+            this.mBlockManager);
     this.mWaterManager = new WaterManager(this.kWater);
 
-    //add everything to the correct layer
+    //add everything to the correct layergEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
@@ -187,7 +236,7 @@ MyGame.prototype.initialize = function () {
 MyGame.prototype.draw = function () {
 
     // Step A: clear the canvas
-    gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
+    gEngine.Core.clearCanvas([1, 1, 1, 1.0]); // clear to light gray
 
     CameraManager.Core.draw();
     this.mCollisionInfos = [];
@@ -204,30 +253,26 @@ MyGame.prototype.update = function () {
     if (this.mHero.isAlive()) {
 
         if (this.mFireManager.getScore() < this.winningScore) {
-            
+
             CameraManager.Core.update();
             this.mCamera.update();
-            
+
             gEngine.LayerManager.updateAllLayers();
-            
-//            this.nextNewBlockCount = this.mFireManager.getScore() % this.nextNewBlock;
-//            if(this.nextNewBlockCount > 4500){
-//                this.mBlockManager.replaceBlock();
-//            }
 
             this.mWaterManager.updatePosition(this.mHero.getXform().getPosition(), this.mHero.getDirection());
 
             this.bootUpLight();
-                
+
             this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
 
-            //collisions (non-physics)
+            //collisions (physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
             this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
-            this.mFireManager.checkCollisionsWith(this.mHero, collisionInfo);
+            //per pixel collision
+            this.mFireManager.checkCollisionsWith(this.mHero);
 
             //text updates
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());
@@ -236,31 +281,48 @@ MyGame.prototype.update = function () {
         } else {
             //win message
             this.mStatusMsg.setText("YOU WIN!");
-
+            this.finishGame();
         }
 
     } else {
         //lose message
-        this.mStatusMsg.setText("You lose...");
-        this.mRestartMsg.setText("Press 'r' to restart");
-        this.mFireManager.deleteFires();
-        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
-            gEngine.GameLoop.stop();
-        }
 
+        this.mStatusMsg.setText("You Lose!");
+        this.finishGame();
     }
 
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
-       // gEngine.Physics.processSelfSet(this.mHero);
+    gEngine.Physics.processObjSet(this.mIgloo, this.mBlockManager);
+    this.mIgloo.update();
+};
 
-       // this._physicsSimulation();
+MyGame.prototype.finishGame = function ()
+{
 
+    this.mFireManager.deleteFires();
+    if(!this.playedEndGameAudio) {
+                            gEngine.AudioClips.playACue(this.kLoseAudio);
+                   this.playedEndGameAudio = true;         
 
+    }
+    this.mLightManager.switchOffAll();
+    gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
+    this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
+
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
+        gEngine.GameLoop.stop();
+        this.playedEndGameAudio = false;
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        this.isLost = true;
+        this.playedEndGameAudio = false;
+        gEngine.GameLoop.stop();
+    }
 };
 
 MyGame.prototype.bootUpLight = function () {
-  
+
     //Booting up light sequence
     var intensity = gEngine.DefaultResources.getGlobalAmbientIntensity();
     if (intensity > this.lightLevel)
@@ -269,12 +331,12 @@ MyGame.prototype.bootUpLight = function () {
             this.Timer = 0;
         } else
             this.Timer++;
-    
+
 };
 
 MyGame.prototype.checkDevKeys = function () {
-  
-  
+
+
     //dev key to relocate all fire objects
     if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
         var mousePosition = CameraManager.Core.getMouseLocation();
@@ -283,7 +345,7 @@ MyGame.prototype.checkDevKeys = function () {
 
     //dev key to increment score
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.I)) {
-        this.mFireManager.incrementScoreBy(4600);
+        this.mFireManager.incrementScoreBy(5000);
     }
 //    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
 //        this.mFireManager.incrementScoreBy(10000);
@@ -310,5 +372,4 @@ MyGame.prototype.checkDevKeys = function () {
         if (this.fourthCamera === null)
             CameraManager.Core.returnIthCamera(3);
     }
-    
 };

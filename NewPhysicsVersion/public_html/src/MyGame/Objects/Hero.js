@@ -16,20 +16,20 @@ var state = {
 
 var direction = {
     LEFT: 0,
-    RIGHT: 1
+    RIGHT: 1,
+    UP: 2
 };
 
-function Hero(spriteTexture, size, x, y, speed, blockSize) {
+function Hero(spriteTexture, size, x, y) {
 
-    this.kDelta = speed;
     this.size = size;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(x,y);
+    this.mSprite.getXform().setPosition(x, y);
     this.mSprite.setSpriteSequence(size, 0, size, size, 2, 0);
     this.mSprite.setAnimationSpeed(15);
-    this.mSprite.getXform().setSize(size, size);
+    this.mSprite.getXform().setSize(size*0.75, size*0.85);
     this.mSprite.setElementPixelPositions(0, size, 0, size);
     GameObject.call(this, this.mSprite);
 
@@ -37,93 +37,84 @@ function Hero(spriteTexture, size, x, y, speed, blockSize) {
     this.mDirection = direction.RIGHT;
     this.justStartedWalking = false;
 
+    this.kDelta = 300;
+    this.jumpVelocity = 400;
     this.health = 3;
-//    this.movementSpeed = 15;
+    this.friction = 0.5;
 
     this.name = "Hero";
 
     var xform = this.getXform();
-    var r = new RigidRectangle(xform, size / 3, size);
+    
+    //-5 so its a little less than the block size and the snowman will fall off the edge.
+    this.rigidBody = new RigidRectangle(xform,(size / 2 )-5, size-20); 
 //    console.log(this);
 
-    r.setMass(0.01);
-    r.setRestitution(0);
-    r.setColor([0, 1, 0, 1]);
-    r.setDrawBounds(true);
-      r.setDrawBounds(true);
-    //r.setAcceleration(-5);
-    r.setFriction(.085);
-    this.setPhysicsComponent(r);
+    this.rigidBody.setMass(0.05);
+    this.rigidBody.setRestitution(0);
+    this.rigidBody.setColor([0, 1, 0, 1]);
+    this.rigidBody.setFriction(this.friction);
+    this.rigidBody.setDrawBounds(true);
+    this.setPhysicsComponent(this.rigidBody);
+    
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
 
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
+Hero.prototype.getSprite = function(){
+  return this.mSprite;  
+};
+
 Hero.prototype.update = function () {
-    
+
     var v = this.getPhysicsComponent().getVelocity();
-
     
-    
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)) {
-        if(v[1] < 1 && v[1] > -1) {
-            v[1] = 1200; // Jump velocity
-        }
-
-    }
-    
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
-        v[0] = -300;
-    }
-    
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
-        v[0] = 300;
-    }
-
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Left) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)) {
-
-        //when left or right is called for the first time, we should change
-        //the sprite sequence to a walking sprite sequence. here we change
-        //a boolean to let the state manager know that the sequence should change.
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
         this.justStartedWalking = true;
+        this.mDirection = direction.LEFT;
+    }else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
+        this.justStartedWalking = true;
+        this.mDirection = direction.RIGHT;
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        //this.interpolateBy(-this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
-            
-            
-            this.mDirection = direction.LEFT;
-            this.mState = state.WALKING;
-        }
-        
-    }else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-        
-        //if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
-        //this.interpolateBy(this.kDelta,0);
-        
-        if(this.mState !== state.EXTENDING){
-
-            this.mDirection = direction.RIGHT;
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+            v[0] = -this.kDelta;
+        if (this.mState !== state.EXTENDING) {
             this.mState = state.WALKING;
         }
 
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+        if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
+            v[0] = this.kDelta;
+        if (this.mState !== state.EXTENDING) {
+            this.mState = state.WALKING;
+        }
 
     } else {
-
-        this.setCurrentFrontDir([0, 0]);
         this.mState = state.STANDING;
+    }
 
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)
+            || gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)) {
+        if (v[1] < 1 && v[1] > -1) {
+            v[1] = this.jumpVelocity; // Jump velocity
+        }
     }
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
 
+        this.rigidBody.setFriction(1);
+        this.setPhysicsComponent(this.rigidBody);
         this.walking = false;
         this.mState = state.EXTENDING;
 
+    }else{
+        
+        this.rigidBody.setFriction(this.friction);
+        this.setPhysicsComponent(this.rigidBody);
     }
 
     //enable this line to see informative printout
@@ -139,7 +130,6 @@ Hero.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
         this.health--;
-//        this.shake(4,1,5,50);
     }
 
 };
@@ -204,8 +194,6 @@ Hero.prototype._providePrintout = function () {
     console.log("position: ", pos[0], pos[1], "state: ", statePrintout,
             " direction: ", directionPrintout, " atLeftEdge: ", this.atLeftEdge,
             " atRightEdge: ", this.atRightEdge, " canWalk: ", this._canWalk());
-
-
 };
 
 Hero.prototype._updateAnimation = function () {
@@ -229,20 +217,37 @@ Hero.prototype._updateAnimation = function () {
             }
             break;
         case direction.RIGHT:
-        switch (this.mState) {
-            case state.STANDING:
-                this.mSprite.setSpriteSequence(this.size, this.size * 3, this.size, this.size, 0, 0);
-                break;
-            case state.WALKING:
-                if (this.justStartedWalking) {
-                    this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
-                    this.justStartedWalking = !this.justStartedWalking;
-                }
-                break;
-            case state.EXTENDING:
-                this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
-                break;
-        }
+            switch (this.mState) {
+                case state.STANDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 3, this.size, this.size, 0, 0);
+                    break;
+                case state.WALKING:
+                    if (this.justStartedWalking) {
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.justStartedWalking = !this.justStartedWalking;
+                    }
+                    break;
+                case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 5, this.size, this.size, 0, 0);
+                    break;
+            }
+            break;
+        case direction.UP:
+            switch (this.mState) {
+                case state.STANDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 0, 0);
+                    break;
+                case state.WALKING:
+                    if (this.justStartedWalking) {
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.justStartedWalking = !this.justStartedWalking;
+                    }
+                    break;
+                case state.EXTENDING:
+                    this.mSprite.setSpriteSequence(this.size, this.size * 6, this.size, this.size, 0, 0);
+                    break;
+            }
+            break;
     }
 
 

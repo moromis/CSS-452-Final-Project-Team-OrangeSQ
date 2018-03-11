@@ -8,9 +8,9 @@ function WaterManager(spriteTexture) {
     
     this.spriteSize = 64;
     this.numberOfSegments = 0;
-    this.maxNumOfSegments = 17;
+    this.maxNumOfSegments = 9;
     this.timer = 0;
-    this.timingAmount = 2;
+    this.timingAmount = 1;
     this.reset = false;
     
     Manager.call(this, spriteTexture, Water, 0, 0, 0, false);
@@ -52,6 +52,10 @@ WaterManager.prototype.update = function () {
     
     Manager.prototype.update.call(this);
     if(this.numberOfSegments < this.maxNumOfSegments && gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && !this.reset){
+        if(this.numberOfSegments == 0) {
+                    gEngine.AudioClips.playACue("assets/sounds/water.wav");
+
+        }
         this.extend();
     }else if(this.numberOfSegments === this.maxNumOfSegments){
         this.reset = true;
@@ -82,6 +86,9 @@ WaterManager.prototype.updatePosition = function (pos, direction) {
         
         if(direction === 1)
             obj.getXform().setPosition(pos[0] + (i * this.spriteSize / divisor) + offset, pos[1] + (i * this.spriteSize / divisor) + offset);
+        
+        if(direction === 2)
+            obj.getXform().setPosition(pos[0] + i+ offset, pos[1] + i+ offset);
         
         obj.setDirection(direction);
     }

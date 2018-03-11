@@ -5,8 +5,8 @@
 
 /*jslint node: true, vars: true, white: true */
 /*global gEngine, Scene, GameObjectset, TextureObject, Camera, vec2,
-  Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
-  GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions */
+ Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
+ GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -16,50 +16,69 @@
 function StartScreen() {
     this.kBG = "assets/SplashScreen.png";
     this.BGWidth = 1024;
-    this.initialLightLevel = 5;
+    this.initialLightLevel = 3.5;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
-    
+
     // The camera to view the scene
     this.mCamera = null;
     this.mStatusMsg = null;
+    this.showInstructions = false;
+    this.kStartAudio = "assets/sounds/start.wav";
+
+    this.kStartScreneAudio = "assets/sounds/Magical_Winter_MP3.mp3";
+
 }
 gEngine.Core.inheritPrototype(StartScreen, Scene);
 
 StartScreen.prototype.loadScene = function () {
-        gEngine.Textures.loadTexture(this.kBG);
+    gEngine.AudioClips.loadAudio(this.kStartScreneAudio);
+    gEngine.AudioClips.loadAudio(this.kStartAudio);
+
+
+    gEngine.Textures.loadTexture(this.kBG);
 };
 
 StartScreen.prototype.unloadScene = function () {
+            gEngine.AudioClips.unloadAudio(this.kStartAudio);
+
+        gEngine.AudioClips.stopBackgroundAudio();
+
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kBG);
-    
-    var nextLevel = new MyGame();  // load the next level
+
+    var nextLevel = null;
+    if (this.showInstructions)
+        nextLevel = new Instructions();
+    else
+        nextLevel = new MyGame();  // load the next level
     gEngine.Core.startScene(nextLevel);
 };
 
 StartScreen.prototype.initialize = function () {
+        gEngine.AudioClips.playBackgroundAudio(this.kStartScreneAudio);
+
     this.mCamera = new Camera(
-        vec2.fromValues(this.CameraCenter, this.CameraCenter),  // position of the camera
-        this.CameraCanvasWidth,                                 // width of camera
-        [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
-    );
+            vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
+            this.CameraCanvasWidth, // width of camera
+            [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
+            );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-    
+
     //intialize background
     var bgR = new LightRenderable(this.kBG);
-    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth-200);
+    bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
-    
+
     this.mStatusMsg = new FontRenderable("");
     this.mStatusMsg.setColor([1, 1, 1, 1]);
-    this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 150, 40);
+    this.mStatusMsg.getXform().setPosition(70, 40);
     this.mStatusMsg.setTextHeight(32);
-    this.mStatusMsg.setText("Press SPACEBAR to start game...");
+    this.mStatusMsg.setText("I - Instructions    SPACEBAR - Start Game...");
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
@@ -69,7 +88,7 @@ StartScreen.prototype.initialize = function () {
 // importantly, make sure to _NOT_ change any state.
 StartScreen.prototype.draw = function () {
     // Step A: clear the canvas
-    gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
+    gEngine.Core.clearCanvas([1, 1, 1, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
@@ -78,7 +97,14 @@ StartScreen.prototype.draw = function () {
 // The update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 StartScreen.prototype.update = function () {
-      if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)){
-                gEngine.GameLoop.stop();
-            }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+        gEngine.AudioClips.playACue(this.kStartAudio);
+
+        gEngine.GameLoop.stop();
+    }
+
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.I)) {
+        this.showInstructions = true;
+        gEngine.GameLoop.stop();
+    }
 };

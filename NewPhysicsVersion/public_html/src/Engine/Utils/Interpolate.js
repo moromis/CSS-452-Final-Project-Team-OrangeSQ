@@ -61,6 +61,7 @@ Interpolate.prototype.updateInterpolation = function () {
     } else {
         this._interpolateValue();
     }
+   
 };
 
 // 

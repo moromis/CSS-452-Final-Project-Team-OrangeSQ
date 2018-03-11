@@ -70,7 +70,7 @@ RigidRectangle.prototype.collidedRectRect = function(r1, r2, collisionInfo) {
  * @memberOf RigidRectangle
  */
 RigidRectangle.prototype.collided = function(otherShape, collisionInfo) {
-    if(otherShape == null)
+    if(otherShape === null)
     console.log("jit");
     var status = false;
     collisionInfo.setDepth(0);
