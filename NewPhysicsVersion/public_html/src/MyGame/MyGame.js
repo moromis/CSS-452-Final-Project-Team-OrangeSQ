@@ -24,6 +24,8 @@ function MyGame() {
     this.kIglooNormal = "assets/IglooNormalMap.png";
     this.kbgNormal = "assets/bgNormal.png";
     this.kAngryFire = "assets/FireWithEyes_2.png";
+    this.kMeteor = "assets/comet.png";
+    this.kBomb = "assets/bomb.png";
 
     this.BGWidth = 1024;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
@@ -31,7 +33,7 @@ function MyGame() {
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
     this.CanvasHeight = HelperFunctions.Core.getCanvasHeight();
     this.HeroSize = 128;
-    this.HeroSpeed = 150;
+    this.HeroSpeed = 300;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
     this.SpawnTime = 60;
@@ -42,7 +44,7 @@ function MyGame() {
 
     this.nextNewBlock = 5000;
     this.nextNewBlockCount = 0;
-    this.winningScore = 5000;
+    this.winningScore = 1000000;
 
     this.Timer = 0;
     this.TimingAmount = 4;
@@ -81,6 +83,8 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kIglooNormal);
     gEngine.Textures.loadTexture(this.kbgNormal);
     gEngine.Textures.loadTexture(this.kAngryFire);
+    gEngine.Textures.loadTexture(this.kMeteor);
+    gEngine.Textures.loadTexture(this.kBomb);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -96,6 +100,8 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kIglooNormal);
     gEngine.Textures.unloadTexture(this.kbgNormal);
     gEngine.Textures.unloadTexture(this.kAngryFire);
+    gEngine.Textures.unloadTexture(this.kMeteor);
+    gEngine.Textures.unloadTexture(this.kBomb);
 
     var nextLevel;
     if (this.isLost)
@@ -163,6 +169,8 @@ MyGame.prototype.initialize = function () {
     this.mFireManager = new FireManager(
             this.kFire,
             this.kAngryFire,
+            this.kMeteor,
+            this.kBomb,
             this.mHero.getXform().getPosition(),
             this.SpawnTime,
             this.SpawnTime * 3,

@@ -46,16 +46,16 @@ function Hero(spriteTexture, size, x, y, speed) {
 
     var xform = this.getXform();
     //-5 so its a little less than the block size and the snowman will fall off the edge.
-    var r = new RigidRectangle(xform,(size / 2 )-5, size-20); 
+    this.rigidBody = new RigidRectangle(xform,(size / 2 )-5, size-20); 
 //    console.log(this);
 
-    r.setMass(0.01);
-    r.setRestitution(0);
-    r.setColor([0, 1, 0, 1]);
+    this.rigidBody.setMass(0.01);
+    this.rigidBody.setRestitution(0);
+    this.rigidBody.setColor([0, 1, 0, 1]);
     //r.setAcceleration(-5);
-    r.setFriction(.085);
-    r.setDrawBounds(true);
-    this.setPhysicsComponent(r);
+    this.rigidBody.setFriction(0.1);
+    this.rigidBody.setDrawBounds(true);
+    this.setPhysicsComponent(this.rigidBody);
     //this.toggleDrawRenderable();
     // this.toggleDrawRigidShape();
 
@@ -94,8 +94,8 @@ Hero.prototype.update = function () {
         this.mState = state.STANDING;
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W)
-            || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)
+            || gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)) {
         if (v[1] < 1 && v[1] > -1) {
             v[1] = this.velocity; // Jump velocity
         }
@@ -103,9 +103,15 @@ Hero.prototype.update = function () {
 
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space)) {
 
+
+        this.rigidBody.setFriction(1);
+        this.setPhysicsComponent(this.rigidBody);
         this.walking = false;
         this.mState = state.EXTENDING;
 
+    }else{
+        this.rigidBody.setFriction(0.1);
+        this.setPhysicsComponent(this.rigidBody);
     }
 
     //enable this line to see informative printout
@@ -198,7 +204,7 @@ Hero.prototype._updateAnimation = function () {
                 case state.WALKING:
 
                     if (this.justStartedWalking) {
-                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 2, 0);
+                        this.mSprite.setSpriteSequence(this.size, this.size * 1, this.size, this.size, 4, 0);
                         this.justStartedWalking = !this.justStartedWalking;
                     }
                     break;

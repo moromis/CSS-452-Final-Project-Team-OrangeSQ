@@ -87,7 +87,7 @@ StartScreen.prototype.update = function () {
         gEngine.GameLoop.stop();
     }
 
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.I)) {
         this.showInstructions = true;
         gEngine.GameLoop.stop();
     }
