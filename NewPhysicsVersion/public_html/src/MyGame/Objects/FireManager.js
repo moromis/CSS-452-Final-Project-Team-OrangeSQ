@@ -42,16 +42,8 @@ FireManager.prototype.update = function (){
   
     Manager.prototype.update.call(this);
     
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
-        this.autoSpawn();
-    }
-    
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
-        this._createObject();
-    }
-    
-    this.low *= 0.9999;
-    this.high *= 0.9999;
+    this.low *= 0.99999;
+    this.high *= 0.99999;
     this.setLowAndHigh(this.low, this.high);
 };
 
