@@ -67,6 +67,7 @@ function MyGame() {
     this.thirdCamera = null;
     this.fourthCamera = null;
     this.isLost = false;
+  
     this.playedEndGameAudio = false;
     
     this.kFizzAudio = "assets/sounds/fizz.wav";
@@ -113,13 +114,10 @@ MyGame.prototype.unloadScene = function () {
     gEngine.AudioClips.stopBackgroundAudio();
     gEngine.AudioClips.unloadAudio(this.kFizzAudio);
     gEngine.AudioClips.unloadAudio(this.kWaterAudio);
-        gEngine.AudioClips.unloadAudio(this.kExplosionAudio);
-            gEngine.AudioClips.unloadAudio(this.kBombAudio);
-            gEngine.AudioClips.unloadAudio(this.kLoseAudio);
-            gEngine.AudioClips.unloadAudio(this.kStartAudio);
-
-
-
+    gEngine.AudioClips.unloadAudio(this.kExplosionAudio);
+    gEngine.AudioClips.unloadAudio(this.kBombAudio);
+    gEngine.AudioClips.unloadAudio(this.kLoseAudio);
+    gEngine.AudioClips.unloadAudio(this.kStartAudio);
 
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kSnowman);
@@ -146,7 +144,6 @@ MyGame.prototype.unloadScene = function () {
 MyGame.prototype.initialize = function () {
     
     gEngine.AudioClips.playBackgroundAudio(this.kGameSceneAudio);
-
 
     this.mCamera = new Camera(
             vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
@@ -286,7 +283,6 @@ MyGame.prototype.update = function () {
 
     } else {
         //lose message
-
         this.mStatusMsg.setText("You Lose!");
         this.finishGame();
     }
@@ -301,6 +297,7 @@ MyGame.prototype.finishGame = function ()
 {
 
     this.mFireManager.deleteFires();
+  
     if(!this.playedEndGameAudio) {
                             gEngine.AudioClips.playACue(this.kLoseAudio);
                    this.playedEndGameAudio = true;         
@@ -314,6 +311,7 @@ MyGame.prototype.finishGame = function ()
         gEngine.GameLoop.stop();
         this.playedEndGameAudio = false;
     }
+  
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.isLost = true;
         this.playedEndGameAudio = false;
@@ -350,7 +348,7 @@ MyGame.prototype.checkDevKeys = function () {
 //    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
 //        this.mFireManager.incrementScoreBy(10000);
 //    }
-
+  
     //camera checkout keys for testing
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
         this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
@@ -371,5 +369,13 @@ MyGame.prototype.checkDevKeys = function () {
         this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
         if (this.fourthCamera === null)
             CameraManager.Core.returnIthCamera(3);
+    }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
+        this.mFireManager.autoSpawn();
+    }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
+        this.mFireManager._createObject();
     }
 };
