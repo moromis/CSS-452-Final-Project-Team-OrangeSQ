@@ -44,6 +44,7 @@ LightManager.prototype.createLight = function (val) {
     
 //    console.log(this.mLightSet.numLights());
     return light;
+  
 };
 
 LightManager.prototype.addLightsTo = function(obj){

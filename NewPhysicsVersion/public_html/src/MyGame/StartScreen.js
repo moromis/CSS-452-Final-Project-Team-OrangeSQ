@@ -26,14 +26,28 @@ function StartScreen() {
     this.mCamera = null;
     this.mStatusMsg = null;
     this.showInstructions = false;
+  
+    this.kStartAudio = "assets/sounds/start.wav";
+
+    this.kStartScreneAudio = "assets/sounds/Magical_Winter_MP3.mp3";
+
 }
 gEngine.Core.inheritPrototype(StartScreen, Scene);
 
 StartScreen.prototype.loadScene = function () {
+  
+    gEngine.AudioClips.loadAudio(this.kStartScreneAudio);
+    gEngine.AudioClips.loadAudio(this.kStartAudio);
+
     gEngine.Textures.loadTexture(this.kBG);
+  
 };
 
 StartScreen.prototype.unloadScene = function () {
+  
+    gEngine.AudioClips.unloadAudio(this.kStartAudio);
+    gEngine.AudioClips.stopBackgroundAudio();
+  
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kBG);
 
@@ -46,6 +60,9 @@ StartScreen.prototype.unloadScene = function () {
 };
 
 StartScreen.prototype.initialize = function () {
+  
+    gEngine.AudioClips.playBackgroundAudio(this.kStartScreneAudio);
+
     this.mCamera = new Camera(
             vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
             this.CameraCanvasWidth, // width of camera
@@ -83,7 +100,11 @@ StartScreen.prototype.draw = function () {
 // The update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 StartScreen.prototype.update = function () {
+  
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+      
+        gEngine.AudioClips.playACue(this.kStartAudio);
+
         gEngine.GameLoop.stop();
     }
 

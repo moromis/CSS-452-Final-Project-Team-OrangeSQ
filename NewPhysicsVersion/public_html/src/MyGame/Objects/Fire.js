@@ -82,8 +82,14 @@ Fire.prototype.handleCollision = function (otherObjectType) {
             this.mParticles.update(); // start emit immediately
         }
     }
+  
+    if (otherObjectType === "Block" ) {
+        gEngine.AudioClips.playACue("assets/sounds/explosion.wav");
+
+    }
 
     if (otherObjectType === "Water") {
+        gEngine.AudioClips.playACue("assets/sounds/fizz.wav");
         this.shouldScore = true;
         this.scoreAmount = pos[1];
     }

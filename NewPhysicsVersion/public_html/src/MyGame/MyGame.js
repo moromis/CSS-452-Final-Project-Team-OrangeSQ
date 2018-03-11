@@ -67,6 +67,17 @@ function MyGame() {
     this.thirdCamera = null;
     this.fourthCamera = null;
     this.isLost = false;
+  
+    this.playedEndGameAudio = false;
+    
+    this.kFizzAudio = "assets/sounds/fizz.wav";
+    this.kExplosionAudio = "assets/sounds/explosion.wav";
+    this.kBombAudio = "assets/sounds/bmb.wav";
+    this.kStartGameAudio = "assets/sounds/";
+    this.kLoseAudio = "assets/sounds/lose.wav";
+    this.kWaterAudio = "assets/sounds/water.wav";
+    this.kGameSceneAudio = "assets/sounds/Something_Wicked.mp3";
+    this.kStartAudio = "assets/sounds/start.wav";
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -84,9 +95,29 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kAngryFire);
     gEngine.Textures.loadTexture(this.kMeteor);
     gEngine.Textures.loadTexture(this.kBomb);
+    
+    //aduio
+    gEngine.AudioClips.loadAudio(this.kGameSceneAudio);
+    gEngine.AudioClips.loadAudio(this.kFizzAudio);
+        gEngine.AudioClips.loadAudio(this.kBombAudio);
+                gEngine.AudioClips.loadAudio(this.kExplosionAudio);
+
+    gEngine.AudioClips.loadAudio(this.kWaterAudio);
+    gEngine.AudioClips.loadAudio(this.kLoseAudio);
+    gEngine.AudioClips.loadAudio(this.kStartAudio);
+
+
+
 };
 
 MyGame.prototype.unloadScene = function () {
+    gEngine.AudioClips.stopBackgroundAudio();
+    gEngine.AudioClips.unloadAudio(this.kFizzAudio);
+    gEngine.AudioClips.unloadAudio(this.kWaterAudio);
+    gEngine.AudioClips.unloadAudio(this.kExplosionAudio);
+    gEngine.AudioClips.unloadAudio(this.kBombAudio);
+    gEngine.AudioClips.unloadAudio(this.kLoseAudio);
+    gEngine.AudioClips.unloadAudio(this.kStartAudio);
 
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kSnowman);
@@ -111,6 +142,8 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
+    
+    gEngine.AudioClips.playBackgroundAudio(this.kGameSceneAudio);
 
     this.mCamera = new Camera(
             vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
@@ -264,14 +297,24 @@ MyGame.prototype.finishGame = function ()
 {
 
     this.mFireManager.deleteFires();
+  
+    if(!this.playedEndGameAudio) {
+                            gEngine.AudioClips.playACue(this.kLoseAudio);
+                   this.playedEndGameAudio = true;         
+
+    }
     this.mLightManager.switchOffAll();
     gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
     this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
+
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
         gEngine.GameLoop.stop();
+        this.playedEndGameAudio = false;
     }
+  
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.isLost = true;
+        this.playedEndGameAudio = false;
         gEngine.GameLoop.stop();
     }
 };
@@ -305,7 +348,7 @@ MyGame.prototype.checkDevKeys = function () {
 //    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
 //        this.mFireManager.incrementScoreBy(10000);
 //    }
-
+  
     //camera checkout keys for testing
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
         this.firstCamera = CameraManager.Core.checkoutIthCamera(0);

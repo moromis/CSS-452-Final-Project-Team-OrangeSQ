@@ -49,6 +49,9 @@ Bomb.prototype.handleCollision = function (otherObjectType) {
     Fire.prototype.handleCollision.call(this, otherObjectType);
 
     if (otherObjectType === "Block") {
+        
+        gEngine.AudioClips.playACue("assets/sounds/bmb.wav");
+
         this.blockManager.deleteAll();
     }
     

@@ -52,6 +52,10 @@ WaterManager.prototype.update = function () {
     
     Manager.prototype.update.call(this);
     if(this.numberOfSegments < this.maxNumOfSegments && gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && !this.reset){
+        if(this.numberOfSegments == 0) {
+                    gEngine.AudioClips.playACue("assets/sounds/water.wav");
+
+        }
         this.extend();
     }else if(this.numberOfSegments === this.maxNumOfSegments){
         this.reset = true;

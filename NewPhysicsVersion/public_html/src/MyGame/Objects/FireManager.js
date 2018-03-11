@@ -41,9 +41,9 @@ FireManager.prototype.update = function (){
 //  console.log(this.size());
   
     Manager.prototype.update.call(this);
-    
-    this.low *= 0.99999;
-    this.high *= 0.99999;
+
+    this.low *= 0.9999;
+    this.high *= 0.9999;
     this.setLowAndHigh(this.low, this.high);
 };
 
