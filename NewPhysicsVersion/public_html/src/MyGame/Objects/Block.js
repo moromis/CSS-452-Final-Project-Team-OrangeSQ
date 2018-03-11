@@ -18,8 +18,9 @@ function Block(spriteTexture, size, x, y, camera) {
 
     GameObject.call(this, this.mSprite);
     
-     var rigidShape = new RigidRectangle(this.getXform(), size, size);
-        rigidShape.setMass(0);  // ensures no movements!
+    var rigidShape = new RigidRectangle(this.getXform(), size, size);
+    rigidShape.setMass(0);  // ensures no movements!
+    rigidShape.setFriction(0);
     //rigidShape.setDrawBounds(true);
     rigidShape.setColor([0, 0, 1, 1]);
     this.setPhysicsComponent(rigidShape);

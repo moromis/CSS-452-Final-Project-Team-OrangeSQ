@@ -38,7 +38,7 @@ function Hero(spriteTexture, size, x, y) {
     this.justStartedWalking = false;
 
     this.kDelta = 300;
-    this.jumpVelocity = 400;
+    this.jumpVelocity = 500;
     this.health = 3;
     this.friction = 0.5;
 
@@ -68,6 +68,14 @@ Hero.prototype.getSprite = function(){
 };
 
 Hero.prototype.update = function () {
+    
+    var xPos = this.getXform().getPosition()[0];
+    var yPos = this.getXform().getPosition()[1];
+    if(xPos > 936){
+        this.getXform().setPosition(32, yPos);
+    }else if(xPos < 20){
+        this.getXform().setPosition(920, yPos);
+    }
 
     var v = this.getPhysicsComponent().getVelocity();
     

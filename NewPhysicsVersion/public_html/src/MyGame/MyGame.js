@@ -327,4 +327,12 @@ MyGame.prototype.checkDevKeys = function () {
         if (this.fourthCamera === null)
             CameraManager.Core.returnIthCamera(3);
     }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
+        this.mFireManager.autoSpawn();
+    }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
+        this.mFireManager._createObject();
+    }
 };
