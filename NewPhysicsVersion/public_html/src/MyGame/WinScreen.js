@@ -94,7 +94,9 @@ WinScreen.prototype.initialize = function () {
     }
     else{
         localStorage.setItem("highscore", this.score);
+        newHighScore = "NEW HIGH SCORE";
         gotHighScore = "your score is a high score!";
+        this.score = highscore;
     }
     
     this.mNew = new FontRenderable(newHighScore);
