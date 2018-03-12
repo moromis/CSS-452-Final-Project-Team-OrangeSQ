@@ -53,7 +53,6 @@ function MyGame() {
     this.mFireManager = null;
     this.mWaterManager = null;
     this.mLightManager = null;
-//    this.mCamera = null;
     this.mScoreMsg = null;
     this.mStatusMsg = null;
     this.mHealthMsg = null;
@@ -81,6 +80,8 @@ function MyGame() {
     this.kBlocksReplaceAudio = "assets/sounds/replace-blocks.wav";
     this.kSizzle = "assets/sounds/sizzle.wav";
     this.kOuch = "assets/sounds/ouch.wav";
+    
+    this.nextLevel;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -144,12 +145,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kMeteor);
     gEngine.Textures.unloadTexture(this.kBomb);
 
-    var nextLevel;
-    if (this.isLost)
-        nextLevel = new MyGame();  // load the next level
-    else
-        nextLevel = new StartScreen();
-    gEngine.Core.startScene(nextLevel);
+    gEngine.Core.startScene(this.nextLevel);
 };
 
 MyGame.prototype.initialize = function () {
@@ -310,42 +306,31 @@ MyGame.prototype.finishGame = function ()
 {
 
     this.mFireManager.deleteFires();
-  
-    if(!this.playedEndGameAudio) {
-                            gEngine.AudioClips.playACue(this.kLoseAudio);
-                   this.playedEndGameAudio = true;         
-
-    }
+    
     this.mLightManager.switchOffAll();
-    gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
-    this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
     
     var score = this.mFireManager.getScore();
-    var highscore = localStorage.getItem("highscore");
-
-    if(highscore !== null){
-        if (score > highscore) {
-            localStorage.setItem("highscore", score);    
-            console.log("your score is a high score!");
-        }else{
-            console.log("The high score stands...");
-        }
-    }
-    else{
-        localStorage.setItem("highscore", score);
-        console.log("your score is a high score!");
-    }
+    this.nextLevel = new WinScreen(score);
+    gEngine.GameLoop.stop();
     
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
-        gEngine.GameLoop.stop();
-        this.playedEndGameAudio = false;
-    }
-  
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
-        this.isLost = true;
-        this.playedEndGameAudio = false;
-        gEngine.GameLoop.stop();
-    }
+//    if(!this.playedEndGameAudio) {
+//                            gEngine.AudioClips.playACue(this.kLoseAudio);
+//                   this.playedEndGameAudio = true;         
+//
+//    }
+//    gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
+//    this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
+//    
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
+//        gEngine.GameLoop.stop();
+//        this.playedEndGameAudio = false;
+//    }
+//  
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+//        this.isLost = true;
+//        this.playedEndGameAudio = false;
+//        gEngine.GameLoop.stop();
+//    }
 };
 
 MyGame.prototype.bootUpLight = function () {
@@ -373,6 +358,11 @@ MyGame.prototype.checkDevKeys = function () {
     //dev key to increment score
     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
         this.mFireManager.incrementScoreBy(10000);
+    }
+    
+    //dev key to end game
+    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
+        this.finishGame();
     }
   
     //camera checkout keys for testing
