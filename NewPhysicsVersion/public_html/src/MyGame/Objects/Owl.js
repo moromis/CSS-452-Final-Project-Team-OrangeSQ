@@ -27,74 +27,75 @@ function Owl(spriteTexture, size, x, y) {
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.getXform().setSize(size, size);
     this.mSprite.setElementPixelPositions(0, size, 0, size);
-    
+
     this.size = size;
-    
+
     this.actionLength = 5;
     this.mState = state.STANDING;
     this.mDirection = direction.LEFT;
-    
+
     GameObject.call(this, this.mSprite);
 
 }
 gEngine.Core.inheritPrototype(Owl, GameObject);
 
 Owl.prototype.update = function () {
-    
+
     var xPos = this.getXform().getPosition()[0];
     var yPos = this.getXform().getPosition()[1];
-    if(xPos > 936){
+    if (xPos > 936) {
         this.getXform().setPosition(32, yPos);
-    }else if(xPos < 20){
+    } else if (xPos < 20) {
         this.getXform().setPosition(920, yPos);
     }
-    
-    
+
     var rand = HelperFunctions.Core.generateRandomInt(1, 100);
-    
-    if(this.actionLength === 0){
-        
-        if(rand > 2 && rand < 40){
-            
+
+    if (this.actionLength === 0) {
+
+        if (rand > 2 && rand < 40) {
+
             this.mState = state.WALKING;
             this.mDirection = direction.LEFT;
-            
-            
+
+
             //TODO: doesn't work
             this.interpolateBy(-10, 0);
-            
-        }else if(rand > 42 && rand < 70){
-            
+
+        } else if (rand > 42 && rand < 70) {
+
             this.mState = state.WALKING;
             this.mDirection = direction.RIGHT;
-            
+
             //TODO: doesn't work
             this.interpolateBy(10, 0);
-            
-        }else{
+
+        } else {
             this.mState = state.STANDING;
         }
-        
+
         console.log(rand);
         this._providePrintout();
-        
+
         this.actionLength = HelperFunctions.Core.generateRandomInt(300, 600);
-        
+
         this._updateAnimation();
-        
-    }else{
-        
+
+    } else {
+
         this.actionLength--;
-        
+
     }
-    
+
     this.mSprite.updateAnimation();
+
+    GameObject.prototype.update.call(this);
 };
 
 Owl.prototype._updateAnimation = function () {
 
     switch (this.mState) {
-        
+
         case state.WALKING:
             switch (this.mDirection) {
                 case direction.RIGHT:
@@ -108,7 +109,7 @@ Owl.prototype._updateAnimation = function () {
         case state.STANDING:
             this.mSprite.setSpriteSequence(this.size, this.size * 6, this.size, this.size, 9, 0);
             break;
-        
+
     }
 };
 

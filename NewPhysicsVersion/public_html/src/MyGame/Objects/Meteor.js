@@ -20,7 +20,8 @@ function Meteor(spriteTexture, bg, igloo) {
     this.mLight.setInner(64);
     this.mLight.setOuter(70);
     this.mLight.setIntensity(2);
-    this.mLight.setColor([0.5, 0.7, 0.5, 1]);this.interpolateBy(0, -this.kDelta);
+    this.mLight.setColor([0.5, 0.7, 0.5, 1]);
+    this.interpolateBy(0, -this.kDelta);
 }
 gEngine.Core.inheritPrototype(Meteor, Fire);
 
@@ -33,8 +34,9 @@ Meteor.prototype.update = function () {
         
         this.mLight.setYPos(this.mSprite.getXform().getYPos());
         this.mLight.setXPos(this.mSprite.getXform().getXPos());
-        
     }
+    
+    GameObject.prototype.update.call(this);
 };
 
 Meteor.prototype.getScore = function () {

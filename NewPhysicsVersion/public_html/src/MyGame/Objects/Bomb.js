@@ -16,8 +16,8 @@ function Bomb(spriteTexture, bg, igloo, blockManager) {
     
     this.lightColor = [1, 0, 1, 1];
 
-    this.mLight.setNear(600);
-    this.mLight.setFar(700);
+    this.mLight.setNear(60);
+    this.mLight.setFar(70);
     this.mLight.setInner(1.4);
     this.mLight.setOuter(8);
     this.mLight.setIntensity(5);

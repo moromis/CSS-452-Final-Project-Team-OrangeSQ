@@ -24,7 +24,7 @@ function GameObject(renderableObj) {
     this.mPhysicsComponent = null;
     this.mRigidBody = null;
     this.mDrawRenderable = true;
-    this.mDrawRigidShape = false; 
+    this.mDrawRigidShape = false;
     //custom additions - SS    
     this.mSpeed = 0;
     //shake variables
@@ -33,8 +33,8 @@ function GameObject(renderableObj) {
     this.mGameObjectShake = null;
 }
 
-GameObject.prototype.addLight = function(light){
-    if(this.mRenderComponent instanceof LightRenderable)
+GameObject.prototype.addLight = function (light) {
+    if (this.mRenderComponent instanceof LightRenderable)
     {
         this.mRenderComponent.addLight(light);
     }
@@ -45,7 +45,9 @@ GameObject.prototype.addLight = function(light){
  * @returns {Transform} Gameobject Transform
  * @memberOf GameObject
  */
-GameObject.prototype.getXform = function () { return this.mRenderComponent.getXform(); };
+GameObject.prototype.getXform = function () {
+    return this.mRenderComponent.getXform();
+};
 
 /**
  * Return the GameObject's Bounding Box
@@ -64,14 +66,18 @@ GameObject.prototype.getBBox = function () {
  * @returns {void}
  * @memberOf GameObject
  */
-GameObject.prototype.setVisibility = function (f) { this.mVisible = f; };
+GameObject.prototype.setVisibility = function (f) {
+    this.mVisible = f;
+};
 
 /**
  * Returs the visibility state of the GameObject
  * @returns {Boolean} returns true if this GameObject is visible
  * @memberOf GameObject
  */
-GameObject.prototype.isVisible = function () { return this.mVisible; };
+GameObject.prototype.isVisible = function () {
+    return this.mVisible;
+};
 
 /* - SS
  * set speed of object
@@ -95,7 +101,9 @@ GameObject.prototype.incSpeedBy = function (delta) {
     this.mSpeed += delta;
 };
 
-GameObject.prototype.setCurrentFrontDir = function (f) { vec2.normalize(this.mCurrentFrontDir, f); };
+GameObject.prototype.setCurrentFrontDir = function (f) {
+    vec2.normalize(this.mCurrentFrontDir, f);
+};
 
 
 /**
@@ -103,56 +111,73 @@ GameObject.prototype.setCurrentFrontDir = function (f) { vec2.normalize(this.mCu
  * @returns {vec2} GameObject's front vector
  * @memberOf GameObject
  */
-GameObject.prototype.getCurrentFrontDir = function () { return this.mCurrentFrontDir; };
+GameObject.prototype.getCurrentFrontDir = function () {
+    return this.mCurrentFrontDir;
+};
 
 /**
  * Return the GameObject Renderable Object
  * @returns {Renderable} current Renderable of the GameObject
  * @memberOf GameObject
  */
-GameObject.prototype.getRenderable = function () { return this.mRenderComponent; };
+GameObject.prototype.getRenderable = function () {
+    return this.mRenderComponent;
+};
 /**
  * Set the Physics Component for the GameObject
  * @param {RigidShape} p new Physics Compenent of the GameObject
  * @returns {void}
  * @memberOf GameObject
  */
-GameObject.prototype.setPhysicsComponent = function (p) { this.mPhysicsComponent = p;  };
- 
+GameObject.prototype.setPhysicsComponent = function (p) {
+    this.mPhysicsComponent = p;
+};
+
 /**
  * Return the Physics Component for the GameObject
  * @returns {RigidShape} Physics Compenent of the GameObject
  * @memberOf GameObject
  */
-GameObject.prototype.getPhysicsComponent = function () { return this.mPhysicsComponent; };
+GameObject.prototype.getPhysicsComponent = function () {
+    return this.mPhysicsComponent;
+};
 
 /**
  * Set Physics Component to null for the GameObject
  * @memberOf GameObject
  */
-GameObject.prototype.removePhysicsComponent = function(){this.mPhysicsComponent = null;};
- 
+GameObject.prototype.removePhysicsComponent = function () {
+    this.mPhysicsComponent = null;
+};
+
 
 GameObject.prototype.setRigidBody = function (r) {
     this.mRigidBody = r;
 };
-GameObject.prototype.getRigidBody = function () { return this.mRigidBody; };
-GameObject.prototype.toggleDrawRenderable = function() { 
-    this.mDrawRenderable = !this.mDrawRenderable; };
-GameObject.prototype.toggleDrawRigidShape = function() { 
-    this.mDrawRigidShape = !this.mDrawRigidShape; };
+GameObject.prototype.getRigidBody = function () {
+    return this.mRigidBody;
+};
+GameObject.prototype.toggleDrawRenderable = function () {
+    this.mDrawRenderable = !this.mDrawRenderable;
+};
+GameObject.prototype.toggleDrawRigidShape = function () {
+    this.mDrawRigidShape = !this.mDrawRigidShape;
+};
 
-GameObject.prototype.isCollidingWith = function (o) { var h = []; return this.pixelTouches(o, h); };
+GameObject.prototype.isCollidingWith = function (o) {
+    var h = [];
+    return this.pixelTouches(o, h);
+};
 
 GameObject.prototype.update = function () {
- 
+
     if (this.mPhysicsComponent !== null) {
         this.mPhysicsComponent.update();
     }
-    
+
     // simple default behavior
     if (this.mRigidBody !== null)
-            this.mRigidBody.update();
+        this.mRigidBody.update();
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.T)) {
         this.toggleDrawRenderable();
     }
@@ -163,9 +188,9 @@ GameObject.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.toggleDrawRigidShape();
     }
-    
-        //object shake - SS
-        //needed for interpolate as well
+
+    //object shake - SS
+    //needed for interpolate as well
     if (this.mGameObjectShake !== null) {
         var tempPos = vec2.fromValues(this.mGameObjectShake.getCenter()[0], this.mGameObjectShake.getCenter()[1]);
         this.getXform().setXPos(tempPos[0]);
@@ -181,7 +206,7 @@ GameObject.prototype.update = function () {
 
     this.mGameObjectState.updateGameObjectState();
 };
- 
+
 /**
  * Draw function called by GameLoop
  * @param {Camera} aCamera Camera to draw too
@@ -257,8 +282,7 @@ GameObject.prototype.interpolateBy = function (dx, dy) {
     newC[0] += dx;
     newC[1] += dy;
     this.mGameObjectState.setCenter(newC);
-
+};
 GameObject.prototype.panTo = function (cx, cy) {
-    this.mGameObjectState.setCenter([cx,cy]);
-    };
+    this.mGameObjectState.setCenter([cx, cy]);
 };

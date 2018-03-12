@@ -288,7 +288,7 @@ MyGame.prototype.update = function () {
 
             this.bootUpLight();
 
-          //  this.checkDevKeys();
+            this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
