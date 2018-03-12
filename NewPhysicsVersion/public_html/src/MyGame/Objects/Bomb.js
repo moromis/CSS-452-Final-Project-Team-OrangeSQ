@@ -60,7 +60,7 @@ Bomb.prototype.handleCollision = function (otherObjectType) {
 
     Fire.prototype.handleCollision.call(this, otherObjectType);
 
-    if (otherObjectType === "Block" || otherObjectType === "Hero" ) {
+    if (otherObjectType === "Block") {
         
         gEngine.AudioClips.playACue("assets/sounds/bmb.wav");
 

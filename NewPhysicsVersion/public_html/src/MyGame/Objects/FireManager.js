@@ -5,7 +5,7 @@
 
 function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, blockManager) {
     
-    Manager.call(this, fireTexture, Fire, low, high, true);
+    Manager.call(this, fireTexture, Fire, low, high, false);
     
     this.low;
     this.high;

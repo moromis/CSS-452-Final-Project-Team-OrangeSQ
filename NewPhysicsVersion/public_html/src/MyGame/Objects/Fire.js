@@ -56,7 +56,7 @@ Fire.prototype.shouldDie = function () {
 };
 
 Fire.prototype.getScore = function () {
-    return 200;
+    return this.getXform().getPosition()[1];
 };
 
 Fire.prototype.getSprite = function()

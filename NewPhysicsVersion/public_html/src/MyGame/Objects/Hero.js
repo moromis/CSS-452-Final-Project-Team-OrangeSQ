@@ -40,7 +40,7 @@ function Hero(spriteTexture, size, x, y) {
     this.kDelta = 250;
     this.jumpVelocity = 500;
     this.health = 3;
-    this.friction = 0.1;
+    this.friction = 0.3;
 
     this.name = "Hero";
 

@@ -107,7 +107,7 @@ WinScreen.prototype.initialize = function () {
     
     this.mScore = new FontRenderable(highscore);
     this.mScore.setColor([1, 1, 1, 1]);
-    this.mScore.getXform().setPosition(350, 350);
+    this.mScore.getXform().setPosition(310 - highscore.toString().length, 350);
     this.mScore.setTextHeight(128);
     
     this.mScoreMsg = new FontRenderable(gotHighScore);

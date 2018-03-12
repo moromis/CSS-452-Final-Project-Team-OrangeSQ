@@ -15,6 +15,7 @@
 function MyGame() {
 
     this.kSnowman = "assets/Snowman@2x.png";
+    this.kOwl = "assets/owl.png";
     this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
@@ -62,6 +63,7 @@ function MyGame() {
     this.TimingAmount = 4;
 
     this.mHero = null;
+    this.mOwl = null;
     this.mBlockManager = null;
     this.mFireManager = null;
     this.mWaterManager = null;
@@ -103,6 +105,7 @@ gEngine.Core.inheritPrototype(MyGame, Scene);
 MyGame.prototype.loadScene = function () {
 
     gEngine.Textures.loadTexture(this.kSnowman);
+    gEngine.Textures.loadTexture(this.kOwl);
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kFire);
     gEngine.Textures.loadTexture(this.kWater);
@@ -146,6 +149,7 @@ MyGame.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
     
     gEngine.Textures.unloadTexture(this.kSnowman);
+    gEngine.Textures.unloadTexture(this.kOwl);
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kFire);
     gEngine.Textures.unloadTexture(this.kWater);
@@ -198,6 +202,9 @@ MyGame.prototype.initialize = function () {
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
     
+    //initialize owl
+    this.mOwl = new Owl(this.kOwl, 64, this.CameraCenter, 64 + this.BlockSize / 2);
+    
     //create the igloo
     this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth);
 
@@ -237,9 +244,11 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mOwl);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
+    
 
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 
