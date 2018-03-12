@@ -41,6 +41,11 @@ Meteor.prototype.getScore = function () {
     return 400;
 };
 
+Meteor.prototype.getType = function () {
+
+    return "Meteor";
+
+};
 
 Meteor.prototype.handleCollision = function (otherObjectType) {
 

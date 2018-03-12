@@ -57,3 +57,9 @@ Fire.prototype.handleCollision.call(this,otherObjectType);
     }
 };
 
+AngryFire.prototype.getType = function () {
+
+    return "AngryFire";
+
+};
+

@@ -17,10 +17,10 @@ function WinScreen(score) {
     
     this.score = score;
     
-    this.kBG = "assets/BGIce.png";
+    this.kBG = "assets/BG.png";
     this.BGWidth = 1024;
     
-    this.initialLightLevel = 3.5;
+    this.initialLightLevel = 1;
     this.CameraCanvasWidth = HelperFunctions.Core.getCameraWidth();
     this.CameraCenter = HelperFunctions.Core.getCameraCenter();
     this.CanvasWidth = HelperFunctions.Core.getCanvasWidth();
@@ -99,22 +99,22 @@ WinScreen.prototype.initialize = function () {
     }
     
     this.mNew = new FontRenderable(newHighScore);
-    this.mNew.setColor([0, 0, 0, 1]);
+    this.mNew.setColor([1, 1, 1, 1]);
     this.mNew.getXform().setPosition(150, 550);
     this.mNew.setTextHeight(64);
     
     this.mScore = new FontRenderable(this.score);
-    this.mScore.setColor([0, 0, 0, 1]);
-    this.mScore.getXform().setPosition(320, 350);
+    this.mScore.setColor([1, 1, 1, 1]);
+    this.mScore.getXform().setPosition(350 - this.score.toString().length, 350);
     this.mScore.setTextHeight(128);
     
     this.mScoreMsg = new FontRenderable(gotHighScore);
-    this.mScoreMsg.setColor([0, 0, 0, 1]);
+    this.mScoreMsg.setColor([1, 1, 1, 1]);
     this.mScoreMsg.getXform().setPosition(260, 120);
     this.mScoreMsg.setTextHeight(32);
 
     this.mStatusMsg = new FontRenderable("SPACEBAR - Restart Game...");
-    this.mStatusMsg.setColor([0, 0, 0, 1]);
+    this.mStatusMsg.setColor([1, 1, 1, 1]);
     this.mStatusMsg.getXform().setPosition(250, 40);
     this.mStatusMsg.setTextHeight(32);
     
@@ -140,11 +140,24 @@ WinScreen.prototype.draw = function () {
 // anything from this function!
 WinScreen.prototype.update = function () {
   
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
       
         gEngine.AudioClips.playACue(this.kStartAudio);
-        this.nextLevel = new MyGame();
-
+        this.nextLevel = new MyGame(60);
+        gEngine.GameLoop.stop();
+    }
+    
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+      
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame(45);
+        gEngine.GameLoop.stop();
+    }
+  
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.H)) {
+      
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame(30);
         gEngine.GameLoop.stop();
     }
 };

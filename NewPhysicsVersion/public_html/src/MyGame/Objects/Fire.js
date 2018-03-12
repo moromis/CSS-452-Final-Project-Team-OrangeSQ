@@ -48,6 +48,12 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
 
+Fire.prototype.getType = function () {
+
+    return "Fire";
+
+};
+
 Fire.prototype.shouldDie = function () {
    
     return false;
@@ -150,9 +156,9 @@ Fire.prototype.update = function () {
         }
         
         if(this.shouldMove){
-         //   this.interpolateBy(0, -this.kDelta);
-        this.mlight.setYPos(this.mSprite.getXform().getYPos());
-        this.mlight.setXPos(this.mSprite.getXform().getXPos());
+            
+            this.mlight.setYPos(this.mSprite.getXform().getYPos());
+            this.mlight.setXPos(this.mSprite.getXform().getXPos());
         
         }
 

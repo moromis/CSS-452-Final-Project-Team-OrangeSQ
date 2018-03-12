@@ -50,6 +50,11 @@ Bomb.prototype.getScore = function () {
     return 300;
 };
 
+Bomb.prototype.getType = function () {
+
+    return "Bomb";
+
+};
 
 Bomb.prototype.handleCollision = function (otherObjectType) {
 

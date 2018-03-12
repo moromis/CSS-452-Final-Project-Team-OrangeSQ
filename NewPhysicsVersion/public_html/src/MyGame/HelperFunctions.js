@@ -12,6 +12,7 @@ HelperFunctions.Core = (function () {
     var _CameraCenter = _CameraWidth / 2;
     var _CanvasWidth = 960;
     var _CanvasHeight = 640;
+    var _Difficulty = "easy";
     
     
     // generates a random int in the range low to high
@@ -28,8 +29,14 @@ HelperFunctions.Core = (function () {
     
     var getCameraCenter = function () { return _CameraCenter; };
     
+    var setDifficulty = function (d) { _Difficulty = d; };
+    
+    var getDifficulty = function () { return _Difficulty; };
+    
     //public methods
     var mPublic = {
+        setDifficulty: setDifficulty,
+        getDifficulty: getDifficulty,
         getCanvasHeight: getCanvasHeight,
         getCanvasWidth: getCanvasWidth,
         getCameraWidth: getCameraWidth,

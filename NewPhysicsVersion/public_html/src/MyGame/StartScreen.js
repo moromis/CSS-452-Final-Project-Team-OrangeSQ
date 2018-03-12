@@ -98,8 +98,25 @@ StartScreen.prototype.draw = function () {
 // anything from this function!
 StartScreen.prototype.update = function () {
   
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
       
+        HelperFunctions.Core.setDifficulty("easy");
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame();
+        gEngine.GameLoop.stop();
+    }
+    
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+      
+        HelperFunctions.Core.setDifficulty("medium");
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame();
+        gEngine.GameLoop.stop();
+    }
+  
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.H)) {
+      
+        HelperFunctions.Core.setDifficulty("hard");
         gEngine.AudioClips.playACue(this.kStartAudio);
         this.nextLevel = new MyGame();
         gEngine.GameLoop.stop();
