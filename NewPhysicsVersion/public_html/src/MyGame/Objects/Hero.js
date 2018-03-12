@@ -87,14 +87,14 @@ Hero.prototype.update = function () {
         this.mDirection = direction.RIGHT;
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
             v[0] = -this.kDelta;
         if (this.mState !== state.EXTENDING) {
             this.mState = state.WALKING;
         }
 
-    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)) {
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
             v[0] = this.kDelta;
         if (this.mState !== state.EXTENDING) {

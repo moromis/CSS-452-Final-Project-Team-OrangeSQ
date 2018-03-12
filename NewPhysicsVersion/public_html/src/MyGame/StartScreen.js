@@ -24,7 +24,7 @@ function StartScreen() {
 
     // The camera to view the scene
     this.mCamera = null;
-    this.mStatusMsg = null;
+    this.mInstructionsMsg = null;
     this.showInstructions = false;
     
     this.nextLevel = null;
@@ -74,13 +74,28 @@ StartScreen.prototype.initialize = function () {
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
     this.mBG = new GameObject(bgR);
 
-    this.mStatusMsg = new FontRenderable("");
-    this.mStatusMsg.setColor([1, 1, 1, 1]);
-    this.mStatusMsg.getXform().setPosition(70, 40);
-    this.mStatusMsg.setTextHeight(32);
-    this.mStatusMsg.setText("I - Instructions    SPACEBAR - Start Game...");
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
+    this.mInstructionsMsg = new FontRenderable("");
+    this.mInstructionsMsg.setColor([1, 1, 1, 1]);
+    this.mInstructionsMsg.getXform().setPosition(250, 600);
+    this.mInstructionsMsg.setTextHeight(32);
+    this.mInstructionsMsg.setText("Press 'I' for Instructions");
+    
+    this.mStartMsg = new FontRenderable("Press one of the keys below to start");
+    this.mStartMsg.setColor([1, 1, 1, 1]);
+    this.mStartMsg.getXform().setPosition(120, 60);
+    this.mStartMsg.setTextHeight(32);
+    
+    this.mDifficultyMsg = new FontRenderable("'E': Easy     'M': Medium     'H': Hard");
+    this.mDifficultyMsg.setColor([1, 1, 1, 1]);
+    this.mDifficultyMsg.getXform().setPosition(120, 30);
+    this.mDifficultyMsg.setTextHeight(32);
+    
+    
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mInstructionsMsg);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStartMsg);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mDifficultyMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
+    
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 };
 

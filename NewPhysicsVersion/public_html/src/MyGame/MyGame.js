@@ -7,7 +7,7 @@
 /*global gEngine, Scene, GameObjectset, TextureObject, Camera, vec2,
  Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
  GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions 
- ,CameraManager*/
+ ,CameraManager, LightManager*/
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -163,6 +163,9 @@ MyGame.prototype.unloadScene = function () {
 
 MyGame.prototype.initialize = function () {
     
+    //initialize light manager
+    LightManager.Core.initLightManager(20);
+    
     this.loseSoundActivated = false;
     
     //play bg audio
@@ -194,19 +197,16 @@ MyGame.prototype.initialize = function () {
 
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
-
-    //create the light manager
-    this.mLightManager = new LightManager();
     
     //create the igloo
-    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth, this.mLightManager);
+    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth);
 
     //intialize background
     var bgR = new IllumRenderable(this.kBG, this.kbgNormal);
     bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
-    bgR.addLight(this.mLightManager.createLight(2));
+    bgR.addLight(LightManager.Core.getDirectionalLight());
     this.mBG = new GameObject(bgR);
 
     //initialize the block manager
@@ -225,12 +225,11 @@ MyGame.prototype.initialize = function () {
             this.SpawnTime,
             this.SpawnTime * 3,
             this.mBG, this.mIgloo,
-            this.mLightManager,
             this.mBlockManager);
             
     this.mWaterManager = new WaterManager(this.kWater);
 
-    //add everything to the correct layergEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
+    //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
@@ -317,8 +316,6 @@ MyGame.prototype.finishGame = function ()
 {
 
     this.mFireManager.deleteFires();
-    
-    this.mLightManager.switchOffAll();
     
     var score = this.mFireManager.getScore();
     this.nextLevel = new WinScreen(score);

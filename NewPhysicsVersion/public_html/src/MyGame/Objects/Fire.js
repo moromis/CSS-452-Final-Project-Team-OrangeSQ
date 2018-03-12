@@ -1,10 +1,10 @@
 /*jslint node: true, vars: true */
-/*global gEngine, GameObject,CameraManager, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable */
+/*global gEngine, GameObject,CameraManager, LightRenderable, IllumRenderable, HelperFunctions, SpriteAnimateRenderable, LightManager */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Fire(spriteTexture,bg, igloo, lightmanager) {
+function Fire(spriteTexture, bg, igloo) {
     this.shouldMove = false;
     this.kDelta = 15;
     this.size = 64;
@@ -18,13 +18,13 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
     this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
-
-    this.mLightManager = lightmanager;
    
-    this.mlight = lightmanager.createLight(1);
-    this.mSprite.addLight(this.mlight);
-    bg.addLight(this.mlight);
-    igloo.addLight(this.mlight);
+    var checkout = LightManager.Core.checkoutLight();
+    this.mLight = checkout.light;
+    this.mLightID = checkout.ID;
+    this.mSprite.addLight(this.mLight);
+    bg.addLight(this.mLight);
+    igloo.addLight(this.mLight);
     GameObject.call(this, this.mSprite);
 
     this.shouldScore = false;
@@ -36,15 +36,11 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
     this.mParticles = null;
     var r = new RigidRectangle(this.getXform(), this.size, this.size);
     r.setMass(0);  // ensures no movements!
-
-
     this.setPhysicsComponent(r);
-                this.setVisibility(false);
-                this.mlight.setLightTo(false);
+    
+    this.setVisibility(false);
+    this.mLight.setLightTo(false);
                 
-
-
-
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
 
@@ -69,33 +65,28 @@ Fire.prototype.getSprite = function()
 };
 
 Fire.prototype.handleCollision = function (otherObjectType) {
-  //  console.log(this.getPhysicsComponent().getInvMass());
-   // console.log(otherObjectType);
 
     var pos = this.getXform().getPosition();
-
-//    console.log(otherObjectType);
   
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
         
         if(this.isVisible()){
+            
             var r = new RigidRectangle(this.getXform(), this.size, this.size);
-         r.setMass(0);  // ensures no movements!
+            r.setMass(0);  // ensures no movements!
+            this.setPhysicsComponent(r);
+            this.setVisibility(false);
+            this.shouldMoveFunction(false);
 
-
-    this.setPhysicsComponent(r);
-                this.setVisibility(false);
-                    this.shouldMoveFunction(false);
-
-                this.mlight.setLightTo(false);
-        this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
+            this.mLight.setLightTo(false);
+            this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
        
-          //  this.removePhysicsComponent();
             this.mParticles = new ParticleGameObjectSet();
             this.mParticles.addEmitterAt(
-                    [pos[0], pos[1] - this.size / this.downSize / 2], 200,
-                    this.createParticle);
+            [pos[0], pos[1] - this.size / this.downSize / 2], 200,
+            this.createParticle);
             this.mParticles.update(); // start emit immediately
+            
         }
     }
   
@@ -140,7 +131,7 @@ Fire.prototype.update = function () {
     this.setPhysicsComponent(r);
     this.shouldMoveFunction(false);
                 this.setVisibility(false);
-                this.mlight.setLightTo(false);
+                this.mLight.setLightTo(false);
         this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
        
         }
@@ -157,8 +148,8 @@ Fire.prototype.update = function () {
         
         if(this.shouldMove){
             
-            this.mlight.setYPos(this.mSprite.getXform().getYPos());
-            this.mlight.setXPos(this.mSprite.getXform().getXPos());
+            this.mLight.setYPos(this.mSprite.getXform().getYPos());
+            this.mLight.setXPos(this.mSprite.getXform().getXPos());
         
         }
 

@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, lightManager, blockManager) {
+function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, blockManager) {
     
     Manager.call(this, fireTexture, Fire, low, high, true);
     
@@ -17,7 +17,6 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
     this.maxFires = 20;
     this.mbg= bg;
     this.migloo= igloo;
-    this.lightManager = lightManager;
     this.blockManager = blockManager;
     
     //preallocate objects
@@ -26,7 +25,6 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
     for(var i = 0; i < 2; i++) {
           var mObject = new AngryFire(this.angryFireTexture, 
             this.heroPos,this.mbg,this.migloo, 
-            this.lightManager,
             this.blockManager
           );
             
@@ -39,9 +37,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
             for(var i = 0; i < 2; i++) {
                  var mObject = new Meteor(this.meteorTexture,
                     this.mbg,
-                    this.migloo, 
-                    this.lightManager,
-                    this.blockManager
+                    this.migloo
                  );
 
                 this.addToSet(mObject);
@@ -50,7 +46,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
 
             //15 normal fires
             for(var i = 0; i < 15; i++) {
-                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
                 this.addToSet(mObject);
             }
             break;
@@ -59,9 +55,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
             for(var i = 0; i < 7; i++) {
                  var mObject = new Meteor(this.meteorTexture,
                     this.mbg,
-                    this.migloo, 
-                    this.lightManager,
-                    this.blockManager
+                    this.migloo
                  );
 
                 this.addToSet(mObject);
@@ -70,7 +64,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
 
             //10 normal fires
             for(var i = 0; i < 10; i++) {
-                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
                 this.addToSet(mObject);
             }
             break;
@@ -79,9 +73,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
             for(var i = 0; i < 13; i++) {
                  var mObject = new Meteor(this.meteorTexture,
                     this.mbg,
-                    this.migloo, 
-                    this.lightManager,
-                    this.blockManager
+                    this.migloo
                  );
 
                 this.addToSet(mObject);
@@ -90,7 +82,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
 
             //4 normal fires
             for(var i = 0; i < 4; i++) {
-                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
                 this.addToSet(mObject);
             }
             break;
@@ -100,8 +92,7 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
     //1 giant bomb  
     var mObject = new Bomb(this.bombTexture,
     this.mbg,
-    this.migloo, 
-    this.lightManager,
+    this.migloo,
     this.blockManager);
     this.addToSet(mObject);
     
@@ -154,10 +145,9 @@ this.score += this.getObjectAt(randomNumber).getScore();
 
     toSpawn.shouldMoveFunction(true);
     toSpawn.setVisibility(true);
-    toSpawn.mlight.setLightTo(true);
+    toSpawn.mLight.setLightTo(true);
 };
 
 FireManager.prototype.deleteFires = function(){
     this.deleteAll();
-    this.lightManager.removeLights();
 };

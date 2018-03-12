@@ -28,7 +28,7 @@ function WinScreen(score) {
 
     // The camera to view the scene
     this.mCamera = null;
-    this.mStatusMsg = null;
+    this.mDifficultyMsg = null;
   
     this.kStartAudio = "assets/sounds/start.wav";
 
@@ -84,44 +84,53 @@ WinScreen.prototype.initialize = function () {
     if(highscore !== null){
         if (this.score > highscore) {
             localStorage.setItem("highscore", this.score);
-            newHighScore = "NEW HIGH SCORE";
+            newHighScore = "  NEW HIGH SCORE";
             gotHighScore = "your score is a high score!";
         }else{
             newHighScore = "Current High Score";
-            gotHighScore = "Better luck next time";
+            gotHighScore = " Better luck next time";
             this.score = highscore;
         }
     }
     else{
         localStorage.setItem("highscore", this.score);
-        newHighScore = "NEW HIGH SCORE";
+        newHighScore = "  NEW HIGH SCORE";
         gotHighScore = "your score is a high score!";
     }
+    
+    highscore = localStorage.getItem("highscore");
     
     this.mNew = new FontRenderable(newHighScore);
     this.mNew.setColor([1, 1, 1, 1]);
     this.mNew.getXform().setPosition(150, 550);
     this.mNew.setTextHeight(64);
     
-    this.mScore = new FontRenderable(this.score);
+    this.mScore = new FontRenderable(highscore);
     this.mScore.setColor([1, 1, 1, 1]);
-    this.mScore.getXform().setPosition(350 - this.score.toString().length, 350);
+    this.mScore.getXform().setPosition(350, 350);
     this.mScore.setTextHeight(128);
     
     this.mScoreMsg = new FontRenderable(gotHighScore);
     this.mScoreMsg.setColor([1, 1, 1, 1]);
-    this.mScoreMsg.getXform().setPosition(260, 120);
+    this.mScoreMsg.getXform().setPosition(240, 170);
     this.mScoreMsg.setTextHeight(32);
 
-    this.mStatusMsg = new FontRenderable("SPACEBAR - Restart Game...");
-    this.mStatusMsg.setColor([1, 1, 1, 1]);
-    this.mStatusMsg.getXform().setPosition(250, 40);
-    this.mStatusMsg.setTextHeight(32);
+
+    this.mRestartMsg = new FontRenderable("Press one of the keys below to restart");
+    this.mRestartMsg.setColor([1, 1, 1, 1]);
+    this.mRestartMsg.getXform().setPosition(120, 80);
+    this.mRestartMsg.setTextHeight(32);
+    
+    this.mDifficultyMsg = new FontRenderable("E: Easy       M: Medium       H: Hard");
+    this.mDifficultyMsg.setColor([1, 1, 1, 1]);
+    this.mDifficultyMsg.getXform().setPosition(120, 40);
+    this.mDifficultyMsg.setTextHeight(32);
     
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mNew);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScore);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mRestartMsg);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mDifficultyMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 };
@@ -142,6 +151,7 @@ WinScreen.prototype.update = function () {
   
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
       
+        HelperFunctions.Core.setDifficulty("easy");
         gEngine.AudioClips.playACue(this.kStartAudio);
         this.nextLevel = new MyGame(60);
         gEngine.GameLoop.stop();
@@ -149,6 +159,7 @@ WinScreen.prototype.update = function () {
     
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
       
+        HelperFunctions.Core.setDifficulty("medium");
         gEngine.AudioClips.playACue(this.kStartAudio);
         this.nextLevel = new MyGame(45);
         gEngine.GameLoop.stop();
@@ -156,6 +167,7 @@ WinScreen.prototype.update = function () {
   
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.H)) {
       
+        HelperFunctions.Core.setDifficulty("hard");
         gEngine.AudioClips.playACue(this.kStartAudio);
         this.nextLevel = new MyGame(30);
         gEngine.GameLoop.stop();
