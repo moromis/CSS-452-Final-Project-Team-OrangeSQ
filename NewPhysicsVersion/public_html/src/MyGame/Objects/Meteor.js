@@ -29,13 +29,18 @@ Meteor.prototype.update = function () {
     
     //call parent update
     Fire.prototype.update.call(this);
-    
+    if(this.shouldMove) {
     //move again
-    this.interpolateBy(0, -5 * this.kDelta);
-    this.mlight.setYPos(this.mSprite.getXform().getYPos());
-    this.mlight.setXPos(this.mSprite.getXform().getXPos());
-    
+     //   this.interpolateBy(0, -5 * this.kDelta);
+        this.mlight.setYPos(this.mSprite.getXform().getYPos());
+        this.mlight.setXPos(this.mSprite.getXform().getXPos());
+    }
 };
+
+Meteor.prototype.getScore = function () {
+    return 400;
+};
+
 
 Meteor.prototype.handleCollision = function (otherObjectType) {
 

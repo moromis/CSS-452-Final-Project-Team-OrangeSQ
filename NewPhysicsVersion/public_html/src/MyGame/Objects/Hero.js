@@ -37,7 +37,7 @@ function Hero(spriteTexture, size, x, y) {
     this.mDirection = direction.RIGHT;
     this.justStartedWalking = false;
 
-    this.kDelta = 300;
+    this.kDelta = 250;
     this.jumpVelocity = 500;
     this.health = 3;
     this.friction = 0.5;
@@ -54,7 +54,7 @@ function Hero(spriteTexture, size, x, y) {
     this.rigidBody.setRestitution(0);
     this.rigidBody.setColor([0, 1, 0, 1]);
     this.rigidBody.setFriction(this.friction);
-    this.rigidBody.setDrawBounds(true);
+    this.rigidBody.setDrawBounds(false);
     this.setPhysicsComponent(this.rigidBody);
     
     //this.toggleDrawRenderable();
@@ -79,22 +79,22 @@ Hero.prototype.update = function () {
 
     var v = this.getPhysicsComponent().getVelocity();
     
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Left)){
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.A)){
         this.justStartedWalking = true;
         this.mDirection = direction.LEFT;
-    }else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Right)){
+    }else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.D)){
         this.justStartedWalking = true;
         this.mDirection = direction.RIGHT;
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A)) {
         if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
             v[0] = -this.kDelta;
         if (this.mState !== state.EXTENDING) {
             this.mState = state.WALKING;
         }
 
-    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+    } else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D)) {
         if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Space))
             v[0] = this.kDelta;
         if (this.mState !== state.EXTENDING) {
@@ -153,7 +153,13 @@ Hero.prototype.getType = function () {
 
 Hero.prototype.isAlive = function () {
 
-    return (this.isVisible() && this.getXform().getYPos() > 0 && this.health > 0);
+    return (this.isVisible() && this.getXform().getYPos() > -1000 && this.health > 0);
+
+};
+
+Hero.prototype.isFalling = function () {
+
+    return (this.isVisible() && this.getXform().getYPos() < 0);
 
 };
 

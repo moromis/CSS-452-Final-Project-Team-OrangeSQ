@@ -81,6 +81,8 @@ function MyGame() {
     this.kSizzle = "assets/sounds/sizzle.wav";
     this.kOuch = "assets/sounds/ouch.wav";
     
+    this.loseSoundActivated;
+    
     this.nextLevel;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -149,6 +151,8 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
+        this.loseSoundActivated = false;
+
     
     gEngine.AudioClips.playBackgroundAudio(this.kGameSceneAudio);
 
@@ -255,6 +259,10 @@ MyGame.prototype.update = function () {
 //    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
 
 //    console.log("main update is running...");
+    if(this.mHero.isFalling() && !this.loseSoundActivated) {
+            this.loseSoundActivated = true;
+            gEngine.AudioClips.playACue(this.kLoseAudio);
+    }
 
     if (this.mHero.isAlive()) {
 
@@ -269,14 +277,14 @@ MyGame.prototype.update = function () {
 
             this.bootUpLight();
 
-            this.checkDevKeys();
+          //  this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
 
             //collisions (physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
-            this.mFireManager.checkCollisions(this.mWaterManager, collisionInfo);
+            this.mFireManager.checkCollisionsByPixel(this.mWaterManager, collisionInfo);
             //per pixel collision
             this.mFireManager.checkCollisionsWith(this.mHero);
 
@@ -350,48 +358,48 @@ MyGame.prototype.checkDevKeys = function () {
 
 
     //dev key to relocate all fire objects
-    if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
-        var mousePosition = CameraManager.Core.getMouseLocation();
-        this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
-    }
+//    if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
+//        var mousePosition = CameraManager.Core.getMouseLocation();
+//        this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
+//    }
 
-    //dev key to increment score
-    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
-        this.mFireManager.incrementScoreBy(10000);
-    }
+//    //dev key to increment score
+//    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
+//        this.mFireManager.incrementScoreBy(10000);
+//    }
     
-    //dev key to end game
-    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
-        this.finishGame();
-    }
+//    //dev key to end game
+//    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
+//        this.finishGame();
+//    }
   
     //camera checkout keys for testing
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
-        this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
-        if (this.firstCamera === null)
-            CameraManager.Core.returnIthCamera(0);
-    }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
-        this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
-        if (this.secondCamera === null)
-            CameraManager.Core.returnIthCamera(1);
-    }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
-        this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
-        if (this.thirdCamera === null)
-            CameraManager.Core.returnIthCamera(2);
-    }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
-        this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
-        if (this.fourthCamera === null)
-            CameraManager.Core.returnIthCamera(3);
-    }
-    
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
-        this.mFireManager.autoSpawn();
-    }
-    
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
-        this.mFireManager._createObject();
-    }
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
+//        this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
+//        if (this.firstCamera === null)
+//            CameraManager.Core.returnIthCamera(0);
+//    }
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
+//        this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
+//        if (this.secondCamera === null)
+//            CameraManager.Core.returnIthCamera(1);
+//    }
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
+//        this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
+//        if (this.thirdCamera === null)
+//            CameraManager.Core.returnIthCamera(2);
+//    }
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
+//        this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
+//        if (this.fourthCamera === null)
+//            CameraManager.Core.returnIthCamera(3);
+//    }
+//    
+//    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
+//        this.mFireManager.autoSpawn();
+//    }
+//    
+//    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
+//        this.mFireManager._createObject();
+//    }
 };

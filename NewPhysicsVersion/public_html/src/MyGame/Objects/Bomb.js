@@ -27,6 +27,8 @@ function Bomb(spriteTexture, bg, igloo, lightmanager, blockManager) {
     this.mSprite.getXform().setSize(this.size, this.size);
     
     var r = new RigidRectangle(this.getXform(), this.size, this.size);
+        r.setMass(0);  // ensures no movements!
+
     this.setPhysicsComponent(r);
 }
 gEngine.Core.inheritPrototype(Bomb, Fire);
@@ -44,11 +46,16 @@ Bomb.prototype.update = function () {
 
 };
 
+Bomb.prototype.getScore = function () {
+    return 300;
+};
+
+
 Bomb.prototype.handleCollision = function (otherObjectType) {
 
     Fire.prototype.handleCollision.call(this, otherObjectType);
 
-    if (otherObjectType === "Block") {
+    if (otherObjectType === "Block" || otherObjectType === "Hero" ) {
         
         gEngine.AudioClips.playACue("assets/sounds/bmb.wav");
 

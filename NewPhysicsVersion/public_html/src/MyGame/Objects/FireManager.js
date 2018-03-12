@@ -19,6 +19,45 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
     this.migloo= igloo;
     this.lightManager = lightManager;
     this.blockManager = blockManager;
+    
+    for(var i = 0; i < 2; i++) {
+          var mObject = new AngryFire(this.angryFireTexture, 
+            this.heroPos,this.mbg,this.migloo, 
+            this.lightManager,
+            this.blockManager
+          );
+            
+          this.addToSet(mObject);
+    }
+    
+    for(var i = 2; i < 4; i++) {
+         var mObject = new Meteor(this.meteorTexture,
+            this.mbg,
+            this.migloo, 
+            this.lightManager,
+            this.blockManager
+         );
+            
+        this.addToSet(mObject);
+        
+    }
+    
+    for(var i = 4; i < 19; i++) {
+        var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
+        this.addToSet(mObject);
+    }
+    
+         
+            var mObject = new Bomb(this.bombTexture,
+            this.mbg,
+            this.migloo, 
+            this.lightManager,
+            this.blockManager);
+            this.addToSet(mObject);
+    
+    
+    
+    
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
 
@@ -53,47 +92,19 @@ FireManager.prototype.autoSpawn = function(){
 
 FireManager.prototype._createObject = function () {
  
-    var randomNumber = HelperFunctions.Core.generateRandomInt(0, 1000); 
-    if(this.size() < this.maxFires){
-        
-        //create light
+    var randomNumber = HelperFunctions.Core.generateRandomInt(0, 20);
+    
 
-        //1 in 100 chance to spawn an angry fire
-        if(randomNumber >= 100 && randomNumber < 110){
-            
-            var mObject = new AngryFire(this.angryFireTexture, 
-            this.heroPos,this.mbg,this.migloo, 
-            this.lightManager,
-            this.blockManager);
-            this.addToSet(mObject);
+this.score += this.getObjectAt(randomNumber).getScore();
+    //add weight to object
+    var toSpawn = this.getObjectAt(randomNumber);
+//    console.log(toSpawn.getPhysicsComponent().getInvMass());
+    toSpawn.getPhysicsComponent().setMass(1);
+    //console.log(toSpawn);
 
-        //1 in 1000 chance to spawn a bomb
-        }else if(randomNumber >= 1 && randomNumber < 10){
-            
-            var mObject = new Bomb(this.bombTexture,
-            this.mbg,
-            this.migloo, 
-            this.lightManager,
-            this.blockManager);
-            this.addToSet(mObject);
-            
-        //1 in 100 chance to spawn a meteor    
-        }else if(randomNumber >= 200 && randomNumber < 300){
-         
-            var mObject = new Meteor(this.meteorTexture,
-            this.mbg,
-            this.migloo, 
-            this.lightManager,
-            this.blockManager);
-            this.addToSet(mObject);
-            
-        //if we don't create a special fire, just create a normal one    
-        }else{
-
-            var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
-            this.addToSet(mObject);
-        }
-    }
+    toSpawn.setVisibility(true);
+    toSpawn.mlight.setLightTo(true);
+    toSpawn.shouldMoveFunction(true);
 };
 
 FireManager.prototype.deleteFires = function(){

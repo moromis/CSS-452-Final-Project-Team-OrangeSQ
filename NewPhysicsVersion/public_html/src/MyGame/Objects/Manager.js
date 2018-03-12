@@ -30,6 +30,7 @@ Manager.prototype.update = function () {
         if (this.timer <= 0) {
 
             //create an object
+       //     console.log("creating");
             this._createObject();
 
             //calculate a new timer between this.low and this.high seconds long
@@ -41,7 +42,10 @@ Manager.prototype.update = function () {
     for (var i = 0; i < this.size(); i++) {
         if (this.getObjectAt(i).shouldDie()) {
             this.score += this.getObjectAt(i).getScore();
-            this.removeObjectAt(i);
+                      this.removeObjectAt(i);
+
+
+            
         }
     }
 
@@ -74,6 +78,31 @@ Manager.prototype.checkCollisions = function (otherManager, collisionInfo) {
             if (this.getObjectAt(j).isVisible() && otherManager.getObjectAt(i).isVisible()) {
 
                 var collided = this.getObjectAt(j).getPhysicsComponent().collided(otherManager.getObjectAt(i).getPhysicsComponent(), collisionInfo);
+                if (collided) {
+
+                    //this manager's object, handle the collision
+                    this.getObjectAt(j).handleCollision(otherManager.getObjectType());
+
+                    //other manager's object, handle the collision
+                    otherManager.getObjectAt(i).handleCollision(this.getObjectType());
+                }
+            }
+        }
+    }
+};
+
+Manager.prototype.checkCollisionsByPixel = function (otherManager, collisionInfo) {
+
+    //check collisions with all objects in this object set
+    //with all the objects in the other set
+    for (var i = 0; i < otherManager.size(); i++) {
+        for (var j = 0; j < this.size(); j++) {
+
+            //console.log(this.getObjectAt(j));
+            // console.log(otherManager.getObjectAt(i));
+            if (this.getObjectAt(j).isVisible() && otherManager.getObjectAt(i).isVisible()) {
+
+                var collided = this.getObjectAt(j).pixelTouches(otherManager.getObjectAt(i), collisionInfo);
                 if (collided) {
 
                     //this manager's object, handle the collision
@@ -120,6 +149,7 @@ Manager.prototype.getObjectType = function () {
 Manager.prototype._createObject = function () {
 
     //add a new patrol to the set
+    console.log(this.object.name);
     var mObject = new this.object(this.sprite);
     this.addToSet(mObject);
 

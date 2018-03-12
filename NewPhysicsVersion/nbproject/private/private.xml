@@ -11,10 +11,19 @@
             <file>file:/C:/Users/Kelvin/Dropbox/2.Classes/452/Source/GameTopics/GamePhysicsIntegrated/public_html/index.html</file>
         </group>
         <group>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/index.html</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/MyGame.js</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/WinScreen.js</file>
-            <file>file:/C:/Users/morom/Dropbox/school/CSS%20452/Final%20Project/NewPhysicsVersion/public_html/src/MyGame/StartScreen.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Block.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/Engine/Physics/RigidShape.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Fire.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Bomb.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Hero.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/BlockManager.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/MyGame.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/Engine/Physics/RigidShape_Behavior.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/HelperFunctions.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/FireManager.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Meteor.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/src/MyGame/Objects/Manager.js</file>
+            <file>file:/C:/Users/rober/Desktop/CSS-452-Final-Project-Team-OrangeSQ-master/NewPhysicsVersion/public_html/index.html</file>
         </group>
     </open-files>
 </project-private>

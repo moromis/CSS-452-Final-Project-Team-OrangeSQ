@@ -5,14 +5,14 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Fire(spriteTexture,bg, igloo, lightmanager) {
-
+    this.shouldMove = false;
     this.kDelta = 15;
     this.size = 64;
     this.downSize = 1.5;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
-    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(this.size, 960 - this.size), 640);
+    this.mSprite.getXform().setPosition(HelperFunctions.Core.generateRandomFloat(this.size, 960 - this.size), 1000);
     this.mSprite.setSpriteSequence(this.size, 0, this.size, this.size, 3, 0);
     this.mSprite.setAnimationSpeed(15);
     this.mSprite.setAnimationType(SpriteAnimateRenderable.eAnimationType.eAnimateSwing);
@@ -35,33 +35,26 @@ function Fire(spriteTexture,bg, igloo, lightmanager) {
 
     this.mParticles = null;
     var r = new RigidRectangle(this.getXform(), this.size, this.size);
+    r.setMass(0);  // ensures no movements!
+
+
     this.setPhysicsComponent(r);
+                this.setVisibility(false);
+                this.mlight.setLightTo(false);
+                
+
+
+
 }
 gEngine.Core.inheritPrototype(Fire, GameObject);
 
 Fire.prototype.shouldDie = function () {
-
-    if (!this.isVisible() && this.mParticles === null) {
-        
-        if (this.focusCamera !== null) {
-
-            CameraManager.Core.returnCamera();
-            this.focusCamera = null;
-        }
-        
-        this.mlight.setLightTo(false);
-        this.mLightManager.removeLights();
-        return true;
-    }
+   
     return false;
 };
 
 Fire.prototype.getScore = function () {
-
-    if (this.shouldScore)
-        return Math.floor(this.scoreAmount);
-    else
-        return 0;
+    return 200;
 };
 
 Fire.prototype.getSprite = function()
@@ -70,16 +63,28 @@ Fire.prototype.getSprite = function()
 };
 
 Fire.prototype.handleCollision = function (otherObjectType) {
+  //  console.log(this.getPhysicsComponent().getInvMass());
+   // console.log(otherObjectType);
 
     var pos = this.getXform().getPosition();
 
 //    console.log(otherObjectType);
   
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
-       
+        
         if(this.isVisible()){
-            this.setVisibility(false);
-            this.removePhysicsComponent();
+            var r = new RigidRectangle(this.getXform(), this.size, this.size);
+         r.setMass(0);  // ensures no movements!
+
+
+    this.setPhysicsComponent(r);
+                this.setVisibility(false);
+                    this.shouldMoveFunction(false);
+
+                this.mlight.setLightTo(false);
+        this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
+       
+          //  this.removePhysicsComponent();
             this.mParticles = new ParticleGameObjectSet();
             this.mParticles.addEmitterAt(
                     [pos[0], pos[1] - this.size / this.downSize / 2], 200,
@@ -104,7 +109,8 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         gEngine.AudioClips.playACue("assets/sounds/ouch.wav");
     }
     
-     this.mlight.setLightTo(false);
+  
+
 };
 
 Fire.prototype.relocate = function (x, y) {
@@ -121,8 +127,16 @@ Fire.prototype.update = function () {
     if (this.isVisible()) {
 
         if (pos[1] < 0) {
-            this.setVisibility(false);
-            this.mlight.setLightTo(false);
+            var r = new RigidRectangle(this.getXform(), this.size, this.size);
+         r.setMass(0);  // ensures no movements!
+
+
+    this.setPhysicsComponent(r);
+    this.shouldMoveFunction(false);
+                this.setVisibility(false);
+                this.mlight.setLightTo(false);
+        this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
+       
         }
 
         if (pos[1] < this.dangerHeight) {
@@ -134,11 +148,13 @@ Fire.prototype.update = function () {
         if (this.focusCamera !== null) {
             this.focusCamera.setWCCenter(pos[0], pos[1]);
         }
-
-        //update Y position    
-        this.interpolateBy(0, -this.kDelta);
+        
+        if(this.shouldMove){
+         //   this.interpolateBy(0, -this.kDelta);
         this.mlight.setYPos(this.mSprite.getXform().getYPos());
         this.mlight.setXPos(this.mSprite.getXform().getXPos());
+        
+        }
 
         //update the sprite's animation    
         this.mSprite.updateAnimation();
@@ -156,6 +172,10 @@ Fire.prototype.update = function () {
         }
         return;
     }
+};
+
+Fire.prototype.shouldMoveFunction = function (a) {
+    this.shouldMove = a;
 };
 
 Fire.prototype.draw = function (camera) {
