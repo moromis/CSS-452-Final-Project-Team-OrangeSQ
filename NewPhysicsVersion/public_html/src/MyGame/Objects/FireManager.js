@@ -68,7 +68,7 @@ FireManager.prototype._createObject = function () {
             this.addToSet(mObject);
 
         //1 in 1000 chance to spawn a bomb
-        }else if(randomNumber === 42){
+        }else if(randomNumber >= 1 && randomNumber < 10){
             
             var mObject = new Bomb(this.bombTexture,
             this.mbg,

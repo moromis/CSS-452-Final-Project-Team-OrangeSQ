@@ -1,10 +1,10 @@
 /*jslint node: true, vars: true */
-/*global gEngine, GameObject, LightRenderable, IllumRenderable */
+/*global gEngine, GameObject, LightRenderable, IllumRenderable, CameraManager */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Block(spriteTexture, size, x, y, camera) {
+function Block(spriteTexture, size, x, y) {
     
     this.size = size;
     
@@ -12,7 +12,6 @@ function Block(spriteTexture, size, x, y, camera) {
     this.mSprite.setColor([1, 1, 1, 0]);
     this.mSprite.getXform().setPosition(x, y);
     this.mSprite.getXform().setSize(size, size);
-    this.camera = camera;
 
     this.mSprite.setElementPixelPositions(0, size, 0, size);  
 
@@ -48,7 +47,7 @@ Block.prototype.handleCollision = function (otherObjectType) {
     
     if(otherObjectType === "Fire"){
         this.setVisibility(false);
-        this.camera.shake(3,3,5,20);
+        CameraManager.Core.shakeMainCam(3, 3, 5, 20);
     }
     
 };

@@ -3,14 +3,13 @@
  * HelperFunctions: false, Manager: false, Block: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function BlockManager(spriteTexture, blocksToCreate, size, x, y, camera) {
+function BlockManager(spriteTexture, blocksToCreate, size, x, y) {
 //    console.log(blocksToCreate);
 //    console.log(size);
 
     Manager.call(this, spriteTexture, Block, 0, 0, false);
 
     this.blockSize = size;
-    this.camera = camera;
     this.x = x;
     this.y = y;
     this.Blocks = new Array(blocksToCreate);
@@ -48,14 +47,16 @@ BlockManager.prototype.checkCollisions = function (otherManager, collisionInfo) 
 };
 
 BlockManager.prototype.reset = function () {
-   this.deleteAll();
-   this.createBlocks();
+    
+    gEngine.AudioClips.playACue("assets/sounds/replace-blocks.wav");
+    this.deleteAll();
+    this.createBlocks();
 };
 
 BlockManager.prototype._createMore = function () {
     
-    this._placeObject(this.blockSize, this.x - this.blockSize, this.y, this.camera);
-    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y, this.camera);
+    this._placeObject(this.blockSize, this.x - this.blockSize, this.y);
+    this._placeObject(this.blockSize, this.x + this.blockSize * (this.blockCount - 1), this.y);
     
 //    this._placeObject(this.blockSize, this.x + this.blockSize * 2, this.y + this.blockSize, this.camera);
 //    this._placeObject(this.blockSize, this.x + this.blockSize * 4, this.y + this.blockSize, this.camera);
@@ -69,8 +70,7 @@ BlockManager.prototype.createBlocks = function () {
     for (var i = 0; i < this.blockCount; i++) {
         this._placeObject(this.blockSize,
                 this.x + ((i - 1) * this.blockSize),
-                this.y,
-                this.camera);
+                this.y);
     }
     this._createMore();
 };

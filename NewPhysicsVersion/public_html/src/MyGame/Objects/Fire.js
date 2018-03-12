@@ -42,8 +42,13 @@ gEngine.Core.inheritPrototype(Fire, GameObject);
 Fire.prototype.shouldDie = function () {
 
     if (!this.isVisible() && this.mParticles === null) {
+        
+        if (this.focusCamera !== null) {
 
-        console.log("fire should die, will call removeLights");
+            CameraManager.Core.returnCamera();
+            this.focusCamera = null;
+        }
+        
         this.mlight.setLightTo(false);
         this.mLightManager.removeLights();
         return true;
@@ -93,6 +98,12 @@ Fire.prototype.handleCollision = function (otherObjectType) {
         this.shouldScore = true;
         this.scoreAmount = pos[1];
     }
+    
+    if(otherObjectType === "Hero"){
+        gEngine.AudioClips.playACue("assets/sounds/sizzle.wav");
+        gEngine.AudioClips.playACue("assets/sounds/ouch.wav");
+    }
+    
      this.mlight.setLightTo(false);
 };
 

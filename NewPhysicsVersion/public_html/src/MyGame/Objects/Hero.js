@@ -107,6 +107,9 @@ Hero.prototype.update = function () {
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.W)
             || gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)) {
+        
+        gEngine.AudioClips.playACue("assets/sounds/jump.wav");
+        
         if (v[1] < 1 && v[1] > -1) {
             v[1] = this.jumpVelocity; // Jump velocity
         }
