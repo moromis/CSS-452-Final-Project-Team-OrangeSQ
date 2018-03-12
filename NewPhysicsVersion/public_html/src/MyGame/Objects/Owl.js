@@ -49,6 +49,10 @@ Owl.prototype.update = function () {
         this.getXform().setPosition(920, yPos);
     }
 
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.O))
+    {
+        this.interpolateBy(-10,0);
+    }
     var rand = HelperFunctions.Core.generateRandomInt(1, 100);
 
     if (this.actionLength === 0) {
