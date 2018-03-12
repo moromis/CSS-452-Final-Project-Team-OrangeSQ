@@ -288,7 +288,7 @@ MyGame.prototype.update = function () {
 
             this.bootUpLight();
 
-            this.checkDevKeys();
+          //this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
@@ -318,6 +318,7 @@ MyGame.prototype.update = function () {
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
     gEngine.Physics.processObjSet(this.mIgloo, this.mBlockManager);
+    gEngine.Physics.processObjSet(this.mOwl, this.mBlockManager);
     
 };
 

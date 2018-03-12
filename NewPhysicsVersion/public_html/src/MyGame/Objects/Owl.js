@@ -33,11 +33,35 @@ function Owl(spriteTexture, size, x, y) {
     this.actionLength = 5;
     this.mState = state.STANDING;
     this.mDirection = direction.LEFT;
-
     GameObject.call(this, this.mSprite);
-
+    var rigidShape = new RigidRectangle(this.getXform(), size-20, size);
+    rigidShape.setMass(0.5);  // ensures no movements!
+    rigidShape.setFriction(0);
+  
+   // rigidShape.setDrawBounds(true);
+    rigidShape.setColor([0, 0, 1, 1]);
+    this.setPhysicsComponent(rigidShape);
 }
 gEngine.Core.inheritPrototype(Owl, GameObject);
+
+Owl.prototype.shouldDie = function () {
+
+    if (!this.isVisible())
+        return true;
+
+    return false;
+
+};
+
+
+Owl.prototype.handleCollision = function (otherObjectType) {
+
+    if (otherObjectType === "Fire") {
+        this.setVisibility(false);
+        this.shake(3, 3, 5, 20);
+    }
+
+};
 
 Owl.prototype.update = function () {
 
@@ -46,27 +70,25 @@ Owl.prototype.update = function () {
     if (xPos > 936) {
         this.getXform().setPosition(32, yPos);
     } else if (xPos < 20) {
-        this.getXform().setPosition(920, yPos);
+        this.getXform().setPosition(1300, yPos);
     }
+    
+    if(yPos<0)
+        this.setVisibility(false);
+    
+    else
+    if (this.actionLength >= 0) {
 
-    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.O))
-    {
-        this.interpolateBy(-10,0);
-    }
-    var rand = HelperFunctions.Core.generateRandomInt(1, 100);
-
-    if (this.actionLength === 0) {
-
-        if (rand > 2 && rand < 40) {
+        if (this.actionLength > 2 && this.actionLength < 35) {
 
             this.mState = state.WALKING;
             this.mDirection = direction.LEFT;
 
 
             //TODO: doesn't work
-            this.interpolateBy(-10, 0);
+            this.interpolateBy(-5, 0);
 
-        } else if (rand > 42 && rand < 70) {
+        } else if (this.actionLength > 42 && this.actionLength < 70) {
 
             this.mState = state.WALKING;
             this.mDirection = direction.RIGHT;
@@ -78,19 +100,17 @@ Owl.prototype.update = function () {
             this.mState = state.STANDING;
         }
 
-        console.log(rand);
         this._providePrintout();
 
-        this.actionLength = HelperFunctions.Core.generateRandomInt(300, 600);
+        this.actionLength -= 0.5;
 
         this._updateAnimation();
 
     } else {
-
-        this.actionLength--;
+        var rand = HelperFunctions.Core.generateRandomInt(1, 100);
+        this.actionLength = rand;
 
     }
-
     this.mSprite.updateAnimation();
 
     GameObject.prototype.update.call(this);
