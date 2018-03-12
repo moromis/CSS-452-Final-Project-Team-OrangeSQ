@@ -91,7 +91,6 @@ CameraManager.Core = (function () {
 
         _drawCamera(mainCamera);
 
-
         for(var i = 0; i < numOfCams; i++){
             if(zoomCamsCheckedOut[i])
                 _drawCamera(zoomCams.getObjectAt(i));
@@ -128,6 +127,12 @@ CameraManager.Core = (function () {
     var getMainCamera = function () {
       
         return mainCamera;
+        
+    };
+    
+    var shakeMainCam = function (xDelta, yDelta, shakeFrequency, duration) {
+        
+        mainCamera.shake(xDelta, yDelta, shakeFrequency, duration);
         
     };
 
@@ -174,6 +179,7 @@ CameraManager.Core = (function () {
         returnCamera: returnCamera,
         checkoutIthCamera: checkoutIthCamera,
         returnIthCamera: returnIthCamera,
+        shakeMainCam: shakeMainCam,
         draw: draw,
         update: update,
         getMouseLocation: getMouseLocation,
