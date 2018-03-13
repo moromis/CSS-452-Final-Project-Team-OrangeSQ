@@ -71,6 +71,14 @@ Fire.prototype.handleCollision = function (otherObjectType) {
     if(otherObjectType === "Block" || otherObjectType === "Water" || otherObjectType === "Hero"){
         
         if(this.isVisible()){
+             console.log("particle");
+            this.mParticles = new ParticleGameObjectSet();
+            this.mParticles.addEmitterAt(
+            [pos[0], pos[1] - this.size / this.downSize / 2], 200,
+            this.createParticle);
+            this.mParticles.update(); // start emit immediately
+            
+            
             
             var r = new RigidRectangle(this.getXform(), this.size, this.size);
             r.setMass(0);  // ensures no movements!
@@ -80,12 +88,7 @@ Fire.prototype.handleCollision = function (otherObjectType) {
 
             this.mLight.setLightTo(false);
             this.getPhysicsComponent().setPosition(HelperFunctions.Core.generateRandomFloat(64, 960 - 64), 1000);
-       
-            this.mParticles = new ParticleGameObjectSet();
-            this.mParticles.addEmitterAt(
-            [pos[0], pos[1] - this.size / this.downSize / 2], 200,
-            this.createParticle);
-            this.mParticles.update(); // start emit immediately
+      
             
         }
     }

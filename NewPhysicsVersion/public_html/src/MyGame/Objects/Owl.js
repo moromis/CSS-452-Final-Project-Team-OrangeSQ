@@ -77,7 +77,7 @@ Owl.prototype.update = function () {
     
     var pos = this.getXform().getPosition();
     
-    if(pos[0] - this.heroPos[0] >= 2){
+    if(pos[0] - this.heroPos[0] >= 2 && Math.abs(pos[0] - this.heroPos[0]) < 140 && pos[0] > 200){
 
         if(this.mState === state.STANDING || this.mDirection === direction.RIGHT){
             
@@ -90,7 +90,7 @@ Owl.prototype.update = function () {
         
         this.panTo(this.heroPos[0],this.heroPos[1] -22);
         
-    }else if(this.heroPos[0] - pos[0] >= 2){
+    }else if(this.heroPos[0] - pos[0] >= 2 &&  Math.abs(pos[0] - this.heroPos[0]) < 140 && pos[0] < 700){
         
         
         if(this.mState === state.STANDING || this.mDirection === direction.LEFT){
@@ -104,7 +104,7 @@ Owl.prototype.update = function () {
         
         this.panTo(this.heroPos[0],this.heroPos[1] -22);
         
-    }else if(Math.abs(this.heroPos[0] - pos[0]) < 2){
+    }else if(Math.abs(this.heroPos[0] - pos[0]) < 2 ||  Math.abs(pos[0] - this.heroPos[0]) > 140 ){
         
         if(this.mState === state.WALKING){
             
