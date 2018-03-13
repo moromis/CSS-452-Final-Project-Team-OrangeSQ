@@ -21,7 +21,7 @@ function Meteor(spriteTexture, bg, igloo) {
     this.mLight.setOuter(70);
     this.mLight.setIntensity(2);
     this.mLight.setColor([0.5, 0.7, 0.5, 1]);
-    this.interpolateBy(0, -this.kDelta);
+//    this.interpolateBy(0, -this.kDelta);
 }
 gEngine.Core.inheritPrototype(Meteor, Fire);
 

@@ -5,7 +5,7 @@
 
 function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, blockManager) {
     
-    Manager.call(this, fireTexture, Fire, low, high, false);
+    Manager.call(this, fireTexture, Fire, low, high, true);
     
     this.low;
     this.high;
@@ -138,7 +138,7 @@ this.score += this.getObjectAt(randomNumber).getScore();
     var toSpawn = this.getObjectAt(randomNumber);
     
     if(toSpawn.getType() === "Meteor"){
-        toSpawn.getPhysicsComponent().setMass(0.25);
+        toSpawn.getPhysicsComponent().setMass(0.85);
     }else{
         toSpawn.getPhysicsComponent().setMass(1);
     }

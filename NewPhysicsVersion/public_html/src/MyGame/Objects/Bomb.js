@@ -47,7 +47,7 @@ Bomb.prototype.update = function () {
 };
 
 Bomb.prototype.getScore = function () {
-    return 300;
+    return 600;
 };
 
 Bomb.prototype.getType = function () {
