@@ -203,7 +203,7 @@ MyGame.prototype.initialize = function () {
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
     
     //initialize owl
-    this.mOwl = new Owl(this.kOwl, 64, this.CameraCenter, 64 + this.BlockSize / 2);
+    this.mOwl = new Owl(this.kOwl, 64, this.CameraCenter, 64 + this.BlockSize / 2, this.mHero.getXform().getPosition());
     
     //create the igloo
     this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth);
@@ -244,9 +244,9 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mOwl);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mOwl);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     
 
@@ -288,7 +288,7 @@ MyGame.prototype.update = function () {
 
             this.bootUpLight();
 
-          //this.checkDevKeys();
+//          this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
@@ -296,8 +296,10 @@ MyGame.prototype.update = function () {
             //collisions (physics)
             this.mBlockManager.checkCollisions(this.mFireManager, collisionInfo);
             this.mFireManager.checkCollisionsByPixel(this.mWaterManager, collisionInfo);
+            
             //per pixel collision
             this.mFireManager.checkCollisionsWith(this.mHero);
+            this.mFireManager.checkCollisionsWith(this.mOwl);
 
             //text updates
             this.mScoreMsg.setText("Score: " + this.mFireManager.getScore());

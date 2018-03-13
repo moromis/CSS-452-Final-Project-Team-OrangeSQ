@@ -18,7 +18,9 @@ var direction = {
     RIGHT: 1
 };
 
-function Owl(spriteTexture, size, x, y) {
+function Owl(spriteTexture, size, x, y, heroPos) {
+
+    this.heroPos = heroPos;
 
     this.mSprite = new LightRenderable(spriteTexture);
     this.mSprite.setColor([1, 1, 1, 0]);
@@ -57,8 +59,7 @@ Owl.prototype.shouldDie = function () {
 Owl.prototype.handleCollision = function (otherObjectType) {
 
     if (otherObjectType === "Fire") {
-        this.setVisibility(false);
-        this.shake(3, 3, 5, 20);
+        this.shake(7, 7, 20, 60);
     }
 
 };
@@ -67,50 +68,55 @@ Owl.prototype.update = function () {
 
     var xPos = this.getXform().getPosition()[0];
     var yPos = this.getXform().getPosition()[1];
-    if (xPos > 936) {
+    if(xPos > 936){
         this.getXform().setPosition(32, yPos);
-    } else if (xPos < 20) {
-        this.getXform().setPosition(1300, yPos);
+    }else if(xPos < 20){
+        this.getXform().setPosition(920, yPos);
     }
     
     if(yPos<0)
         this.setVisibility(false);
     
-    else
-    if (this.actionLength >= 0) {
+    var pos = this.getXform().getPosition();
+    
+    if(pos[0] - this.heroPos[0] >= 2){
 
-        if (this.actionLength > 2 && this.actionLength < 35) {
-
+        if(this.mState === state.STANDING || this.mDirection === direction.RIGHT){
+            
             this.mState = state.WALKING;
             this.mDirection = direction.LEFT;
-
-
-            //TODO: doesn't work
-            this.interpolateBy(-5, 0);
-
-        } else if (this.actionLength > 42 && this.actionLength < 70) {
-
+            this._updateAnimation();
+            this.notWalking = false;
+            
+        }
+        
+        this.getXform().incXPosBy(-1);
+        
+    }else if(this.heroPos[0] - pos[0] >= 2){
+        
+        
+        if(this.mState === state.STANDING || this.mDirection === direction.LEFT){
+            
             this.mState = state.WALKING;
             this.mDirection = direction.RIGHT;
-
-            //TODO: doesn't work
-            this.interpolateBy(10, 0);
-
-        } else {
-            this.mState = state.STANDING;
+            this._updateAnimation();
+            this.notWalking = false;
+            
         }
-
-        this._providePrintout();
-
-        this.actionLength -= 0.5;
-
-        this._updateAnimation();
-
-    } else {
-        var rand = HelperFunctions.Core.generateRandomInt(1, 100);
-        this.actionLength = rand;
-
+        
+        this.getXform().incXPosBy(1);
+        
+    }else if(Math.abs(this.heroPos[0] - pos[0]) < 2){
+        
+        if(this.mState === state.WALKING){
+            
+            this.mState = state.STANDING;
+            this._updateAnimation();
+            this.notWalking = true;
+            
+        }
     }
+    
     this.mSprite.updateAnimation();
 
     GameObject.prototype.update.call(this);
