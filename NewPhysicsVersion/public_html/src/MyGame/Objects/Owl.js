@@ -88,7 +88,7 @@ Owl.prototype.update = function () {
             
         }
         
-        this.panTo(this.heroPos[0],this.heroPos[1] -22);
+        this.panTo(this.heroPos[0], this.heroPos[1] -22);
         
     }else if(this.heroPos[0] - pos[0] >= 2 &&  Math.abs(pos[0] - this.heroPos[0]) < 140 && pos[0] < 700){
         
@@ -102,7 +102,7 @@ Owl.prototype.update = function () {
             
         }
         
-        this.panTo(this.heroPos[0],this.heroPos[1] -22);
+        this.panTo(this.heroPos[0], this.heroPos[1] -22);
         
     }else if(Math.abs(this.heroPos[0] - pos[0]) < 2 ||  Math.abs(pos[0] - this.heroPos[0]) > 140 ){
         
