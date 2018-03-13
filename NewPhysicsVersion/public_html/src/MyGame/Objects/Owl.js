@@ -58,9 +58,7 @@ Owl.prototype.shouldDie = function () {
 
 Owl.prototype.handleCollision = function (otherObjectType) {
 
-    if (otherObjectType === "Fire") {
-        this.shake(7, 7, 20, 60);
-    }
+    this.shake(7, 7, 20, 60);
 
 };
 
