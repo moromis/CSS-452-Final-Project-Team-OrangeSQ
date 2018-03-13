@@ -25,14 +25,26 @@ function Instructions() {
     // The camera to view the scene
     this.mCamera = null;
     this.mStatusMsg = null;
+  
+    this.kStartAudio = "assets/sounds/start.wav";
+
+    this.kStartScreneAudio = "assets/sounds/Magical_Winter_MP3.mp3";
+    
+    this.nextLevel = null;
 }
 gEngine.Core.inheritPrototype(Instructions, Scene);
-
+  
 Instructions.prototype.loadScene = function () {
+    
+    gEngine.AudioClips.loadAudio(this.kStartScreneAudio);
+    gEngine.AudioClips.loadAudio(this.kStartAudio);
         gEngine.Textures.loadTexture(this.kBG);
 };
 
 Instructions.prototype.unloadScene = function () {
+    gEngine.AudioClips.unloadAudio(this.kStartAudio);
+    gEngine.AudioClips.stopBackgroundAudio();
+
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kBG);
     
@@ -59,7 +71,7 @@ Instructions.prototype.initialize = function () {
     this.mStatusMsg.setColor([0.9, 0.2, 0.3, 1]);
     this.mStatusMsg.getXform().setPosition(this.CanvasWidth / 2 - 90, 40);
     this.mStatusMsg.setTextHeight(24);
-    this.mStatusMsg.setText("SPACEBAR - start game...");
+    this.mStatusMsg.setText("E: Easy       M: Medium       H: Hard");
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
@@ -78,7 +90,27 @@ Instructions.prototype.draw = function () {
 // The update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 Instructions.prototype.update = function () {
-      if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)){
-                gEngine.GameLoop.stop();
-            }
+if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
+      
+        HelperFunctions.Core.setDifficulty("easy");
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame(60);
+        gEngine.GameLoop.stop();
+    }
+    
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+      
+        HelperFunctions.Core.setDifficulty("medium");
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame(45);
+        gEngine.GameLoop.stop();
+    }
+  
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.H)) {
+      
+        HelperFunctions.Core.setDifficulty("hard");
+        gEngine.AudioClips.playACue(this.kStartAudio);
+        this.nextLevel = new MyGame(30);
+        gEngine.GameLoop.stop();
+    }
 };
