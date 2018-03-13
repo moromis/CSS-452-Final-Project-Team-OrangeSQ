@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager, blockManager) {
+function AngryFire(spriteTexture, heroPos, bg, igloo, blockManager) {
 
     this.heroPos = heroPos;
     this.kDelta = 1;
@@ -13,15 +13,15 @@ function AngryFire(spriteTexture, heroPos,bg, igloo, lightmanager, blockManager)
     this.name = "AngryFire";
     this.blockManager = blockManager;
   
-    Fire.call(this, spriteTexture,bg,igloo, lightmanager);
+    Fire.call(this, spriteTexture,bg,igloo);
 
-    this.mlight.setLightType(Light.eLightType.eSpotLight);
-    this.mlight.setNear(300);
-    this.mlight.setFar(350);
-    this.mlight.setInner(1.4);
-    this.mlight.setOuter(1.6);
-    this.mlight.setIntensity(15);
-    this.mlight.setColor([1,0,1,1]);
+    this.mLight.setLightType(Light.eLightType.eSpotLight);
+    this.mLight.setNear(300);
+    this.mLight.setFar(350);
+    this.mLight.setInner(1.4);
+    this.mLight.setOuter(1.6);
+    this.mLight.setIntensity(15);
+    this.mLight.setColor([1,0,1,1]);
     
     this.mSprite.getXform().setSize(this.size, this.size);
     this.mSprite.setElementPixelPositions(0, this.size, 0, this.size);
@@ -42,8 +42,8 @@ AngryFire.prototype.update = function () {
         this.getXform().incXPosBy(1);
 
     var fdr = this.getCurrentFrontDir();
-    var dir = vec3.fromValues(fdr[0], fdr[1], this.mlight.getDirection()[2]);
-    this.mlight.setDirection(dir);
+    var dir = vec3.fromValues(fdr[0], fdr[1], this.mLight.getDirection()[2]);
+    this.mLight.setDirection(dir);
 };
 
 AngryFire.prototype.handleCollision = function (otherObjectType) {
@@ -55,5 +55,11 @@ Fire.prototype.handleCollision.call(this,otherObjectType);
         this.blockManager.reset();
         this.scoreAmount = this.getXform().getPosition()[1] * 2;
     }
+};
+
+AngryFire.prototype.getType = function () {
+
+    return "AngryFire";
+
 };
 

@@ -4,24 +4,24 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Meteor(spriteTexture, bg, igloo, lightmanager, blockManager) {
+function Meteor(spriteTexture, bg, igloo) {
 
     this.kDelta = 1;
     this.downSize = 1;
     this.interp = null;
     this.name = "Meteor";
-    this.blockManager = blockManager;
     
-    Fire.call(this, spriteTexture, bg, igloo, lightmanager);
+    Fire.call(this, spriteTexture, bg, igloo);
     
     this.lightColor = [1, 0, 1, 1];
 
-    this.mlight.setNear(50);
-    this.mlight.setFar(100);
-    this.mlight.setInner(64);
-    this.mlight.setOuter(70);
-    this.mlight.setIntensity(2);
-    this.mlight.setColor([0.5, 0.7, 0.5, 1]);this.interpolateBy(0, -this.kDelta);
+    this.mLight.setNear(50);
+    this.mLight.setFar(100);
+    this.mLight.setInner(64);
+    this.mLight.setOuter(70);
+    this.mLight.setIntensity(2);
+    this.mLight.setColor([0.5, 0.7, 0.5, 1]);
+//    this.interpolateBy(0, -this.kDelta);
 }
 gEngine.Core.inheritPrototype(Meteor, Fire);
 
@@ -29,18 +29,25 @@ Meteor.prototype.update = function () {
     
     //call parent update
     Fire.prototype.update.call(this);
+    
     if(this.shouldMove) {
-    //move again
-     //   this.interpolateBy(0, -5 * this.kDelta);
-        this.mlight.setYPos(this.mSprite.getXform().getYPos());
-        this.mlight.setXPos(this.mSprite.getXform().getXPos());
+        
+        this.mLight.setYPos(this.mSprite.getXform().getYPos());
+        this.mLight.setXPos(this.mSprite.getXform().getXPos());
     }
+    
+    GameObject.prototype.update.call(this);
 };
 
 Meteor.prototype.getScore = function () {
     return 400;
 };
 
+Meteor.prototype.getType = function () {
+
+    return "Meteor";
+
+};
 
 Meteor.prototype.handleCollision = function (otherObjectType) {
 

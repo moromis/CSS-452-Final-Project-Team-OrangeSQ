@@ -3,7 +3,7 @@
  * HelperFunctions: false, Manager: false, Fire: false, HelperFunctions */
 /* find out more about jslint: http://www.jslint.com/help.html */
 
-function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, lightManager, blockManager) {
+function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture, heroPos, low, high, bg, igloo, blockManager) {
     
     Manager.call(this, fireTexture, Fire, low, high, true);
     
@@ -17,46 +17,84 @@ function FireManager (fireTexture, angryFireTexture, meteorTexture, bombTexture,
     this.maxFires = 20;
     this.mbg= bg;
     this.migloo= igloo;
-    this.lightManager = lightManager;
     this.blockManager = blockManager;
     
+    //preallocate objects
+    
+    //2 angry fire
     for(var i = 0; i < 2; i++) {
           var mObject = new AngryFire(this.angryFireTexture, 
             this.heroPos,this.mbg,this.migloo, 
-            this.lightManager,
             this.blockManager
           );
             
           this.addToSet(mObject);
     }
     
-    for(var i = 2; i < 4; i++) {
-         var mObject = new Meteor(this.meteorTexture,
-            this.mbg,
-            this.migloo, 
-            this.lightManager,
-            this.blockManager
-         );
-            
-        this.addToSet(mObject);
-        
+    switch(HelperFunctions.Core.getDifficulty()){
+        case "easy":
+            //2 meteors
+            for(var i = 0; i < 2; i++) {
+                 var mObject = new Meteor(this.meteorTexture,
+                    this.mbg,
+                    this.migloo
+                 );
+
+                this.addToSet(mObject);
+
+            }
+
+            //15 normal fires
+            for(var i = 0; i < 15; i++) {
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
+                this.addToSet(mObject);
+            }
+            break;
+        case "medium":
+            //7 meteors
+            for(var i = 0; i < 7; i++) {
+                 var mObject = new Meteor(this.meteorTexture,
+                    this.mbg,
+                    this.migloo
+                 );
+
+                this.addToSet(mObject);
+
+            }
+
+            //10 normal fires
+            for(var i = 0; i < 10; i++) {
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
+                this.addToSet(mObject);
+            }
+            break;
+        case "hard":
+            //13 meteors
+            for(var i = 0; i < 13; i++) {
+                 var mObject = new Meteor(this.meteorTexture,
+                    this.mbg,
+                    this.migloo
+                 );
+
+                this.addToSet(mObject);
+
+            }
+
+            //4 normal fires
+            for(var i = 0; i < 4; i++) {
+                var mObject = new Fire(this.fireTexture,this.mbg,this.migloo);
+                this.addToSet(mObject);
+            }
+            break;
     }
     
-    for(var i = 4; i < 19; i++) {
-        var mObject = new Fire(this.fireTexture,this.mbg,this.migloo, this.lightManager);
-        this.addToSet(mObject);
-    }
     
-         
-            var mObject = new Bomb(this.bombTexture,
-            this.mbg,
-            this.migloo, 
-            this.lightManager,
-            this.blockManager);
-            this.addToSet(mObject);
-    
-    
-    
+    //1 giant bomb  
+    var mObject = new Bomb(this.bombTexture,
+    this.mbg,
+    this.migloo,
+    this.blockManager);
+    this.addToSet(mObject);
     
 }
 gEngine.Core.inheritPrototype(FireManager, Manager);
@@ -96,18 +134,20 @@ FireManager.prototype._createObject = function () {
     
 
 this.score += this.getObjectAt(randomNumber).getScore();
-    //add weight to object
-    var toSpawn = this.getObjectAt(randomNumber);
-//    console.log(toSpawn.getPhysicsComponent().getInvMass());
-    toSpawn.getPhysicsComponent().setMass(1);
-    //console.log(toSpawn);
 
-    toSpawn.setVisibility(true);
-    toSpawn.mlight.setLightTo(true);
+    var toSpawn = this.getObjectAt(randomNumber);
+    
+    if(toSpawn.getType() === "Meteor"){
+        toSpawn.getPhysicsComponent().setMass(0.85);
+    }else{
+        toSpawn.getPhysicsComponent().setMass(1);
+    }
+
     toSpawn.shouldMoveFunction(true);
+    toSpawn.setVisibility(true);
+    toSpawn.mLight.setLightTo(true);
 };
 
 FireManager.prototype.deleteFires = function(){
     this.deleteAll();
-    this.lightManager.removeLights();
 };

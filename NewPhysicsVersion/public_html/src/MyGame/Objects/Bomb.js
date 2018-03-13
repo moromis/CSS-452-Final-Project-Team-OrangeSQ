@@ -4,7 +4,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Bomb(spriteTexture, bg, igloo, lightmanager, blockManager) {
+function Bomb(spriteTexture, bg, igloo, blockManager) {
 
     this.kDelta = 1;
     this.downSize = 1;
@@ -12,16 +12,16 @@ function Bomb(spriteTexture, bg, igloo, lightmanager, blockManager) {
     this.name = "Bomb";
     this.blockManager = blockManager;
     
-    Fire.call(this, spriteTexture, bg, igloo, lightmanager);
+    Fire.call(this, spriteTexture, bg, igloo);
     
     this.lightColor = [1, 0, 1, 1];
 
-    this.mlight.setNear(600);
-    this.mlight.setFar(700);
-    this.mlight.setInner(1.4);
-    this.mlight.setOuter(8);
-    this.mlight.setIntensity(5);
-    this.mlight.setColor(this.lightColor);
+    this.mLight.setNear(60);
+    this.mLight.setFar(70);
+    this.mLight.setInner(1.4);
+    this.mLight.setOuter(8);
+    this.mLight.setIntensity(5);
+    this.mLight.setColor(this.lightColor);
     
     this.size = 128;
     this.mSprite.getXform().setSize(this.size, this.size);
@@ -42,20 +42,25 @@ Bomb.prototype.update = function () {
         if(this.lightColor[i] < 1) this.lightColor[i] += 0.1;
         else this.lightColor[i] = 0;
     }
-    this.mlight.setColor(this.lightColor);
+    this.mLight.setColor(this.lightColor);
 
 };
 
 Bomb.prototype.getScore = function () {
-    return 300;
+    return 600;
 };
 
+Bomb.prototype.getType = function () {
+
+    return "Bomb";
+
+};
 
 Bomb.prototype.handleCollision = function (otherObjectType) {
 
     Fire.prototype.handleCollision.call(this, otherObjectType);
 
-    if (otherObjectType === "Block" || otherObjectType === "Hero" ) {
+    if (otherObjectType === "Block") {
         
         gEngine.AudioClips.playACue("assets/sounds/bmb.wav");
 

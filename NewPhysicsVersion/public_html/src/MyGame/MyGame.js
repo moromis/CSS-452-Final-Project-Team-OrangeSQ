@@ -7,7 +7,7 @@
 /*global gEngine, Scene, GameObjectset, TextureObject, Camera, vec2,
  Renderable, TextureRenderable, FontRenderable, SpriteRenderable, LightRenderable, IllumRenderable,
  GameObject, TiledGameObject, ParallaxGameObject, Hero, Minion, Dye, Light, BlockManager, HelperFunctions 
- ,CameraManager*/
+ ,CameraManager, LightManager*/
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
@@ -15,6 +15,7 @@
 function MyGame() {
 
     this.kSnowman = "assets/Snowman@2x.png";
+    this.kOwl = "assets/owl.png";
     this.kBlock = "assets/Block.png";
     this.kFire = "assets/Fire.png";
     this.kWater = "assets/Water.png";
@@ -35,7 +36,20 @@ function MyGame() {
     this.HeroSize = 128;
     this.BlockSize = 64;
     this.ScalingFactor = 1;
+    
     this.SpawnTime = 60;
+    
+    switch(HelperFunctions.Core.getDifficulty()){
+        case "easy":
+            this.SpawnTime *= 1;
+            break;
+        case "medium":
+            this.SpawnTime *= 0.7;
+            break;
+        case "hard":
+            this.SpawnTime *= 0.3;
+            break;
+    }
 
     this.IntroLight = true;
     this.initialLightLevel = 100;
@@ -49,6 +63,7 @@ function MyGame() {
     this.TimingAmount = 4;
 
     this.mHero = null;
+    this.mOwl = null;
     this.mBlockManager = null;
     this.mFireManager = null;
     this.mWaterManager = null;
@@ -90,6 +105,7 @@ gEngine.Core.inheritPrototype(MyGame, Scene);
 MyGame.prototype.loadScene = function () {
 
     gEngine.Textures.loadTexture(this.kSnowman);
+    gEngine.Textures.loadTexture(this.kOwl);
     gEngine.Textures.loadTexture(this.kBlock);
     gEngine.Textures.loadTexture(this.kFire);
     gEngine.Textures.loadTexture(this.kWater);
@@ -105,8 +121,8 @@ MyGame.prototype.loadScene = function () {
     //aduio
     gEngine.AudioClips.loadAudio(this.kGameSceneAudio);
     gEngine.AudioClips.loadAudio(this.kFizzAudio);
-        gEngine.AudioClips.loadAudio(this.kBombAudio);
-                gEngine.AudioClips.loadAudio(this.kExplosionAudio);
+    gEngine.AudioClips.loadAudio(this.kBombAudio);
+    gEngine.AudioClips.loadAudio(this.kExplosionAudio);
 
     gEngine.AudioClips.loadAudio(this.kWaterAudio);
     gEngine.AudioClips.loadAudio(this.kLoseAudio);
@@ -115,9 +131,6 @@ MyGame.prototype.loadScene = function () {
     gEngine.AudioClips.loadAudio(this.kBlocksReplaceAudio);
     gEngine.AudioClips.loadAudio(this.kSizzle);
     gEngine.AudioClips.loadAudio(this.kOuch);
-
-
-
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -134,7 +147,9 @@ MyGame.prototype.unloadScene = function () {
     gEngine.AudioClips.unloadAudio(this.kOuch);
 
     gEngine.LayerManager.cleanUp();
+    
     gEngine.Textures.unloadTexture(this.kSnowman);
+    gEngine.Textures.unloadTexture(this.kOwl);
     gEngine.Textures.unloadTexture(this.kBlock);
     gEngine.Textures.unloadTexture(this.kFire);
     gEngine.Textures.unloadTexture(this.kWater);
@@ -151,17 +166,14 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
-        this.loseSoundActivated = false;
-
     
+    //initialize light manager
+    LightManager.Core.initLightManager(20);
+    
+    this.loseSoundActivated = false;
+    
+    //play bg audio
     gEngine.AudioClips.playBackgroundAudio(this.kGameSceneAudio);
-
-//    this.mCamera = new Camera(
-//            vec2.fromValues(this.CameraCenter, this.CameraCenter), // position of the camera
-//            this.CameraCanvasWidth, // width of camera
-//            [0, 0, this.CanvasWidth, this.CanvasWidth]              // viewport (orgX, orgY, width, height)
-//            );
-//    this.mCamera.setBackgroundColor([1, 1, 1, 1]);
 
     //setup score message
     this.mScoreMsg = new FontRenderable("Status Message");
@@ -184,21 +196,24 @@ MyGame.prototype.initialize = function () {
     //setup status message
     this.mRestartMsg = new FontRenderable("");
     this.mRestartMsg.setColor([1, 1, 1, 1]);
-    this.mRestartMsg.getXform().setPosition(50, this.CanvasHeight / 2 -50);
+    this.mRestartMsg.getXform().setPosition(50, this.CanvasHeight / 2 - 50);
     this.mRestartMsg.setTextHeight(32);
 
     //initialize hero object
     this.mHero = new Hero(this.kSnowman, this.HeroSize, this.CameraCenter, this.HeroSize);
-
-    this.mLightManager = new LightManager();
-    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth, this.mLightManager);
+    
+    //initialize owl
+    this.mOwl = new Owl(this.kOwl, 64, this.CameraCenter, 64 + this.BlockSize / 2);
+    
+    //create the igloo
+    this.mIgloo = new Igloo(this.kIgloo, this.kIglooNormal, this.CameraCanvasWidth);
 
     //intialize background
     var bgR = new IllumRenderable(this.kBG, this.kbgNormal);
     bgR.setElementPixelPositions(0, this.CameraCanvasWidth, 0, this.CameraCanvasWidth - 200);
     bgR.getXform().setSize(this.BGWidth, this.BGWidth);
     bgR.getXform().setPosition(this.CameraCenter, this.CameraCenter);
-    bgR.addLight(this.mLightManager.createLight(2));
+    bgR.addLight(LightManager.Core.getDirectionalLight());
     this.mBG = new GameObject(bgR);
 
     //initialize the block manager
@@ -217,12 +232,11 @@ MyGame.prototype.initialize = function () {
             this.SpawnTime,
             this.SpawnTime * 3,
             this.mBG, this.mIgloo,
-            this.mLightManager,
             this.mBlockManager);
             
     this.mWaterManager = new WaterManager(this.kWater);
 
-    //add everything to the correct layergEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
+    //add everything to the correct layer
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mScoreMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mHealthMsg);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mStatusMsg);
@@ -230,9 +244,11 @@ MyGame.prototype.initialize = function () {
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFireManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlockManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIgloo);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mOwl);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mWaterManager);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mHero);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBG);
+    
 
     gEngine.DefaultResources.setGlobalAmbientIntensity(this.initialLightLevel);
 
@@ -248,17 +264,13 @@ MyGame.prototype.draw = function () {
 
     CameraManager.Core.draw();
     this.mCollisionInfos = [];
-//    this.mCamera.setupViewProjection();
-//    gEngine.LayerManager.drawAllLayers(this.mCamera);
 
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
-//    console.log(this.mHero.isDead(), " and ", this.mFireManager.getScore());
-
-//    console.log("main update is running...");
+    
     if(this.mHero.isFalling() && !this.loseSoundActivated) {
             this.loseSoundActivated = true;
             gEngine.AudioClips.playACue(this.kLoseAudio);
@@ -269,7 +281,6 @@ MyGame.prototype.update = function () {
         if (this.mFireManager.getScore() < this.winningScore) {
 
             CameraManager.Core.update();
-//            this.mCamera.update();
 
             gEngine.LayerManager.updateAllLayers();
 
@@ -277,7 +288,7 @@ MyGame.prototype.update = function () {
 
             this.bootUpLight();
 
-          //  this.checkDevKeys();
+          //this.checkDevKeys();
 
             //only need to call one way, handles collisions on both managers' objects  
             var collisionInfo = new CollisionInfo();
@@ -293,21 +304,22 @@ MyGame.prototype.update = function () {
             this.mHealthMsg.setText("Health: " + this.mHero.getHealth());
 
         } else {
-            //win message
-            this.mStatusMsg.setText("YOU WIN!");
+            
             this.finishGame();
+            
         }
 
     } else {
-        //lose message
-        this.mStatusMsg.setText("You Lose!");
+        
         this.finishGame();
+        
     }
 
     // Hero platform
     gEngine.Physics.processObjSet(this.mHero, this.mBlockManager);
     gEngine.Physics.processObjSet(this.mIgloo, this.mBlockManager);
-    this.mIgloo.update();
+    gEngine.Physics.processObjSet(this.mOwl, this.mBlockManager);
+    
 };
 
 MyGame.prototype.finishGame = function ()
@@ -315,30 +327,10 @@ MyGame.prototype.finishGame = function ()
 
     this.mFireManager.deleteFires();
     
-    this.mLightManager.switchOffAll();
-    
     var score = this.mFireManager.getScore();
     this.nextLevel = new WinScreen(score);
     gEngine.GameLoop.stop();
     
-//    if(!this.playedEndGameAudio) {
-//                            gEngine.AudioClips.playACue(this.kLoseAudio);
-//                   this.playedEndGameAudio = true;         
-//
-//    }
-//    gEngine.DefaultResources.setGlobalAmbientIntensity(1.5);
-//    this.mRestartMsg.setText("Press: 'R' to restart, 'S' for SplashScreen ");
-//    
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.S)) {
-//        gEngine.GameLoop.stop();
-//        this.playedEndGameAudio = false;
-//    }
-//  
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
-//        this.isLost = true;
-//        this.playedEndGameAudio = false;
-//        gEngine.GameLoop.stop();
-//    }
 };
 
 MyGame.prototype.bootUpLight = function () {
@@ -358,48 +350,48 @@ MyGame.prototype.checkDevKeys = function () {
 
 
     //dev key to relocate all fire objects
-//    if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
-//        var mousePosition = CameraManager.Core.getMouseLocation();
-//        this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
-//    }
+    if (gEngine.Input.isButtonClicked(gEngine.Input.mouseButton.Left)) {
+        var mousePosition = CameraManager.Core.getMouseLocation();
+        this.mFireManager.relocate(mousePosition[0], mousePosition[1]);
+    }
 
-//    //dev key to increment score
-//    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
-//        this.mFireManager.incrementScoreBy(10000);
-//    }
+    //dev key to increment score
+    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.I)) {
+        this.mFireManager.incrementScoreBy(10000);
+    }
     
-//    //dev key to end game
-//    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
-//        this.finishGame();
-//    }
+    //dev key to end game
+    else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.E)) {
+        this.finishGame();
+    }
   
     //camera checkout keys for testing
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
-//        this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
-//        if (this.firstCamera === null)
-//            CameraManager.Core.returnIthCamera(0);
-//    }
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
-//        this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
-//        if (this.secondCamera === null)
-//            CameraManager.Core.returnIthCamera(1);
-//    }
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
-//        this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
-//        if (this.thirdCamera === null)
-//            CameraManager.Core.returnIthCamera(2);
-//    }
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
-//        this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
-//        if (this.fourthCamera === null)
-//            CameraManager.Core.returnIthCamera(3);
-//    }
-//    
-//    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
-//        this.mFireManager.autoSpawn();
-//    }
-//    
-//    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
-//        this.mFireManager._createObject();
-//    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.One)) {
+        this.firstCamera = CameraManager.Core.checkoutIthCamera(0);
+        if (this.firstCamera === null)
+            CameraManager.Core.returnIthCamera(0);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Two)) {
+        this.secondCamera = CameraManager.Core.checkoutIthCamera(1);
+        if (this.secondCamera === null)
+            CameraManager.Core.returnIthCamera(1);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Three)) {
+        this.thirdCamera = CameraManager.Core.checkoutIthCamera(2);
+        if (this.thirdCamera === null)
+            CameraManager.Core.returnIthCamera(2);
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Four)) {
+        this.fourthCamera = CameraManager.Core.checkoutIthCamera(3);
+        if (this.fourthCamera === null)
+            CameraManager.Core.returnIthCamera(3);
+    }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.F)){
+        this.mFireManager.autoSpawn();
+    }
+    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.T)){
+        this.mFireManager._createObject();
+    }
 };

@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <head>
+    
     <title>Final Project - OrangeSQ</title>
+    
+    
+    <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+    </style>
+    
 </head>
 <!--Use embedded shader code for now, in order to remove async loading complexity.-->
 
@@ -109,13 +130,13 @@
 
     <!-- Objects -->
     <script type="text/javascript" src="src/MyGame/Objects/Hero.js"></script>
+    <script type="text/javascript" src="src/MyGame/Objects/Owl.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Fire.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/AngryFire.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Meteor.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Bomb.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Block.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Water.js"></script>
-    <script type="text/javascript" src="src/MyGame/Objects/LightObj.js"></script>
     <script type="text/javascript" src="src/MyGame/Objects/Igloo.js"></script>
 
     <!-- Object Managers-->  
@@ -132,32 +153,43 @@
     </canvas>      <br><br>   
     <font size ="5">
 
-    <b>
-        Game Introduction:</b> Save the Snowman from the rain of fire.<br>
-    Beware! The deadly purple fire can chase you. Put out this<br>
-    angry fire and earn <b>double points</b> and as a bonus it re-populates the ice floor.
-    <br><b> Max Score: 5000</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    Chase this SnowMan's Nightmare away!
-    <br><br>
+    <p>This poor snowman is having a bad nightmare!<br>
+        The sky is raining fire...<br>
+        Try to survive as long as possible and
+        get a new high score!</p>
+    <br>
     </font>
-    <table width="800">
-        <tr><th><b>Keys</b></th>
+    
+    <table style="width:50%;">
+        <tr>
+            <th><b>Keys</b></th>
             <th><b>Action</b></th>
         </tr>
         <tr>
-            <td> Left / Right Arrow Keys </td> <td>MOVE SNOWMAN</td>
+            <td> Left / Right Arrow Keys <b>OR</b> A / D Keys </td>
+            <td>MOVE SNOWMAN</td>
         </tr>
         <tr>
-            <td>Up Arrow / W Key </td><td> JUMP</td>
+            <td>Up Arrow <b>OR</b> W Key </td>
+            <td> JUMP</td>
         </tr>
         <tr>
-        <td>Space-bar </td><td> SHOOT Water</td>
+            <td>Space-bar </td>
+            <td> SHOOT Water</td>
         </tr>
     </table>
+    <br><br>
+    
     <br>        
-        <b>Refrences to copy-right free audio</b> <br>
-    Game Background audio: Magical Winter - Adam Vitovsky <br>
-    Flash Background Audio: Something Wicked - Ross Bugden    <br>
+        <b>References to copy-right free audio</b> <br>
+    Splash Screen Background audio: Magical Winter - Adam Vitovsky <br>
+    Game Background Audio: Something Wicked - Ross Bugden    <br>
+    <br>
+    
+    <p><b>Credits:</b><br>
+    Robert Stewart<br>
+    Sharanya Sudhakar<br>
+    Kevin Ulrich</p>
 
     <script>
     window.onkeydown = function (e) {
