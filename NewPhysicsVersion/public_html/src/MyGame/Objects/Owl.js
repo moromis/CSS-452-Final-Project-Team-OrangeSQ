@@ -58,9 +58,7 @@ Owl.prototype.shouldDie = function () {
 
 Owl.prototype.handleCollision = function (otherObjectType) {
 
-    if (otherObjectType === "Fire") {
-        this.shake(7, 7, 20, 60);
-    }
+    this.shake(7, 7, 20, 60);
 
 };
 
@@ -90,7 +88,7 @@ Owl.prototype.update = function () {
             
         }
         
-        this.getXform().incXPosBy(-1);
+        this.panTo(this.heroPos[0],this.heroPos[1] -22);
         
     }else if(this.heroPos[0] - pos[0] >= 2){
         
@@ -104,7 +102,7 @@ Owl.prototype.update = function () {
             
         }
         
-        this.getXform().incXPosBy(1);
+        this.panTo(this.heroPos[0],this.heroPos[1] -22);
         
     }else if(Math.abs(this.heroPos[0] - pos[0]) < 2){
         
